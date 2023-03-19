@@ -818,42 +818,10 @@ sensor:
     address: 0xe4
     value_type: U_WORD
     unit_of_measurement: min
-  # Register: 229
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dT1SH"
-    id: "${devicename}_dt1sh"
-    register_type: holding
-    address: 0xe5
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-  # Register: 230
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dTSH"
-    id: "${devicename}_dtsh"
-    register_type: holding
-    address: 0xe6
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-  # Register: 231
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4hmax"
-    id: "${devicename}_t4hmax"
-    register_type: holding
-    address: 0xe7
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-  # Register: 232
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4hmin"
-    id: "${devicename}_t4hmin"
-    register_type: holding
-    address: 0xe8
-    value_type: S_WORD
-    unit_of_measurement: "°C"
+  # Register: 229 -> Is present in this config as a 'number'
+  # Register: 230 -> Is present in this config as a 'number'
+  # Register: 231 -> Is present in this config as a 'number'
+  # Register: 232 -> Is present in this config as a 'number'
   # Register: 233
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1116,42 +1084,10 @@ sensor:
     address: 0x108
     value_type: S_WORD
     unit_of_measurement: "°C"
-  # Register: 265
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T1SetH1"
-    id: "${devicename}_t1seth1"
-    register_type: holding
-    address: 0x109
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-  # Register: 266
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T1SetH2"
-    id: "${devicename}_t1seth2"
-    register_type: holding
-    address: 0x10a
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-  # Register: 267
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4H1"
-    id: "${devicename}_t4h1"
-    register_type: holding
-    address: 0x10b
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 268
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4H2"
-    id: "${devicename}_t4h2"
-    register_type: holding
-    address: 0x10c
-    value_type: S_WORD
-    unit_of_measurement: "°C"
+  # Register: 265 -> Is present in this config as a 'number'
+  # Register: 266 -> Is present in this config as a 'number'
+  # Register: 267 -> Is present in this config as a 'number'
+  # Register: 268 -> Is present in this config as a 'number'
   # Register: 269
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1169,6 +1105,7 @@ sensor:
     address: 0x10e
     value_type: U_WORD
     unit_of_measurement: hr
+    accuracy_decimals: 1
     bitmask: 0x00FF
     filters:
       - multiply: 0.5
@@ -1181,6 +1118,7 @@ sensor:
     address: 0x10e
     value_type: U_WORD
     unit_of_measurement: hr
+    accuracy_decimals: 1
     bitmask: 0xFF00
     filters:
       - multiply: 0.5
@@ -2349,6 +2287,132 @@ number:
       ${devicename}->queue_command(set_payload_command);
 
       return {};
+
+  # Register: 229
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT1SH"
+    id: "${devicename}_dt1sh"
+    register_type: holding
+    address: 0xe5
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 2
+    max_value: 10
+  # Register: 230
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dTSH"
+    id: "${devicename}_dtsh"
+    register_type: holding
+    address: 0xe6
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 1
+    max_value: 10
+  # Register: 231
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4hmax"
+    id: "${devicename}_t4hmax"
+    register_type: holding
+    address: 0xe7
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 35
+  # Register: 232
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4hmin"
+    id: "${devicename}_t4hmin"
+    register_type: holding
+    address: 0xe8
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 5
+  # Register: 265
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetH1"
+    id: "${devicename}_t1seth1"
+    register_type: holding
+    address: 0x109
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 60
+  # Register: 266
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetH2"
+    id: "${devicename}_t1seth2"
+    register_type: holding
+    address: 0x10a
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 60
+  # Register: 267
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4H1"
+    id: "${devicename}_t4h1"
+    register_type: holding
+    address: 0x10b
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 30
+  # Register: 268
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4H2"
+    id: "${devicename}_t4h2"
+    register_type: holding
+    address: 0x10c
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 35
+
+  # # Register: 270 (Low)
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "${entity_prefix} t_T4 FRESH_H"
+  #   id: "${devicename}_t_t4_fresh_h"
+  #   register_type: holding
+  #   address: 0x10e
+  #   value_type: U_WORD
+  #   unit_of_measurement: hr
+  #   bitmask: 0x00FF
+  #   entity_category: config
+  #   min_value: 0.5
+  #   max_value: 6
+  #   step: 0.5
+  # # Register: 270 (High)
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "${entity_prefix} t_T4 FRESH_C"
+  #   id: "${devicename}_t_t4_fresh_c"
+  #   register_type: holding
+  #   address: 0x10e
+  #   value_type: U_WORD
+  #   unit_of_measurement: hr
+  #   bitmask: 0xFF00
+  #   entity_category: config
+  #   min_value: 0.5
+  #   max_value: 6
+  #   step: 0.5
 
 text_sensor:
   # Active State

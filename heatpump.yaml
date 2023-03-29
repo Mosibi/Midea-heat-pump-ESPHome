@@ -1188,14 +1188,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x1
-  # Bit: 2
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Power DHW T5S"
-    id: "${devicename}_power_dhw_t5s"
-    register_type: holding
-    address: 0x0
-    bitmask: 0x4
+  # Bit: 2 -> Is present in this config as a 'switch'
   # Bit: 3
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2073,6 +2066,15 @@ binary_sensor:
 
 
 switch:
+  # Register: 0 -> Bit 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Power DHW T5S"
+    id: "${devicename}_power_dhw_t5s"
+    register_type: holding
+    entity_category: config
+    address: 0x0
+    bitmask: 0x4
   # Register: 5 -> Bit 12
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

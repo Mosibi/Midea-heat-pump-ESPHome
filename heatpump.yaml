@@ -1187,7 +1187,7 @@ binary_sensor:
     id: "${devicename}_power_air_conditioner_zone_1"
     register_type: holding
     address: 0x0
-    bitmask: 0x1
+    bitmask: 0x2
   # Bit: 2 -> Is present in this config as a 'switch'
   # Bit: 3
   - platform: modbus_controller

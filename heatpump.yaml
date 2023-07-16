@@ -16,6 +16,7 @@ globals:
 esphome:
   name: "${devicename}"
   comment: "${description}"
+  friendly_name: "${description}"
 
 esp32:
   board: esp32dev
@@ -29,6 +30,11 @@ logger:
 
 # Enable Home Assistant API
 api:
+  encryption:
+    key: "<REPLACE WITH KEY FROM HOME ASSISTANT>"
+
+web_server:
+  port: 80
 
 ota:
 
@@ -38,7 +44,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Esphome-Web-3F8D40"
+    ssid: "${devicename}"
     password: "zHZ2Ur5uDMVz"
 
 captive_portal:

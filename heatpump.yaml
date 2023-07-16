@@ -30,8 +30,6 @@ logger:
 
 # Enable Home Assistant API
 api:
-  encryption:
-    key: "<REPLACE WITH KEY FROM HOME ASSISTANT>"
 
 web_server:
   port: 80
@@ -69,6 +67,8 @@ modbus_controller:
     update_interval: 10s
 
 sensor:
+  - platform: uptime
+    name: "${entity_prefix} Uptime"
   # Register: 1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

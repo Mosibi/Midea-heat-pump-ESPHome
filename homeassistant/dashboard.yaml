@@ -1,0 +1,44 @@
+- title: Heatpump
+  path: heatpump
+  icon: mdi:heating-coil
+  badges: []
+  cards:
+    - type: entities
+      entities:
+        - entity: switch.heatpump_forced_water_tank_heating_onoff
+          name: Water tank heating
+        - entity: switch.heatpump_power_dhw_t5s
+          name: Water tank automatic heating
+        - entity: number.heatpump_set_dhw_tank_temperature_t5s
+          name: Tank temperature setpoint
+        - entity: sensor.heatpump_water_tank_temperature_t5
+          name: Water tank temperature
+      title: Water Tank
+      show_header_toggle: false
+    - type: entity
+      name: Fan speed
+      icon: mdi:fan
+      entity: sensor.heatpump_fan_speed
+    - type: entities
+      entities:
+        - entity: sensor.heatpump_outdoor_ambient_temperature
+          name: Outside temperature accoring heatpump
+        - entity: sensor.heatpump_water_outlet_temperature
+          name: Outlet water temperature
+        - entity: sensor.heatpump_water_inlet_temperature
+          name: Inlet temperature
+        - entity: sensor.heatpump_climate_curve_t1s_calculated_value_1
+          name: Calculated entering water temperature
+        - entity: switch.heatpump_weather_compensation_zone_1
+          name: Weather compensation
+        - entity: number.heatpump_set_water_temperature_t1s_zone_1
+          name: Entering temperature
+      title: Heating
+      show_header_toggle: false
+    - type: entities
+      entities:
+        - entity: sensor.heatpump_electricity_consumption
+          name: Electricity usage
+        - entity: sensor.heatpump_power_output
+          name: Delivered power
+      title: Values according heatpump

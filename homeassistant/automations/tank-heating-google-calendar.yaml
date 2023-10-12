@@ -1,0 +1,20 @@
+alias: Water tank heating via Google Calender
+description: ""
+trigger:
+  - platform: calendar
+    event: start
+    offset: "0:0:0"
+    entity_id: calendar.home_assistant
+condition:
+  - condition: template
+    value_template: "{{ 'Watertank' in trigger.calendar_event.summary }}"
+action:
+  - if:
+      - condition: template
+        value_template: "{{ trigger.event == 'start' }}"
+    then:
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.heatpump_forced_water_tank_heating_onoff
+mode: parallel

@@ -1,0 +1,22 @@
+alias: Water tank heating off when temperature is reached
+description: ""
+trigger:
+  - platform: template
+    value_template: >-
+      {% if (states('sensor.heatpump_water_tank_temperature_t5') |
+      int) >=
+      (states('number.heatpump_set_dhw_tank_temperature_t5s') |
+      int) -%}true{%- endif %}
+    alias: DHW Watertank is op temperatuur
+condition:
+  - condition: device
+    type: is_on
+    device_id: <id of heatpump controller>
+    entity_id: <id of entity forced water tank heating on/off>
+    domain: switch
+action:
+  - type: turn_off
+    device_id: <id of heatpump controller>
+    entity_id: <id of entity forced water tank heating on/off>
+    domain: switch
+mode: single

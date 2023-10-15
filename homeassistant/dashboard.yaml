@@ -3,6 +3,14 @@
   icon: mdi:heating-coil
   badges: []
   cards:
+    - type: tile
+      entity: sensor.heatpump_active_state
+      name: Heatpump status
+      icon: mdi:heat-pump-outline
+      tap_action:
+        action: more-info
+      icon_tap_action:
+        action: more-info
     - type: entities
       entities:
         - entity: switch.heatpump_forced_water_tank_heating_onoff

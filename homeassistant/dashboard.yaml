@@ -50,3 +50,17 @@
         - entity: sensor.heatpump_power_output
           name: Delivered power
       title: Values according heatpump
+    - type: entities
+      entities:
+        - entity: sensor.heatpump_current_fault_error_code
+          name: Current fault
+          icon: mdi:alert
+        - entity: sensor.heatpump_fault_1_error_code
+          name: Fault 1
+          icon: mdi:alert
+        - entity: sensor.heatpump_fault_2_error_code
+          name: Fault 2
+          icon: mdi:alert
+        - entity: sensor.heatpump_fault_3_error_code
+          name: Fault 3
+          icon: mdi:alert

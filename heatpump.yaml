@@ -42,8 +42,8 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "${devicename}"
-    password: "zHZ2Ur5uDMVz"
+    ssid: "${devicename}-setup"
+    password: "heatpump"
 
 captive_portal:
 
@@ -2072,6 +2072,8 @@ binary_sensor:
 
 
 switch:
+  - platform: factory_reset
+    name: Restart with Factory Default Settings
   # Register: 0 -> Bit 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2423,6 +2425,9 @@ number:
   #   step: 0.5
 
 text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
   # Active State
   - platform: template
     name: "${entity_prefix} Active State"
@@ -2447,3 +2452,342 @@ text_sensor:
         // The heat pump is off
         return {"Inactive"};
       }
+  # Current fault mapped to error code
+  - platform: template
+    name: "${entity_prefix} Current Fault Error Code"
+    id: "${devicename}_current_fault_error_code"
+    lambda: |-
+      int current_fault = id(${devicename}_current_fault).state;
+
+      // ESP_LOGI("main", "Current fault: %d", current_fault);
+
+      if (current_fault >= 0 && current_fault <= 143) {
+        return std::to_string(current_fault);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9
+  # Current fault mapped to error code description
+  - platform: template
+    name: "${entity_prefix} Current Fault Error Code Description"
+    id: "${devicename}_current_fault_error_code_description"
+    lambda: |-
+      int current_fault = id(${devicename}_current_fault).state;
+
+      // ESP_LOGI("main", "Current fault: %d", current_fault);
+
+      if (current_fault >= 0 && current_fault <= 143) {
+        return std::to_string(current_fault);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> Water flow fault(E8 displayed 3 times)
+        - 2 -> Phase loss or neutral wire and live wire are connected reversely(only for three phase unit)
+        - 3 -> Communication fault between controller and hydraulic module
+        - 4 -> Final outlet water temp. sensor(T1) fault
+        - 5 -> Water tank temp. sensor(T5) fault
+        - 6 -> The condenser outlet refrigerant temperature sensor(T3) fault
+        - 7 -> The ambient temperature sensor(T4) fault
+        - 8 -> Buffer tank up temp. sensor(Tbt1) fault
+        - 9 -> Water flow failure
+        - 10 -> Suction temp. sensor (Th) fault
+        - 11 -> Discharge temp. sensor (Tp) fault
+        - 12 -> Solar temp. sensor(Tsolar) fault
+        - 13 -> Buffer tank low temp. sensor(Tbt2) fault
+        - 14 -> Inlet water temp. sensor(Tw_in) malfunction
+        - 15 -> Hydraulic module EEprom failure
+        - 20 -> Low pressure switch protection
+        - 21 -> High pressure switch protection
+        - 23 -> Compressor overcurrent protection
+        - 24 -> High discharge temperature protection
+        - 25 -> |Tw_out - Tw_in| value too big protection
+        - 26 -> Inverter module protection
+        - 31 -> Anti-freeze mode
+        - 33 -> High temperature protection of refrigerant outlet temp. of condenser
+        - 38 -> Tw_out - Tw_in unusual protection
+        - 39 -> Communication fault between main board PCB B and main control board of hydraulic module
+        - 40 -> Communication fault between inverter module PCB A and main control board PCB B
+        - 41 -> Refrigerant liquid temp. sensor(T2) fault
+        - 42 -> Refrigerant gas temp. sensor(T2B) fault
+        - 43 -> Three times P6(L0/L1) protection
+        - 44 -> Room temo. sensor (Ta) fault
+        - 45 -> DC fan motor fault
+        - 46 -> Voltage protection
+        - 47 -> Pressure sensor fault
+        - 48 -> Outlet water for zone 2 temp. sensor(Tw2) fault
+        - 49 -> Outlet water temp. sensor(Tw_out) fault
+        - 50 -> 3 times PP protection and Tw_out<7℃
+        - 52 -> Communication fault between hydraulic module parallel
+        - 53 -> Communication error between main board and thermostat transfer board
+        - 54 -> Inverter module board EE PROM fault
+        - 55 -> H6 display 10 times in 2 hours
+        - 57 -> Low pressure protection (Pe<0.6) occurred 3 times in 1 hour
+        - 65 -> Transducer module temperature too high protection
+        - 112 -> PED PCB fault
+        - 116 -> Low DC generatrix voltage protection
+        - 134 -> Module protection
+        - 135 -> DC generatrix low voltage protection
+        - 136 -> DC generatrix high voltage protection
+        - 138 -> MCE fault
+        - 139 -> Zero speed protection
+        - 141 -> Phase sequence fault
+        - 142 -> Speed difference > 15Hz protection between the front and the back clock
+        - 143 -> Speed difference > 15Hz protection between the real and the setting speed
+  # Fault 1 mapped to error code
+  - platform: template
+    name: "${entity_prefix} Fault 1 Error Code"
+    id: "${devicename}_fault_1_error_code"
+    lambda: |-
+      int fault_one = id(${devicename}_fault_1).state;
+
+      if (fault_one >= 0 && fault_one <= 143) {
+        return std::to_string(fault_one);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9
+  # Fault 2 mapped to error code
+  - platform: template
+    name: "${entity_prefix} Fault 2 Error Code"
+    id: "${devicename}_fault_2_error_code"
+    lambda: |-
+      int fault_two = id(${devicename}_fault_2).state;
+
+      if (fault_two >= 0 && fault_two <= 143) {
+        return std::to_string(fault_two);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9
+  # Fault 3 mapped to error code
+  - platform: template
+    name: "${entity_prefix} Fault 3 Error Code"
+    id: "${devicename}_fault_3_error_code"
+    lambda: |-
+      int fault_three = id(${devicename}_fault_3).state;
+
+      if (fault_three >= 0 && fault_three <= 143) {
+        return std::to_string(fault_three);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9

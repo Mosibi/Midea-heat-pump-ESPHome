@@ -2069,7 +2069,20 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x8000
+  # Template binary sensor which shows if the heat pump is running
+  - platform: template
+    name: "${entity_prefix} Heat pump running"
+    id: "${devicename}_heat_pump_running"
+    lambda: |-
+      int fan_speed = id(${devicename}_fan_speed).state;
 
+      if (fan_speed > 0) {
+        // Fan is running
+        return true;
+      } else {
+        // Fan is not running
+        return false;
+      }
 
 switch:
   - platform: factory_reset

@@ -37,6 +37,7 @@ web_server:
 ota:
 
 wifi:
+  power_save_mode: none
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 

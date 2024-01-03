@@ -2232,7 +2232,7 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     entity_category: config
-    min_value: 40
+    min_value: 20
     max_value: 60
     mode: slider
 

@@ -831,165 +831,24 @@ sensor:
   # Register: 230 -> Is present in this config as a 'number'
   # Register: 231 -> Is present in this config as a 'number'
   # Register: 232 -> Is present in this config as a 'number'
-  # Register: 233
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Ambient Temperature For Enabling Hydraulic Module Auxiliary Electric Heating IBH"
-    id: "${devicename}_t4_ibh_on"
-    register_type: holding
-    address: 0xe9
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 234
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
-    id: "${devicename}_dt1_ibh_on"
-    register_type: holding
-    address: 0xea
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 235
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
-    id: "${devicename}_t_ibh_delay"
-    register_type: holding
-    address: 0xeb
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 237
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Ambient Temperature Trigger For AHS"
-    id: "${devicename}_t4_ahs_on"
-    register_type: holding
-    address: 0xed
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 238
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Trigger Temperature Difference Between T1S And Current Heat for AHS"
-    id: "${devicename}_dt1_ahs_on"
-    register_type: holding
-    address: 0xee
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 240
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Delay Time for Enabling AHS"
-    id: "${devicename}_t_ahs_delay"
-    register_type: holding
-    address: 0xf0
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 241
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Water Heating Max Duration"
-    id: "${devicename}_t_dhwhp_max"
-    register_type: holding
-    address: 0xf1
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 242
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T DHWHP Restrict"
-    id: "${devicename}_t_dhwhp_restrict"
-    register_type: holding
-    address: 0xf2
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 243
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4autocmin"
-    id: "${devicename}_t4autocmin"
-    register_type: holding
-    address: 0xf3
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 244
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4autohmax"
-    id: "${devicename}_t4autohmax"
-    register_type: holding
-    address: 0xf4
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 245
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Heating Or Cooling Temperature When Holiday Mode Is Active"
-    id: "${devicename}_t1s_h_a_h"
-    register_type: holding
-    address: 0xf5
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 246
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Domestic Hot Water Temperature When Holiday Mode is Active"
-    id: "${devicename}_t5s_h_a_dhw"
-    register_type: holding
-    address: 0xf6
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 247
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} PER START Ratio"
-    id: "${devicename}_per_start_ratio"
-    register_type: holding
-    address: 0xf7
-    value_type: U_WORD
-  # Register: 248
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} TIME ADJUST"
-    id: "${devicename}_time_adjust"
-    register_type: holding
-    address: 0xf8
-    value_type: U_WORD
-  # Register: 249
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} DTbt2"
-    id: "${devicename}_dtbt2"
-    register_type: holding
-    address: 0xf9
-    value_type: U_WORD
-  # Register: 250
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} IBH1 Power"
-    id: "${devicename}_ibh1_power"
-    register_type: holding
-    address: 0xfa
-    value_type: U_WORD
-    unit_of_measurement: W
-  # Register: 251
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} IBH2 Power"
-    id: "${devicename}_ibh2_power"
-    register_type: holding
-    address: 0xfb
-    value_type: U_WORD
-    unit_of_measurement: W
-  # Register: 252
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} TBH Power"
-    id: "${devicename}_tbh_power"
-    register_type: holding
-    address: 0xfc
-    value_type: U_WORD
-    unit_of_measurement: W
+  # Register: 233 -> Is present in this config as a 'number'
+  # Register: 234 -> Is present in this config as a 'number'
+  # Register: 235 -> Is present in this config as a 'number'
+  # Register: 237 -> Is present in this config as a 'number'
+  # Register: 238 -> Is present in this config as a 'number'
+  # Register: 240 -> Is present in this config as a 'number'
+  # Register: 241 -> Is present in this config as a 'number'
+  # Register: 242 -> Is present in this config as a 'number'
+  # Register: 243 -> Is present in this config as a 'number'
+  # Register: 244 -> Is present in this config as a 'number'
+  # Register: 245 -> Is present in this config as a 'number'
+  # Register: 246 -> Is present in this config as a 'number'
+  # Register: 247 -> Is present in this config as a 'number'
+  # Register: 248 -> Is present in this config as a 'number'
+  # Register: 249 -> Is present in this config as a 'number'
+  # Register: 250 -> Is present in this config as a 'number'
+  # Register: 251 -> Is present in this config as a 'number'
+  # Register: 252 -> Is present in this config as a 'number'
   # Register: 253
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1006,93 +865,16 @@ sensor:
     register_type: holding
     address: 0xfe
     value_type: U_WORD
-  # Register: 255
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Rise Day Number"
-    id: "${devicename}_t_dryup"
-    register_type: holding
-    address: 0xff
-    value_type: U_WORD
-  # Register: 256
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Drying Day Number"
-    id: "${devicename}_t_highpeak"
-    register_type: holding
-    address: 0x100
-    value_type: U_WORD
-  # Register: 257
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Drop Day Number"
-    id: "${devicename}_t_dryd"
-    register_type: holding
-    address: 0x101
-    value_type: U_WORD
-  # Register: 258
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Highest Drying Temperature"
-    id: "${devicename}_t_drypeak"
-    register_type: holding
-    address: 0x102
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 259
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Running Time Of Floor Heating For The First Time"
-    id: "${devicename}_t_firstfh"
-    register_type: holding
-    address: 0x103
-    value_type: U_WORD
-    unit_of_measurement: hr
-  # Register: 260
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T1S Of Floor Heating For The First Time"
-    id: "${devicename}_t1s_firstfh"
-    register_type: holding
-    address: 0x104
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 261
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T1SetC1"
-    id: "${devicename}_t1setc1"
-    register_type: holding
-    address: 0x105
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 262
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T1SetC2"
-    id: "${devicename}_t1setc2"
-    register_type: holding
-    address: 0x106
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 263
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4C1"
-    id: "${devicename}_t4c1"
-    register_type: holding
-    address: 0x107
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 264
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4C2"
-    id: "${devicename}_t4c2"
-    register_type: holding
-    address: 0x108
-    value_type: S_WORD
-    unit_of_measurement: "°C"
+  # Register: 255 -> Is present in this config as a 'number'
+  # Register: 256 -> Is present in this config as a 'number'
+  # Register: 257 -> Is present in this config as a 'number'
+  # Register: 258 -> Is present in this config as a 'number'
+  # Register: 259 -> Is present in this config as a 'number'
+  # Register: 260 -> Is present in this config as a 'number'
+  # Register: 261 -> Is present in this config as a 'number'
+  # Register: 262 -> Is present in this config as a 'number'
+  # Register: 263 -> Is present in this config as a 'number'
+  # Register: 264 -> Is present in this config as a 'number'
   # Register: 265 -> Is present in this config as a 'number'
   # Register: 266 -> Is present in this config as a 'number'
   # Register: 267 -> Is present in this config as a 'number'
@@ -2361,6 +2143,329 @@ number:
     entity_category: config
     min_value: -25
     max_value: 5
+  # Register: 233
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Ambient Temperature For Enabling Hydraulic Module Auxiliary Electric Heating IBH"
+    id: "${devicename}_t4_ibh_on"
+    register_type: holding
+    address: 0xe9
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -15
+    max_value: 10
+  # Register: 234
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
+    id: "${devicename}_dt1_ibh_on"
+    register_type: holding
+    address: 0xea
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+  # Register: 235
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
+    id: "${devicename}_t_ibh_delay"
+    register_type: holding
+    address: 0xeb
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+  # Register: 237
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Ambient Temperature Trigger For AHS"
+    id: "${devicename}_t4_ahs_on"
+    register_type: holding
+    address: 0xed
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+  # Register: 238
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Trigger Temperature Difference Between T1S And Current Heat for AHS"
+    id: "${devicename}_dt1_ahs_on"
+    register_type: holding
+    address: 0xee
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+  # Register: 240
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Delay Time for Enabling AHS"
+    id: "${devicename}_t_ahs_delay"
+    register_type: holding
+    address: 0xf0
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 120
+  # Register: 241
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water Heating Max Duration"
+    id: "${devicename}_t_dhwhp_max"
+    register_type: holding
+    address: 0xf1
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 10
+    max_value: 600
+  # Register: 242
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T DHWHP Restrict"
+    id: "${devicename}_t_dhwhp_restrict"
+    register_type: holding
+    address: 0xf2
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 10
+    max_value: 600
+  # Register: 243
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4autocmin"
+    id: "${devicename}_t4autocmin"
+    register_type: holding
+    address: 0xf3
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 29
+  # Register: 244
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4autohmax"
+    id: "${devicename}_t4autohmax"
+    register_type: holding
+    address: 0xf4
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 10
+    max_value: 17
+  # Register: 245
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Heating Or Cooling Temperature When Holiday Mode Is Active"
+    id: "${devicename}_t1s_h_a_h"
+    register_type: holding
+    address: 0xf5
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 29
+  # Register: 246
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Domestic Hot Water Temperature When Holiday Mode is Active"
+    id: "${devicename}_t5s_h_a_dhw"
+    register_type: holding
+    address: 0xf6
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 25
+  # Register: 247
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} PER START Ratio"
+    id: "${devicename}_per_start_ratio"
+    register_type: holding
+    address: 0xf7
+    value_type: U_WORD
+    entity_category: config
+    min_value: 10
+    max_value: 100
+    step: 10
+  # Register: 248
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} TIME ADJUST"
+    id: "${devicename}_time_adjust"
+    register_type: holding
+    address: 0xf8
+    value_type: U_WORD
+    entity_category: config
+    min_value: 1
+    max_value: 60
+  # Register: 249
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DTbt2"
+    id: "${devicename}_dtbt2"
+    register_type: holding
+    address: 0xf9
+    value_type: U_WORD
+    entity_category: config
+    min_value: 0
+    max_value: 50
+  # Register: 250
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} IBH1 Power"
+    id: "${devicename}_ibh1_power"
+    register_type: holding
+    address: 0xfa
+    value_type: U_WORD
+    unit_of_measurement: W
+    entity_category: config
+    min_value: 0
+    max_value: 200
+  # Register: 251
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} IBH2 Power"
+    id: "${devicename}_ibh2_power"
+    register_type: holding
+    address: 0xfb
+    value_type: U_WORD
+    unit_of_measurement: W
+    entity_category: config
+    min_value: 0
+    max_value: 200
+  # Register: 252
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} TBH Power"
+    id: "${devicename}_tbh_power"
+    register_type: holding
+    address: 0xfc
+    value_type: U_WORD
+    unit_of_measurement: W
+    entity_category: config
+    min_value: 0
+    max_value: 200
+  # Register: 255
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Rise Day Number"
+    id: "${devicename}_t_dryup"
+    register_type: holding
+    address: 0xff
+    value_type: U_WORD
+    entity_category: config
+    min_value: 4
+    max_value: 15
+  # Register: 256
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Drying Day Number"
+    id: "${devicename}_t_highpeak"
+    register_type: holding
+    address: 0x100
+    value_type: U_WORD
+    entity_category: config
+    min_value: 3
+    max_value: 7
+  # Register: 257
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Drop Day Number"
+    id: "${devicename}_t_dryd"
+    register_type: holding
+    address: 0x101
+    value_type: U_WORD
+    entity_category: config
+    min_value: 4
+    max_value: 15
+  # Register: 258
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Highest Drying Temperature"
+    id: "${devicename}_t_drypeak"
+    register_type: holding
+    address: 0x102
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 30
+    max_value: 55
+  # Register: 259
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Running Time Of Floor Heating For The First Time"
+    id: "${devicename}_t_firstfh"
+    register_type: holding
+    address: 0x103
+    value_type: U_WORD
+    unit_of_measurement: hr
+    entity_category: config
+    min_value: 48
+    max_value: 96
+  # Register: 260
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1S Of Floor Heating For The First Time"
+    id: "${devicename}_t1s_firstfh"
+    register_type: holding
+    address: 0x104
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 35
+  # Register: 261
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetC1"
+    id: "${devicename}_t1setc1"
+    register_type: holding
+    address: 0x105
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 25
+  # Register: 262
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetC2"
+    id: "${devicename}_t1setc2"
+    register_type: holding
+    address: 0x106
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 25
+  # Register: 263
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4C1"
+    id: "${devicename}_t4c1"
+    register_type: holding
+    address: 0x107
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 46
+  # Register: 264
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4C2"
+    id: "${devicename}_t4c2"
+    register_type: holding
+    address: 0x108
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 46
   # Register: 265
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2372,7 +2477,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 25
-    max_value: 60
+    max_value: 65
   # Register: 266
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2384,7 +2489,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 25
-    max_value: 60
+    max_value: 65
   # Register: 267
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2408,8 +2513,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: -25
-    max_value: 35
-
+    max_value: 30
   # # Register: 270 (Low)
   # - platform: modbus_controller
   #   modbus_controller_id: "${devicename}"

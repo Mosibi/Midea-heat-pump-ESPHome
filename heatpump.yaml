@@ -97,7 +97,7 @@ sensor:
     id: "${devicename}_dhw_tank_temperature_t5s"
     register_type: holding
     address: 0x4
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 6 -> Is present in this config as a 'number'
   # Register: 7
@@ -177,7 +177,7 @@ sensor:
     id: "${devicename}_water_inlet_temperature"
     register_type: holding
     address: 0x68
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 105
   - platform: modbus_controller
@@ -186,7 +186,7 @@ sensor:
     id: "${devicename}_water_outlet_temperature"
     register_type: holding
     address: 0x69
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 106
   - platform: modbus_controller
@@ -213,7 +213,7 @@ sensor:
     id: "${devicename}_discharge_temperature"
     register_type: holding
     address: 0x6c
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 109
   - platform: modbus_controller
@@ -231,7 +231,7 @@ sensor:
     id: "${devicename}_total_water_outlet_temperature_t1"
     register_type: holding
     address: 0x6e
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 111
   - platform: modbus_controller
@@ -240,7 +240,7 @@ sensor:
     id: "${devicename}_system_total_water_outlet_temperature_t1b"
     register_type: holding
     address: 0x6f
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 112
   - platform: modbus_controller
@@ -249,7 +249,7 @@ sensor:
     id: "${devicename}_refrigerant_liquid_side_temperature_t2"
     register_type: holding
     address: 0x70
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 113
   - platform: modbus_controller
@@ -258,7 +258,7 @@ sensor:
     id: "${devicename}_refrigerant_gas_side_temperature_t2b"
     register_type: holding
     address: 0x71
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 114
   - platform: modbus_controller
@@ -267,7 +267,7 @@ sensor:
     id: "${devicename}_room_temperature_ta"
     register_type: holding
     address: 0x72
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 115
   - platform: modbus_controller
@@ -277,7 +277,7 @@ sensor:
     register_type: holding
     address: 0x73
     unit_of_measurement: "°C"
-    value_type: U_WORD
+    value_type: S_WORD
     icon: mdi:thermometer-water
   # Register: 116
   - platform: modbus_controller
@@ -439,7 +439,7 @@ sensor:
     register_type: holding
     address: 0x87
     unit_of_measurement: "°C"
-    value_type: U_WORD
+    value_type: S_WORD
   # Register: 136
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -447,7 +447,7 @@ sensor:
     id: "${devicename}_climate_curve_t1s_calculated_value_1"
     register_type: holding
     address: 0x88
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 137
   - platform: modbus_controller
@@ -456,7 +456,8 @@ sensor:
     id: "${devicename}_climate_curve_t1s_calculated_value_2"
     register_type: holding
     address: 0x89
-    value_type: U_WORD
+    value_type: S_WORD
+    unit_of_measurement: "°C"
   # Register: 138
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -554,7 +555,7 @@ sensor:
     id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_1"
     register_type: holding
     address: 0xc9
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
   # Register: 201 (High)
@@ -564,7 +565,7 @@ sensor:
     id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_2"
     register_type: holding
     address: 0xc9
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
   # Register: 202 (Low)
@@ -574,7 +575,7 @@ sensor:
     id: "${devicename}_temperature_lower_limit_of_t1s_cooling_zone_1"
     register_type: holding
     address: 0xca
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
   # Register: 202 (High)
@@ -584,7 +585,7 @@ sensor:
     id: "${devicename}_temperature_lower_limit_of_t1s_cooling_zone_2"
     register_type: holding
     address: 0xca
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
   # Register: 203 (Low)
@@ -594,7 +595,7 @@ sensor:
     id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_1"
     register_type: holding
     address: 0xcb
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
   # Register: 203 (High)
@@ -604,7 +605,7 @@ sensor:
     id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_2"
     register_type: holding
     address: 0xcb
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
   # Register: 204 (Low)
@@ -614,7 +615,7 @@ sensor:
     id: "${devicename}_temperature_lower_limit_of_t1s_heating_zone_1"
     register_type: holding
     address: 0xcc
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
   # Register: 204 (High)
@@ -624,7 +625,7 @@ sensor:
     id: "${devicename}_temperature_lower_limit_of_t1s_heating_zone_2"
     register_type: holding
     address: 0xcc
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
   # Register: 205
@@ -634,7 +635,7 @@ sensor:
     id: "${devicename}_temperature_upper_limit_of_ts_setting"
     register_type: holding
     address: 0xcd
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 206
   - platform: modbus_controller
@@ -643,7 +644,7 @@ sensor:
     id: "${devicename}_temperature_lower_limit_of_ts_setting"
     register_type: holding
     address: 0xce
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 207
   - platform: modbus_controller
@@ -652,7 +653,7 @@ sensor:
     id: "${devicename}_temperature_upper_limit_of_water_heating"
     register_type: holding
     address: 0xcf
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 208
   - platform: modbus_controller
@@ -661,7 +662,7 @@ sensor:
     id: "${devicename}_temperature_lower_limit_of_water_heating"
     register_type: holding
     address: 0xd0
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 209
   - platform: modbus_controller
@@ -679,7 +680,7 @@ sensor:
     id: "${devicename}_dt5_on"
     register_type: holding
     address: 0xd4
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 213
   - platform: modbus_controller
@@ -688,7 +689,7 @@ sensor:
     id: "${devicename}_dt1s5"
     register_type: holding
     address: 0xd5
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 214
   - platform: modbus_controller
@@ -703,10 +704,10 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4 DHW max"
-    id: "${devicename}_t4dhwmax"
+    id: "${devicename}_t4_dhw_max"
     register_type: holding
     address: 0xd7
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 216
   - platform: modbus_controller
@@ -727,13 +728,14 @@ sensor:
     value_type: U_WORD
     unit_of_measurement: min
   # Register: 218
+  # Also known as dT5S TBH Off (dt5s_tbh_off)
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dT5S TBH Off"
+    name: "${entity_prefix} dT5 TBH Off"
     id: "${devicename}_dt5_tbh_off"
     register_type: holding
     address: 0xda
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 219
   - platform: modbus_controller
@@ -742,7 +744,7 @@ sensor:
     id: "${devicename}_t4_tbh_on"
     register_type: holding
     address: 0xdb
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 220
   - platform: modbus_controller
@@ -751,7 +753,7 @@ sensor:
     id: "${devicename}_t5s_di"
     register_type: holding
     address: 0xdc
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 221
   - platform: modbus_controller
@@ -787,7 +789,7 @@ sensor:
     id: "${devicename}_dt1sc"
     register_type: holding
     address: 0xe0
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 225
   - platform: modbus_controller
@@ -796,7 +798,7 @@ sensor:
     id: "${devicename}_dtsc"
     register_type: holding
     address: 0xe1
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 226
   - platform: modbus_controller
@@ -805,7 +807,7 @@ sensor:
     id: "${devicename}_t4cmax"
     register_type: holding
     address: 0xe2
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 227
   - platform: modbus_controller
@@ -814,7 +816,7 @@ sensor:
     id: "${devicename}_t4cmin"
     register_type: holding
     address: 0xe3
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 228
   - platform: modbus_controller
@@ -845,7 +847,7 @@ sensor:
     id: "${devicename}_dt1_ibh_on"
     register_type: holding
     address: 0xea
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 235
   - platform: modbus_controller
@@ -872,7 +874,7 @@ sensor:
     id: "${devicename}_dt1_ahs_on"
     register_type: holding
     address: 0xee
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 240
   - platform: modbus_controller
@@ -908,7 +910,7 @@ sensor:
     id: "${devicename}_t4autocmin"
     register_type: holding
     address: 0xf3
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 244
   - platform: modbus_controller
@@ -917,7 +919,7 @@ sensor:
     id: "${devicename}_t4autohmax"
     register_type: holding
     address: 0xf4
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 245
   - platform: modbus_controller
@@ -926,7 +928,7 @@ sensor:
     id: "${devicename}_t1s_h_a_h"
     register_type: holding
     address: 0xf5
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 246
   - platform: modbus_controller
@@ -935,7 +937,7 @@ sensor:
     id: "${devicename}_t5s_h_a_dhw"
     register_type: holding
     address: 0xf6
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 247
   - platform: modbus_controller
@@ -999,7 +1001,7 @@ sensor:
   # Register: 254
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Comfort Parameter  Reserved 4"
+    name: "${entity_prefix} Comfort Parameter Reserved 4"
     id: "${devicename}_comfort_parameter_4"
     register_type: holding
     address: 0xfe
@@ -1035,7 +1037,7 @@ sensor:
     id: "${devicename}_t_drypeak"
     register_type: holding
     address: 0x102
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 259
   - platform: modbus_controller
@@ -1053,7 +1055,7 @@ sensor:
     id: "${devicename}_t1s_firstfh"
     register_type: holding
     address: 0x104
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 261
   - platform: modbus_controller
@@ -1062,7 +1064,7 @@ sensor:
     id: "${devicename}_t1setc1"
     register_type: holding
     address: 0x105
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 262
   - platform: modbus_controller
@@ -1071,7 +1073,7 @@ sensor:
     id: "${devicename}_t1setc2"
     register_type: holding
     address: 0x106
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 263
   - platform: modbus_controller
@@ -2078,10 +2080,10 @@ binary_sensor:
       int fan_speed = id(${devicename}_fan_speed).state;
 
       if (fan_speed > 0) {
-        // Fan is running
+        // Fan is running, heat pump is on
         return true;
       } else {
-        // Fan is not running
+        // Fan is not running, heat pump is off
         return false;
       }
 
@@ -2140,7 +2142,6 @@ switch:
       ${devicename}->queue_command(set_payload_command);
 
       return {};
-
 
 number:
   # Register: 2 (Zone 1, Low)

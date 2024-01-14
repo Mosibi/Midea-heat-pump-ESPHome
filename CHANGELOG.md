@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Documented default values for registers
 - Entity `heat_pump_running` is changed to check is the fan speed is above 0, the compressor frequency is above 0, or the water pump in the external unit is on. Previously only the fan speed was taken into account.
 - The following registers are changed from type `sensor` to `number` to make them configurable:
   - register: 205, Temperature Upper Limit Of TS Setting

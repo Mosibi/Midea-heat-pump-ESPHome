@@ -548,7 +548,7 @@ sensor:
     address: 0xc8
     value_type: U_WORD
     bitmask: 0x0F00
-  # Register: 201 (Low)
+  # Register: 201 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Upper Limit Of T1S Cooling Zone 1"
@@ -558,7 +558,7 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
-  # Register: 201 (High)
+  # Register: 201 (High), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Upper Limit Of T1S Cooling Zone 2"
@@ -568,7 +568,7 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
-  # Register: 202 (Low)
+  # Register: 202 (Low), default: 5, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Lower Limit Of T1S Cooling Zone 1"
@@ -578,7 +578,7 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
-  # Register: 202 (High)
+  # Register: 202 (High), default: 5, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Lower Limit Of T1S Cooling Zone 2"
@@ -588,7 +588,7 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
-  # Register: 203 (Low)
+  # Register: 203 (Low), default: 55, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Upper Limit Of T1S Heating Zone 1"
@@ -598,7 +598,7 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
-  # Register: 203 (High)
+  # Register: 203 (High), default: 55, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Upper Limit Of T1S Heating Zone 2"
@@ -608,7 +608,7 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
-  # Register: 204 (Low)
+  # Register: 204 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Lower Limit Of T1S Heating Zone 1"
@@ -618,7 +618,7 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0x00FF
-  # Register: 204 (High)
+  # Register: 204 (High), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Lower Limit Of T1S Heating Zone 2"
@@ -702,7 +702,7 @@ sensor:
   # Register: 266 -> Is present in this config as a 'number'
   # Register: 267 -> Is present in this config as a 'number'
   # Register: 268 -> Is present in this config as a 'number'
-  # Register: 269
+  # Register: 269, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Power Input Limitation Type"
@@ -710,7 +710,7 @@ sensor:
     register_type: holding
     address: 0x10d
     value_type: U_WORD
-  # Register: 270 (Low)
+  # Register: 270 (Low), default: 0.5, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} t_T4 FRESH_H"
@@ -723,7 +723,7 @@ sensor:
     bitmask: 0x00FF
     filters:
       - multiply: 0.5
-  # Register: 270 (High)
+  # Register: 270 (High), default: 0.5, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} t_T4 FRESH_C"
@@ -736,7 +736,7 @@ sensor:
     bitmask: 0xFF00
     filters:
       - multiply: 0.5
-  # Register: 271
+  # Register: 271, default: 2, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Built-in Circulating Pump Delay"
@@ -747,7 +747,7 @@ sensor:
     unit_of_measurement: hr
     filters:
       - multiply: 0.5
-  # Register: 272 (Low, first 4 bits)
+  # Register: 272 (Low, first 4 bits), default: 0, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Zone 1 End Heating Mode Emission Type"
@@ -756,7 +756,7 @@ sensor:
     address: 0x110
     value_type: U_WORD
     bitmask: 0xF000
-  # Register: 272 (Low, second 4 bits)
+  # Register: 272 (Low, second 4 bits), default: 0, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Zone 2 End Heating Mode Emission Type"
@@ -765,7 +765,7 @@ sensor:
     address: 0x110
     value_type: U_WORD
     bitmask: 0x0F00
-  # Register: 272 (High, first 4 bits)
+  # Register: 272 (High, first 4 bits), default: 2, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Zone 1 End Cooling Mode Emission Type"
@@ -774,7 +774,7 @@ sensor:
     address: 0x110
     value_type: U_WORD
     bitmask: 0x00F0
-  # Register: 272 (High, second 4 bits)
+  # Register: 272 (High, second 4 bits), default: 2, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Zone 2 End Cooling Mode Emission Type"
@@ -1416,7 +1416,7 @@ binary_sensor:
     address: 0x8e
     bitmask: 0x8000
 
-  # Register: 210
+  # Register: 210, default: true, TODO: verify default
   # Bit: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1425,7 +1425,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x1
-  # Bit: 1
+  # Bit: 1, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Dual Room Thermostat Supported"
@@ -1433,7 +1433,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x2
-  # Bit: 2
+  # Bit: 2, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Room Thermostat"
@@ -1441,7 +1441,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x4
-  # Bit: 3
+  # Bit: 3, default: true, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Supports Room Thermostat"
@@ -1449,7 +1449,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x8
-  # Bit: 4
+  # Bit: 4, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Supports Room Temperature Sensor Ta"
@@ -1457,7 +1457,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x10
-  # Bit: 5
+  # Bit: 5, default: false, TODO: verify default
   # Midea: PUMPI silent mode, 1; valid, 0: invalid
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1466,7 +1466,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x20
-  # Bit: 6
+  # Bit: 6, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 T1S Heating High Low Temperature Settings"
@@ -1474,7 +1474,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x40
-  # Bit: 7
+  # Bit: 7, default: true, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Enable Heating"
@@ -1482,7 +1482,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x80
-  # Bit: 8
+  # Bit: 8, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 T1s Cooling High Low Temperature Settings"
@@ -1490,7 +1490,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x100
-  # Bit: 9
+  # Bit: 9, default: true, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Enable Cooling"
@@ -1498,7 +1498,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x200
-  # Bit: 10
+  # Bit: 10, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 DHW Pump Supports Pipe Disinfect"
@@ -1506,7 +1506,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x400
-  # Bit: 11
+  # Bit: 11, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Reserved BIT 11"
@@ -1514,7 +1514,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x800
-  # Bit: 12
+  # Bit: 12, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 DHW Pump Supported"
@@ -1522,7 +1522,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x1000
-  # Bit: 13
+  # Bit: 13, default: true, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Supports Disinfection"
@@ -1530,7 +1530,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x2000
-  # Bit: 14
+  # Bit: 14, default: true, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Supports Water Tank Electric Heater TBH"
@@ -1538,7 +1538,7 @@ binary_sensor:
     register_type: holding
     address: 0xd2
     bitmask: 0x4000
-  # Bit: 15
+  # Bit: 15, default: true, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 1 Enable Water Heating"
@@ -1548,7 +1548,7 @@ binary_sensor:
     bitmask: 0x8000
 
   # Register: 211
-  # Bit: 0
+  # Bit: 0, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 IBH AHS Installation Position"
@@ -1556,7 +1556,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x1
-  # Bit: 1
+  # Bit: 1, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Tbt Sensor Enable"
@@ -1564,7 +1564,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x2
-  # Bit: 2
+  # Bit: 2, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Ta Sensor Position"
@@ -1572,7 +1572,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x4
-  # Bit: 3
+  # Bit: 3, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Double Zone Setting Is Valid"
@@ -1580,7 +1580,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x8
-  # Bit: 4
+  # Bit: 4, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Setting The High Low Temperature Of Heating Mode T1S"
@@ -1588,7 +1588,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x10
-  # Bit: 5
+  # Bit: 5, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Setting The High Low Temperature Of Cooling Mode T1S"
@@ -1596,7 +1596,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x20
-  # Bit: 6
+  # Bit: 6, default: false, TODO: verify default
   # Midea: T1B sensor enable
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1605,7 +1605,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x40
-  # Bit: 7
+  # Bit: 7, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Smart Grid"
@@ -1613,7 +1613,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x80
-  # Bit: 8
+  # Bit: 8, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Port Definition"
@@ -1621,7 +1621,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x100
-  # Bit: 9
+  # Bit: 9, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Solar Energy Kit Enable"
@@ -1629,7 +1629,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x200
-  # Bit: 10
+  # Bit: 10, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Solar Energy Input Port"
@@ -1637,7 +1637,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x400
-  # Bit: 11
+  # Bit: 11, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Piping Length Selection"
@@ -1645,7 +1645,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x800
-  # Bit: 12
+  # Bit: 12, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Tbt2 Sensor Is Valid"
@@ -1653,7 +1653,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x1000
-  # Bit: 13
+  # Bit: 13, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Enable Temperature Collection Kit"
@@ -1661,7 +1661,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x2000
-  # Bit: 14
+  # Bit: 14, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 M1M2 Is Used For AHS Control"
@@ -1669,7 +1669,7 @@ binary_sensor:
     register_type: holding
     address: 0xd3
     bitmask: 0x4000
-  # Bit: 15
+  # Bit: 15, default: false, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Parameter Setting 2 Reserved BIT 15"
@@ -1960,7 +1960,7 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
-  # Register: 209, default 5
+  # Register: 209, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} DHW Pump Return Running Time"
@@ -1972,7 +1972,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-  # Register: 212, default 5
+  # Register: 212, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} dT5_On"
@@ -1984,7 +1984,7 @@ number:
     entity_category: config
     min_value: 2
     max_value: 10
-  # Register: 213, default 10
+  # Register: 213, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} dT1S5"
@@ -1996,7 +1996,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 40
-  # Register: 214, default 5
+  # Register: 214, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T Interval DHW"
@@ -2008,7 +2008,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 30
-  # Register: 215, default 43
+  # Register: 215, default: 43
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4 DHW max"
@@ -2020,7 +2020,7 @@ number:
     entity_category: config
     min_value: 35
     max_value: 43
-  # Register: 216, default -10
+  # Register: 216, default: -10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4 DHW min"
@@ -2032,7 +2032,7 @@ number:
     entity_category: config
     min_value: -25
     max_value: 5
-  # Register: 217, default 30
+  # Register: 217, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} t TBH Delay"
@@ -2045,7 +2045,7 @@ number:
     min_value: 0
     max_value: 240
     step: 5
-  # Register: 218, default 5
+  # Register: 218, default: 5
   # Also known as dT5S TBH Off (dt5s_tbh_off)
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2058,7 +2058,7 @@ number:
     entity_category: config
     min_value: 0
     max_value: 10
-  # Register: 219, default 5
+  # Register: 219, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4 TBH On"
@@ -2070,7 +2070,7 @@ number:
     entity_category: config
     min_value: -5
     max_value: 20
-  # Register: 220, default 65
+  # Register: 220, default: 65
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature For Disinfection Operation"
@@ -2082,7 +2082,7 @@ number:
     entity_category: config
     min_value: 60
     max_value: 70
-  # Register: 221, default 210
+  # Register: 221, default: 210
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Maximum Disinfection Duration"
@@ -2094,7 +2094,7 @@ number:
     entity_category: config
     min_value: 90
     max_value: 300
-  # Register: 222, default 15
+  # Register: 222, default: 15
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Disinfection High Temperature Duration"
@@ -2106,7 +2106,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 60
-  # Register: 223, default 5
+  # Register: 223, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Time Interval Of Compressor Startup In Cooling mode"
@@ -2118,7 +2118,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 30
-  # Register: 224, default 5
+  # Register: 224, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} dT1SC"
@@ -2130,7 +2130,7 @@ number:
     entity_category: config
     min_value: 2
     max_value: 10
-  # Register: 225, default 2
+  # Register: 225, default: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} dTSC"
@@ -2142,7 +2142,7 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-  # Register: 226, default 43
+  # Register: 226, default: 43
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4cmax"
@@ -2154,7 +2154,7 @@ number:
     entity_category: config
     min_value: 35
     max_value: 46
-  # Register: 227, default 10
+  # Register: 227, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4cmin"
@@ -2166,7 +2166,7 @@ number:
     entity_category: config
     min_value: -5
     max_value: 25
-  # Register: 228, default 5
+  # Register: 228, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Time Interval Of Compressor Startup In Heating mode"
@@ -2178,7 +2178,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 60
-  # Register: 229
+  # Register: 229, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} dT1SH"
@@ -2190,7 +2190,7 @@ number:
     entity_category: config
     min_value: 2
     max_value: 10
-  # Register: 230
+  # Register: 230, default: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} dTSH"
@@ -2202,7 +2202,7 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-  # Register: 231
+  # Register: 231, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4hmax"
@@ -2214,7 +2214,7 @@ number:
     entity_category: config
     min_value: 20
     max_value: 35
-  # Register: 232
+  # Register: 232, default: -15
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4hmin"
@@ -2226,7 +2226,7 @@ number:
     entity_category: config
     min_value: -25
     max_value: 5
-  # Register: 233
+  # Register: 233, default: -5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Ambient Temperature For Enabling Hydraulic Module Auxiliary Electric Heating IBH"
@@ -2238,7 +2238,7 @@ number:
     entity_category: config
     min_value: -15
     max_value: 10
-  # Register: 234
+  # Register: 234, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
@@ -2248,7 +2248,7 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
-  # Register: 235
+  # Register: 235, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
@@ -2258,7 +2258,7 @@ number:
     value_type: U_WORD
     unit_of_measurement: min
     entity_category: config
-  # Register: 237
+  # Register: 237, default: 10, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Ambient Temperature Trigger For AHS"
@@ -2268,7 +2268,7 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
-  # Register: 238
+  # Register: 238, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Trigger Temperature Difference Between T1S And Current Heat for AHS"
@@ -2278,7 +2278,7 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
-  # Register: 240
+  # Register: 240, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Delay Time for Enabling AHS"
@@ -2290,7 +2290,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-  # Register: 241
+  # Register: 241, default: 120
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Water Heating Max Duration"
@@ -2302,7 +2302,7 @@ number:
     entity_category: config
     min_value: 10
     max_value: 600
-  # Register: 242
+  # Register: 242, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T DHWHP Restrict"
@@ -2314,7 +2314,7 @@ number:
     entity_category: config
     min_value: 10
     max_value: 600
-  # Register: 243
+  # Register: 243, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4autocmin"
@@ -2326,7 +2326,7 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-  # Register: 244
+  # Register: 244, default: 17
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4autohmax"
@@ -2338,7 +2338,7 @@ number:
     entity_category: config
     min_value: 10
     max_value: 17
-  # Register: 245
+  # Register: 245, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Heating Or Cooling Temperature When Holiday Mode Is Active"
@@ -2350,7 +2350,7 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-  # Register: 246
+  # Register: 246, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Domestic Hot Water Temperature When Holiday Mode is Active"
@@ -2362,7 +2362,7 @@ number:
     entity_category: config
     min_value: 20
     max_value: 25
-  # Register: 247
+  # Register: 247, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} PER START Ratio"
@@ -2374,7 +2374,7 @@ number:
     min_value: 10
     max_value: 100
     step: 10
-  # Register: 248
+  # Register: 248, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} TIME ADJUST"
@@ -2385,7 +2385,7 @@ number:
     entity_category: config
     min_value: 1
     max_value: 60
-  # Register: 249
+  # Register: 249, default: 15
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} DTbt2"
@@ -2396,7 +2396,7 @@ number:
     entity_category: config
     min_value: 0
     max_value: 50
-  # Register: 250
+  # Register: 250, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} IBH1 Power"
@@ -2408,7 +2408,7 @@ number:
     entity_category: config
     min_value: 0
     max_value: 200
-  # Register: 251
+  # Register: 251, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} IBH2 Power"
@@ -2420,7 +2420,7 @@ number:
     entity_category: config
     min_value: 0
     max_value: 200
-  # Register: 252
+  # Register: 252, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} TBH Power"
@@ -2432,7 +2432,7 @@ number:
     entity_category: config
     min_value: 0
     max_value: 200
-  # Register: 255
+  # Register: 255, default: 8
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Rise Day Number"
@@ -2443,7 +2443,7 @@ number:
     entity_category: config
     min_value: 4
     max_value: 15
-  # Register: 256
+  # Register: 256, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Drying Day Number"
@@ -2454,7 +2454,7 @@ number:
     entity_category: config
     min_value: 3
     max_value: 7
-  # Register: 257
+  # Register: 257, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Drop Day Number"
@@ -2465,7 +2465,7 @@ number:
     entity_category: config
     min_value: 4
     max_value: 15
-  # Register: 258
+  # Register: 258, default: 45
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Highest Drying Temperature"
@@ -2477,7 +2477,7 @@ number:
     entity_category: config
     min_value: 30
     max_value: 55
-  # Register: 259
+  # Register: 259, default: 72
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Running Time Of Floor Heating For The First Time"
@@ -2489,7 +2489,7 @@ number:
     entity_category: config
     min_value: 48
     max_value: 96
-  # Register: 260
+  # Register: 260, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T1S Of Floor Heating For The First Time"
@@ -2501,7 +2501,7 @@ number:
     entity_category: config
     min_value: 25
     max_value: 35
-  # Register: 261
+  # Register: 261, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T1SetC1"
@@ -2513,7 +2513,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 25
-  # Register: 262
+  # Register: 262, default: 16
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T1SetC2"
@@ -2525,7 +2525,7 @@ number:
     entity_category: config
     min_value: 5
     max_value: 25
-  # Register: 263
+  # Register: 263, default: 35
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4C1"
@@ -2537,7 +2537,7 @@ number:
     entity_category: config
     min_value: -5
     max_value: 46
-  # Register: 264
+  # Register: 264, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4C2"
@@ -2549,7 +2549,7 @@ number:
     entity_category: config
     min_value: -5
     max_value: 46
-  # Register: 265
+  # Register: 265, default: 35
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T1SetH1"
@@ -2561,7 +2561,7 @@ number:
     entity_category: config
     min_value: 25
     max_value: 65
-  # Register: 266
+  # Register: 266, default: 28
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T1SetH2"
@@ -2573,7 +2573,7 @@ number:
     entity_category: config
     min_value: 25
     max_value: 65
-  # Register: 267
+  # Register: 267, default: -5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4H1"
@@ -2585,7 +2585,7 @@ number:
     entity_category: config
     min_value: -25
     max_value: 30
-  # Register: 268
+  # Register: 268, default: 7
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} T4H2"
@@ -2597,34 +2597,6 @@ number:
     entity_category: config
     min_value: -25
     max_value: 30
-  # # Register: 270 (Low)
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "${entity_prefix} t_T4 FRESH_H"
-  #   id: "${devicename}_t_t4_fresh_h"
-  #   register_type: holding
-  #   address: 0x10e
-  #   value_type: U_WORD
-  #   unit_of_measurement: hr
-  #   bitmask: 0x00FF
-  #   entity_category: config
-  #   min_value: 0.5
-  #   max_value: 6
-  #   step: 0.5
-  # # Register: 270 (High)
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "${entity_prefix} t_T4 FRESH_C"
-  #   id: "${devicename}_t_t4_fresh_c"
-  #   register_type: holding
-  #   address: 0x10e
-  #   value_type: U_WORD
-  #   unit_of_measurement: hr
-  #   bitmask: 0xFF00
-  #   entity_category: config
-  #   min_value: 0.5
-  #   max_value: 6
-  #   step: 0.5
 
 text_sensor:
   - platform: version

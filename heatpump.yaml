@@ -628,205 +628,28 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
-  # Register: 205
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Upper Limit Of TS Setting"
-    id: "${devicename}_temperature_upper_limit_of_ts_setting"
-    register_type: holding
-    address: 0xcd
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 206
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Lower Limit Of TS Setting"
-    id: "${devicename}_temperature_lower_limit_of_ts_setting"
-    register_type: holding
-    address: 0xce
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 207
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Upper Limit Of water Heating"
-    id: "${devicename}_temperature_upper_limit_of_water_heating"
-    register_type: holding
-    address: 0xcf
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 208
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Lower Limit Of Water Heating"
-    id: "${devicename}_temperature_lower_limit_of_water_heating"
-    register_type: holding
-    address: 0xd0
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 209
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} DHW Pump Return Running Time"
-    id: "${devicename}_dhw_pump_return_running_time"
-    register_type: holding
-    address: 0xd1
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 212
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dT5_On"
-    id: "${devicename}_dt5_on"
-    register_type: holding
-    address: 0xd4
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 213
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dT1S5"
-    id: "${devicename}_dt1s5"
-    register_type: holding
-    address: 0xd5
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 214
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T Interval DHW"
-    id: "${devicename}_t_interval_dhw"
-    register_type: holding
-    address: 0xd6
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 215
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4 DHW max"
-    id: "${devicename}_t4_dhw_max"
-    register_type: holding
-    address: 0xd7
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 216
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4 DHW min"
-    id: "${devicename}_t4dhwmin"
-    register_type: holding
-    address: 0xd8
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 217
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} t TBH Delay"
-    id: "${devicename}_t_tbh_delay"
-    register_type: holding
-    address: 0xd9
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 218
-  # Also known as dT5S TBH Off (dt5s_tbh_off)
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dT5 TBH Off"
-    id: "${devicename}_dt5_tbh_off"
-    register_type: holding
-    address: 0xda
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 219
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4 TBH On"
-    id: "${devicename}_t4_tbh_on"
-    register_type: holding
-    address: 0xdb
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 220
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature For Disinfection Operation"
-    id: "${devicename}_t5s_di"
-    register_type: holding
-    address: 0xdc
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 221
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Maximum Disinfection Duration"
-    id: "${devicename}_t_di_max"
-    register_type: holding
-    address: 0xdd
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 222
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Disinfection High Temperature Duration"
-    id: "${devicename}_t_di_hightemp"
-    register_type: holding
-    address: 0xde
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 223
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Time Interval Of Compressor Startup In Cooling mode"
-    id: "${devicename}_t_interval_c"
-    register_type: holding
-    address: 0xdf
-    value_type: U_WORD
-    unit_of_measurement: min
-  # Register: 224
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dT1SC"
-    id: "${devicename}_dt1sc"
-    register_type: holding
-    address: 0xe0
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 225
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} dTSC"
-    id: "${devicename}_dtsc"
-    register_type: holding
-    address: 0xe1
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 226
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4cmax"
-    id: "${devicename}_t4cmax"
-    register_type: holding
-    address: 0xe2
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 227
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} T4cmin"
-    id: "${devicename}_t4cmin"
-    register_type: holding
-    address: 0xe3
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-  # Register: 228
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Time Interval Of Compressor Startup In Heating mode"
-    id: "${devicename}_t_interval_h"
-    register_type: holding
-    address: 0xe4
-    value_type: U_WORD
-    unit_of_measurement: min
+  # Register: 205 -> Is present in this config as a 'number'
+  # Register: 206 -> Is present in this config as a 'number'
+  # Register: 207 -> Is present in this config as a 'number'
+  # Register: 208 -> Is present in this config as a 'number'
+  # Register: 209 -> Is present in this config as a 'number'
+  # Register: 212 -> Is present in this config as a 'number'
+  # Register: 213 -> Is present in this config as a 'number'
+  # Register: 214 -> Is present in this config as a 'number'
+  # Register: 215 -> Is present in this config as a 'number'
+  # Register: 216 -> Is present in this config as a 'number'
+  # Register: 217 -> Is present in this config as a 'number'
+  # Register: 218 -> Is present in this config as a 'number'
+  # Register: 219 -> Is present in this config as a 'number'
+  # Register: 220 -> Is present in this config as a 'number'
+  # Register: 221 -> Is present in this config as a 'number'
+  # Register: 222 -> Is present in this config as a 'number'
+  # Register: 223 -> Is present in this config as a 'number'
+  # Register: 224 -> Is present in this config as a 'number'
+  # Register: 225 -> Is present in this config as a 'number'
+  # Register: 226 -> Is present in this config as a 'number'
+  # Register: 227 -> Is present in this config as a 'number'
+  # Register: 228 -> Is present in this config as a 'number'
   # Register: 229 -> Is present in this config as a 'number'
   # Register: 230 -> Is present in this config as a 'number'
   # Register: 231 -> Is present in this config as a 'number'
@@ -2097,6 +1920,264 @@ number:
 
       return {};
 
+  # Register: 205, default: 60, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of TS Setting"
+    id: "${devicename}_temperature_upper_limit_of_ts_setting"
+    register_type: holding
+    address: 0xcd
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+  # Register: 206, default: 34, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of TS Setting"
+    id: "${devicename}_temperature_lower_limit_of_ts_setting"
+    register_type: holding
+    address: 0xce
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+  # Register: 207, default: 60, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of water Heating"
+    id: "${devicename}_temperature_upper_limit_of_water_heating"
+    register_type: holding
+    address: 0xcf
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+  # Register: 208, default: 20, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of Water Heating"
+    id: "${devicename}_temperature_lower_limit_of_water_heating"
+    register_type: holding
+    address: 0xd0
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+  # Register: 209, default 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DHW Pump Return Running Time"
+    id: "${devicename}_dhw_pump_return_running_time"
+    register_type: holding
+    address: 0xd1
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 120
+  # Register: 212, default 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT5_On"
+    id: "${devicename}_dt5_on"
+    register_type: holding
+    address: 0xd4
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 2
+    max_value: 10
+  # Register: 213, default 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT1S5"
+    id: "${devicename}_dt1s5"
+    register_type: holding
+    address: 0xd5
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 40
+  # Register: 214, default 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T Interval DHW"
+    id: "${devicename}_t_interval_dhw"
+    register_type: holding
+    address: 0xd6
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 30
+  # Register: 215, default 43
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4 DHW max"
+    id: "${devicename}_t4_dhw_max"
+    register_type: holding
+    address: 0xd7
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 35
+    max_value: 43
+  # Register: 216, default -10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4 DHW min"
+    id: "${devicename}_t4dhwmin"
+    register_type: holding
+    address: 0xd8
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 5
+  # Register: 217, default 30
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} t TBH Delay"
+    id: "${devicename}_t_tbh_delay"
+    register_type: holding
+    address: 0xd9
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 0
+    max_value: 240
+    step: 5
+  # Register: 218, default 5
+  # Also known as dT5S TBH Off (dt5s_tbh_off)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT5 TBH Off"
+    id: "${devicename}_dt5_tbh_off"
+    register_type: holding
+    address: 0xda
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 0
+    max_value: 10
+  # Register: 219, default 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4 TBH On"
+    id: "${devicename}_t4_tbh_on"
+    register_type: holding
+    address: 0xdb
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 20
+  # Register: 220, default 65
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature For Disinfection Operation"
+    id: "${devicename}_t5s_di"
+    register_type: holding
+    address: 0xdc
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 60
+    max_value: 70
+  # Register: 221, default 210
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Maximum Disinfection Duration"
+    id: "${devicename}_t_di_max"
+    register_type: holding
+    address: 0xdd
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 90
+    max_value: 300
+  # Register: 222, default 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Disinfection High Temperature Duration"
+    id: "${devicename}_t_di_hightemp"
+    register_type: holding
+    address: 0xde
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 60
+  # Register: 223, default 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Time Interval Of Compressor Startup In Cooling mode"
+    id: "${devicename}_t_interval_c"
+    register_type: holding
+    address: 0xdf
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 30
+  # Register: 224, default 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT1SC"
+    id: "${devicename}_dt1sc"
+    register_type: holding
+    address: 0xe0
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 2
+    max_value: 10
+  # Register: 225, default 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dTSC"
+    id: "${devicename}_dtsc"
+    register_type: holding
+    address: 0xe1
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 1
+    max_value: 10
+  # Register: 226, default 43
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4cmax"
+    id: "${devicename}_t4cmax"
+    register_type: holding
+    address: 0xe2
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 35
+    max_value: 46
+  # Register: 227, default 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4cmin"
+    id: "${devicename}_t4cmin"
+    register_type: holding
+    address: 0xe3
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 25
+  # Register: 228, default 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Time Interval Of Compressor Startup In Heating mode"
+    id: "${devicename}_t_interval_h"
+    register_type: holding
+    address: 0xe4
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 60
   # Register: 229
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

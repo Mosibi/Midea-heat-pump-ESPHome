@@ -10,6 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Entity `heat_pump_running` is changed to check is the fan speed is above 0, the compressor frequency is above 0, or the water pump in the external unit is on. Previously only the fan speed was taken into account.
+- The following registers are changed from type `sensor` to `number` to make them configurable:
+  - register: 205, Temperature Upper Limit Of TS Setting
+  - register: 206, Temperature Lower Limit Of TS Setting
+  - register: 207, Temperature Upper Limit Of water Heating
+  - register: 208, Temperature Lower Limit Of Water Heating
+  - register: 209, DHW Pump Return Running Time
+  - register: 212, dT5_On
+  - register: 213, dT1S5
+  - register: 214, T Interval DHW
+  - register: 215, T4 DHW max
+  - register: 216, T4 DHW min
+  - register: 217, t TBH Delay
+  - register: 218, dT5 TBH Off
+  - register: 219, T4 TBH On
+  - register: 220, Temperature For Disinfection Operation
+  - register: 221, Maximum Disinfection Duration
+  - register: 222, Disinfection High Temperature Duration
+  - register: 223, Time Interval Of Compressor Startup In Cooling mode
+  - register: 224, dT1SC
+  - register: 225, dTSC
+  - register: 226, T4cmax
+  - register: 227, T4cmin
+  - register: 228, Time Interval Of Compressor Startup In Heating mode
 
 ## [1.1.0] - 2024-01-13
 

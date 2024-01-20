@@ -521,6 +521,8 @@ sensor:
     address: 0x91
     value_type: U_DWORD
 
+  # The following register address 200-208 can only use 03H (Read register) function code.
+  # Register address 209 and after can use 03H, 06H (write single register), 10H (write multiple register).
   # Register: 200 (High byte)
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -629,7 +631,6 @@ sensor:
     unit_of_measurement: "°C"
     bitmask: 0xFF00
   # Register: 205
-  # See https://github.com/Mosibi/Midea-heat-pump-ESPHome/issues/17
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Upper Limit Of TS Setting"
@@ -641,7 +642,6 @@ sensor:
     filters:
       - multiply: 0.5
   # Register: 206
-  # See https://github.com/Mosibi/Midea-heat-pump-ESPHome/issues/17
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Lower Limit Of TS Setting"
@@ -652,8 +652,24 @@ sensor:
     unit_of_measurement: "°C"
     filters:
       - multiply: 0.5
-  # Register: 207 -> Is present in this config as a 'number'
-  # Register: 208 -> Is present in this config as a 'number'
+  # Register: 207
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of water Heating"
+    id: "${devicename}_temperature_upper_limit_of_water_heating"
+    register_type: holding
+    address: 0xcf
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+  # Register: 208
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of Water Heating"
+    id: "${devicename}_temperature_lower_limit_of_water_heating"
+    register_type: holding
+    address: 0xd0
+    value_type: U_WORD
+    unit_of_measurement: "°C"
   # Register: 209 -> Is present in this config as a 'number'
   # Register: 212 -> Is present in this config as a 'number'
   # Register: 213 -> Is present in this config as a 'number'
@@ -1941,30 +1957,6 @@ number:
       ${devicename}->queue_command(set_payload_command);
 
       return {};
-  # Register: 207, default: 60, TODO: verify default and min/max value
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Upper Limit Of water Heating"
-    id: "${devicename}_temperature_upper_limit_of_water_heating"
-    register_type: holding
-    address: 0xcf
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-    entity_category: config
-    min_value: 20
-    max_value: 60
-  # Register: 208, default: 20, TODO: verify default and min/max value
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Lower Limit Of Water Heating"
-    id: "${devicename}_temperature_lower_limit_of_water_heating"
-    register_type: holding
-    address: 0xd0
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-    entity_category: config
-    min_value: 20
-    max_value: 60
   # Register: 209, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

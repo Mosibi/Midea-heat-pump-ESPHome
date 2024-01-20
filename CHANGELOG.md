@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - register: 227, T4cmin
   - register: 228, Time Interval Of Compressor Startup In Heating mode
 
+### Remarks
+
+- Many thanks to [Yocee84](https://github.com/Yocee84) with the help on issues #8 and #17
+
 ## [1.1.0] - 2024-01-13
 
 ### Changed

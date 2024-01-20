@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - register: 205, Temperature Upper Limit Of TS Setting
     - Reverted in a later commit due to an issue
   - register: 206, Temperature Lower Limit Of TS Setting
-    - Reverted in a later commit due to an issue  
+    - Reverted in a later commit due to an issue
   - register: 207, Temperature Upper Limit Of water Heating
   - register: 208, Temperature Lower Limit Of Water Heating
   - register: 209, DHW Pump Return Running Time

@@ -628,8 +628,30 @@ sensor:
     value_type: S_WORD
     unit_of_measurement: "°C"
     bitmask: 0xFF00
-  # Register: 205 -> Is present in this config as a 'number'
-  # Register: 206 -> Is present in this config as a 'number'
+  # Register: 205
+  # See https://github.com/Mosibi/Midea-heat-pump-ESPHome/issues/17
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of TS Setting"
+    id: "${devicename}_temperature_upper_limit_of_ts_setting"
+    register_type: holding
+    address: 0xcd
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    filters:
+      - multiply: 0.5
+  # Register: 206
+  # See https://github.com/Mosibi/Midea-heat-pump-ESPHome/issues/17
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of TS Setting"
+    id: "${devicename}_temperature_lower_limit_of_ts_setting"
+    register_type: holding
+    address: 0xce
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    filters:
+      - multiply: 0.5
   # Register: 207 -> Is present in this config as a 'number'
   # Register: 208 -> Is present in this config as a 'number'
   # Register: 209 -> Is present in this config as a 'number'
@@ -1919,47 +1941,30 @@ number:
       ${devicename}->queue_command(set_payload_command);
 
       return {};
-
-  # Register: 205, default: 60, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Upper Limit Of TS Setting"
-    id: "${devicename}_temperature_upper_limit_of_ts_setting"
-    register_type: holding
-    address: 0xcd
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-    entity_category: config
-  # Register: 206, default: 34, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Temperature Lower Limit Of TS Setting"
-    id: "${devicename}_temperature_lower_limit_of_ts_setting"
-    register_type: holding
-    address: 0xce
-    value_type: S_WORD
-    unit_of_measurement: "°C"
-    entity_category: config
-  # Register: 207, default: 60, TODO: verify default
+  # Register: 207, default: 60, TODO: verify default and min/max value
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Upper Limit Of water Heating"
     id: "${devicename}_temperature_upper_limit_of_water_heating"
     register_type: holding
     address: 0xcf
-    value_type: S_WORD
+    value_type: U_WORD
     unit_of_measurement: "°C"
     entity_category: config
-  # Register: 208, default: 20, TODO: verify default
+    min_value: 20
+    max_value: 60
+  # Register: 208, default: 20, TODO: verify default and min/max value
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Lower Limit Of Water Heating"
     id: "${devicename}_temperature_lower_limit_of_water_heating"
     register_type: holding
     address: 0xd0
-    value_type: S_WORD
+    value_type: U_WORD
     unit_of_measurement: "°C"
     entity_category: config
+    min_value: 20
+    max_value: 60
   # Register: 209, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2238,16 +2243,18 @@ number:
     entity_category: config
     min_value: -15
     max_value: 10
-  # Register: 234, default: 5
+  # Register: 234, default: 5, TODO: verify min/max value
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
     id: "${devicename}_dt1_ibh_on"
     register_type: holding
     address: 0xea
-    value_type: S_WORD
+    value_type: U_WORD
     unit_of_measurement: "°C"
     entity_category: config
+    min_value: 1
+    max_value: 7
   # Register: 235, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2258,6 +2265,8 @@ number:
     value_type: U_WORD
     unit_of_measurement: min
     entity_category: config
+    min_value: 15
+    max_value: 120
   # Register: 237, default: 10, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2268,16 +2277,20 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
-  # Register: 238, default: 5
+    min_value: -15
+    max_value: 10
+  # Register: 238, default: 5, TODO: verify max/max value
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Trigger Temperature Difference Between T1S And Current Heat for AHS"
     id: "${devicename}_dt1_ahs_on"
     register_type: holding
     address: 0xee
-    value_type: S_WORD
+    value_type: U_WORD
     unit_of_measurement: "°C"
     entity_category: config
+    min_value: 1
+    max_value: 7
   # Register: 240, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

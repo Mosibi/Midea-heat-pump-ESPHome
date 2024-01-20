@@ -5,15 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - 2024-01-20
 
 ### Changed
 
+- Set some min/max values on numbers to fix an issue with very high and low number limits.
 - Documented default values for registers
 - Entity `heat_pump_running` is changed to check is the fan speed is above 0, the compressor frequency is above 0, or the water pump in the external unit is on. Previously only the fan speed was taken into account.
 - The following registers are changed from type `sensor` to `number` to make them configurable:
   - register: 205, Temperature Upper Limit Of TS Setting
+    - Reverted in a later commit due to an issue
   - register: 206, Temperature Lower Limit Of TS Setting
+    - Reverted in a later commit due to an issue  
   - register: 207, Temperature Upper Limit Of water Heating
   - register: 208, Temperature Lower Limit Of Water Heating
   - register: 209, DHW Pump Return Running Time

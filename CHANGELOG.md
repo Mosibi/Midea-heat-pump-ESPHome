@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Operational mode is now configurable (heat, cool, auto)
+- Register 1: Operational mode is now configurable (heat, cool, auto)
+- Register 269: Power Input Limitation Type is configurable with a list of options
 
 ## [2.0.0] - 2024-01-20
 

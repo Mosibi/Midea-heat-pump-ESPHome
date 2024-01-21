@@ -67,17 +67,25 @@ modbus_controller:
     setup_priority: -10
     update_interval: 10s
 
+select:
+  # Register: 1
+  - platform: modbus_controller
+    modbus_controller_id: ${devicename}
+    name: "${entity_prefix} Operational Mode"
+    id: "${devicename}_operational_mode"
+    icon: "mdi:fan"
+    address: 0x1
+    value_type: U_WORD
+    optimistic: true
+    optionsmap:
+      "Heat": 3
+      "Cool": 2
+      "Auto": 1
+
 sensor:
   - platform: uptime
     name: "${entity_prefix} Uptime"
-  # Register: 1
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Operational Mode"
-    id: "${devicename}_operational_mode"
-    register_type: holding
-    address: 0x1
-    value_type: U_WORD
+  # Register: 1 -> Is present in this config as a 'select'
   # Register: 2 -> Is present in this config as a 'number'
   # Register: 3
   - platform: modbus_controller

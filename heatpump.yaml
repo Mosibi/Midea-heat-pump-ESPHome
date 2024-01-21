@@ -70,7 +70,7 @@ modbus_controller:
 select:
   # Register: 1
   - platform: modbus_controller
-    modbus_controller_id: ${devicename}
+    modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Operational Mode"
     id: "${devicename}_operational_mode"
     icon: "mdi:fan"

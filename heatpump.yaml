@@ -81,6 +81,24 @@ select:
       "Heat": 3
       "Cool": 2
       "Auto": 1
+  # Register: 269, default: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Power Input Limitation Type"
+    id: "${devicename}_power_input_limitation_type"
+    address: 0x10d
+    value_type: U_WORD
+    optimistic: true
+    optionsmap:
+      "None": 0
+      "1": 1
+      "2": 2
+      "3": 3
+      "4": 4
+      "5": 5
+      "6": 6
+      "7": 7
+      "8": 8
 
 sensor:
   - platform: uptime
@@ -748,14 +766,7 @@ sensor:
   # Register: 266 -> Is present in this config as a 'number'
   # Register: 267 -> Is present in this config as a 'number'
   # Register: 268 -> Is present in this config as a 'number'
-  # Register: 269, default: 0
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Power Input Limitation Type"
-    id: "${devicename}_power_input_limitation_type"
-    register_type: holding
-    address: 0x10d
-    value_type: U_WORD
+  # Register: 269 -> Is present in this config as a 'select'
   # Register: 270 (Low), default: 0.5, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

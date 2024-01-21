@@ -2627,8 +2627,8 @@ number:
       // Extracting the low byte (Heating) and storing it as a float
       value_floats[1] = (float)(value & 0x00FF) / 2.0;
 
-      ESP_LOGI("","t_T4 FRESH_H is %f", value_floats[1]);
-      ESP_LOGI("","t_T4 FRESH_C is %f", value_floats[0]);
+      // ESP_LOGI("","t_T4 FRESH_H is %f", value_floats[1]);
+      // ESP_LOGI("","t_T4 FRESH_C is %f", value_floats[0]);
 
       return value_floats[1];
     write_lambda: |-
@@ -2642,9 +2642,8 @@ number:
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= input_byte;  // Update the lower byte with the new byte value
 
-      ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_270));
-      ESP_LOGI("main", "New value: %d", value);
-      ESP_LOGI("main", "Var input_byte: %d", input_byte);
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_270));
+      // ESP_LOGI("main", "New value: %d", value);
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
       ${devicename}->queue_command(set_payload_command);
@@ -2677,9 +2676,6 @@ number:
       // Extracting the low byte (Heating) and storing it as a float
       value_floats[1] = (float)(value & 0x00FF) / 2.0;
 
-      ESP_LOGI("","t_T4 FRESH_H is %f", value_floats[1]);
-      ESP_LOGI("","t_T4 FRESH_C is %f", value_floats[0]);
-
       return value_floats[1];
     write_lambda: |-
       uint16_t value = id(unmasked_value_register_270); // The original unmasked value
@@ -2691,10 +2687,6 @@ number:
 
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (input_byte << 8);  // Update the upper byte with the new byte value
-
-      ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_270));
-      ESP_LOGI("main", "New value: %d", value);
-      ESP_LOGI("main", "Var input_byte: %d", input_byte);
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
       ${devicename}->queue_command(set_payload_command);

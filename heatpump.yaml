@@ -12,6 +12,10 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
+  - id: unmasked_value_register_270
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 esphome:
   name: "${devicename}"
@@ -767,43 +771,8 @@ sensor:
   # Register: 267 -> Is present in this config as a 'number'
   # Register: 268 -> Is present in this config as a 'number'
   # Register: 269 -> Is present in this config as a 'select'
-  # Register: 270 (Low), default: 0.5, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} t_T4 FRESH_H"
-    id: "${devicename}_t_t4_fresh_h"
-    register_type: holding
-    address: 0x10e
-    value_type: U_WORD
-    unit_of_measurement: hr
-    accuracy_decimals: 1
-    bitmask: 0x00FF
-    filters:
-      - multiply: 0.5
-  # Register: 270 (High), default: 0.5, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} t_T4 FRESH_C"
-    id: "${devicename}_t_t4_fresh_c"
-    register_type: holding
-    address: 0x10e
-    value_type: U_WORD
-    unit_of_measurement: hr
-    accuracy_decimals: 1
-    bitmask: 0xFF00
-    filters:
-      - multiply: 0.5
-  # Register: 271, default: 2, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Built-in Circulating Pump Delay"
-    id: "${devicename}_t_pumpi_delay"
-    register_type: holding
-    address: 0x10f
-    value_type: U_WORD
-    unit_of_measurement: hr
-    filters:
-      - multiply: 0.5
+  # Register: 270 -> Is present in this config as a 'number'
+  # Register: 271 -> Is present in this config as a 'number'
   # Register: 272 (Low, first 4 bits), default: 0, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2621,6 +2590,113 @@ number:
     entity_category: config
     min_value: -25
     max_value: 30
+  # Register: 270 (Low, heating), default: 0.5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} t_T4 FRESH_H"
+    id: "${devicename}_t_t4_fresh_h"
+    register_type: holding
+    address: 0x10e
+    value_type: U_WORD
+    unit_of_measurement: hr
+    entity_category: config
+    min_value: 0.5
+    max_value: 6.0
+    step: 0.5
+    mode: slider
+    lambda: |-
+      // Update the global var unmasked_value_register_270
+      id(unmasked_value_register_270) = x;
+
+      float value_floats[2];
+      uint16_t value = x;
+
+      // Extracting the high byte (Cooling) and storing it as a float
+      value_floats[0] = (float)(value >> 8) * 0.5;
+
+      // Extracting the low byte (Heating) and storing it as a float
+      value_floats[1] = (float)(value & 0x00FF) * 0.5;
+
+      // ESP_LOGI("","t_T4 FRESH_H is %f", value_floats[1]);
+      // ESP_LOGI("","t_T4 FRESH_C is %f", value_floats[0]);
+
+      return value_floats[1];
+    write_lambda: |-
+      uint16_t value = id(unmasked_value_register_270); // The original unmasked value
+      float input = x * 2.0;                            // Multiply x (the input from the slider) by 2
+
+      // Multiply the input from the slider (x) by by
+      // and convert to uint8_t
+      uint8_t input_byte = static_cast<uint8_t>(x * 2.0);
+
+      value &= 0xFF00;      // Clear the lower byte of the value
+      value |= input_byte;  // Update the lower byte with the new byte value
+
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_270));
+      // ESP_LOGI("main", "New value: %d", value);
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+  # Register: 270 (High, cooling), default: 0.5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} t_T4 FRESH_C"
+    id: "${devicename}_t_t4_fresh_c"
+    register_type: holding
+    address: 0x10e
+    value_type: U_WORD
+    unit_of_measurement: hr
+    entity_category: config
+    min_value: 0.5
+    max_value: 6.0
+    step: 0.5
+    mode: slider
+    lambda: |-
+      // Update the global var unmasked_value_register_270
+      id(unmasked_value_register_270) = x;
+
+      float value_floats[2];
+      uint16_t value = x;
+
+      // Extracting the high byte (Cooling) and storing it as a float
+      value_floats[0] = (float)(value >> 8) * 0.5;
+
+      // Extracting the low byte (Heating) and storing it as a float
+      value_floats[1] = (float)(value & 0x00FF) * 0.5;
+
+      return value_floats[1];
+    write_lambda: |-
+      uint16_t value = id(unmasked_value_register_270); // The original unmasked value
+      float input = x * 2.0;                            // Multiply x (the input from the slider) by 2
+
+      // Multiply the input from the slider (x) by by
+      // and convert to uint8_t
+      uint8_t input_byte = static_cast<uint8_t>(x * 2.0);
+
+      value &= 0x00FF;             // Clear the upper byte of the value
+      value |= (input_byte << 8);  // Update the upper byte with the new byte value
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+  # Register: 271, default: 2
+  # In modbus register this is called T_PUMPI_DELAY, in the menu this is called t_DELAY_PUMP
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Built-in Circulating Pump Delay"
+    id: "${devicename}_t_delay_pump"
+    register_type: holding
+    address: 0x10f
+    value_type: U_WORD
+    unit_of_measurement: min
+    multiply: 2.0
+    entity_category: config
+    min_value: 2.0
+    max_value: 20.0
+    step: 0.5
 
 text_sensor:
   - platform: version

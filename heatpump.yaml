@@ -772,17 +772,7 @@ sensor:
   # Register: 268 -> Is present in this config as a 'number'
   # Register: 269 -> Is present in this config as a 'select'
   # Register: 270 -> Is present in this config as a 'number'
-  # Register: 271, default: 2, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Built-in Circulating Pump Delay"
-    id: "${devicename}_t_pumpi_delay"
-    register_type: holding
-    address: 0x10f
-    value_type: U_WORD
-    unit_of_measurement: hr
-    filters:
-      - multiply: 0.5
+  # Register: 271 -> Is present in this config as a 'number'
   # Register: 272 (Low, first 4 bits), default: 0, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2622,10 +2612,10 @@ number:
       uint16_t value = x;
 
       // Extracting the high byte (Cooling) and storing it as a float
-      value_floats[0] = (float)(value >> 8) / 2.0;
+      value_floats[0] = (float)(value >> 8) * 0.5;
 
       // Extracting the low byte (Heating) and storing it as a float
-      value_floats[1] = (float)(value & 0x00FF) / 2.0;
+      value_floats[1] = (float)(value & 0x00FF) * 0.5;
 
       // ESP_LOGI("","t_T4 FRESH_H is %f", value_floats[1]);
       // ESP_LOGI("","t_T4 FRESH_C is %f", value_floats[0]);
@@ -2666,15 +2656,15 @@ number:
     lambda: |-
       // Update the global var unmasked_value_register_270
       id(unmasked_value_register_270) = x;
- 
+
       float value_floats[2];
       uint16_t value = x;
 
       // Extracting the high byte (Cooling) and storing it as a float
-      value_floats[0] = (float)(value >> 8) / 2.0;
+      value_floats[0] = (float)(value >> 8) * 0.5;
 
       // Extracting the low byte (Heating) and storing it as a float
-      value_floats[1] = (float)(value & 0x00FF) / 2.0;
+      value_floats[1] = (float)(value & 0x00FF) * 0.5;
 
       return value_floats[1];
     write_lambda: |-
@@ -2692,6 +2682,21 @@ number:
       ${devicename}->queue_command(set_payload_command);
 
       return {};
+  # Register: 271, default: 2
+  # In modbus register this is called T_PUMPI_DELAY, in the menu this is called t_DELAY_PUMP
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Built-in Circulating Pump Delay"
+    id: "${devicename}_t_delay_pump"
+    register_type: holding
+    address: 0x10f
+    value_type: U_WORD
+    unit_of_measurement: min
+    multiply: 2.0
+    entity_category: config
+    min_value: 2.0
+    max_value: 20.0
+    step: 0.5
 
 text_sensor:
   - platform: version

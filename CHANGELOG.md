@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Register 269: Power Input Limitation Type is configurable with a list of options
 - The following registers are changed from type `sensor` to `number` to make them configurable:
   - register: 270, t_T4 FRESH_H and t_T4 FRESH_C
+  - register: 271, Built-in Circulating Pump Delay
 
 
 ## [2.0.0] - 2024-01-20

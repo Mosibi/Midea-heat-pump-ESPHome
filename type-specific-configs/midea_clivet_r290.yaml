@@ -1,6 +1,6 @@
 substitutions:
-  devicename: "midea_clivet_r290"
-  description: Midea Clivet R290 Controller
+  devicename: heatpump
+  description: Heatpump Controller
   entity_prefix: ""
 
 globals:

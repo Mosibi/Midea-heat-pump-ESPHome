@@ -1,0 +1,3277 @@
+substitutions:
+  devicename: "midea_clivet_r290"
+  description: Midea Clivet R290 Controller
+  entity_prefix: ""
+
+globals:
+  - id: unmasked_value_water_temperature_t1s
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: unmasked_curve_selection
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: unmasked_value_register_270
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+esphome:
+  name: "${devicename}"
+  comment: "${description}"
+  friendly_name: "${description}"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  level: INFO
+  baud_rate: 0
+
+# Enable Home Assistant API
+api:
+
+web_server:
+  port: 80
+
+ota:
+
+wifi:
+  power_save_mode: none
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${devicename}-setup"
+    password: "heatpump"
+
+captive_portal:
+
+uart:
+  id: mod_bus
+  tx_pin: 17
+  rx_pin: 16
+  baud_rate: 9600
+  stop_bits: 1
+
+modbus:
+  flow_control_pin: 5
+  id: heatpump_modbus
+
+modbus_controller:
+  - id: "${devicename}"
+    ## the Modbus device addr
+    address: 0x1
+    modbus_id: heatpump_modbus
+    setup_priority: -10
+    update_interval: 10s
+
+select:
+  # Register: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Operational Mode"
+    id: "${devicename}_operational_mode"
+    icon: "mdi:fan"
+    address: 0x1
+    value_type: U_WORD
+    optimistic: true
+    optionsmap:
+      "Heat": 3
+      "Cool": 2
+      "Auto": 1
+  # Register: 269, default: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Power Input Limitation Type"
+    id: "${devicename}_power_input_limitation_type"
+    address: 0x10d
+    value_type: U_WORD
+    optimistic: true
+    optionsmap:
+      "None": 0
+      "1": 1
+      "2": 2
+      "3": 3
+      "4": 4
+      "5": 5
+      "6": 6
+      "7": 7
+      "8": 8
+
+sensor:
+  - platform: uptime
+    name: "${description} Uptime"
+  # Register: 1 -> Is present in this config as a 'select'
+  # Register: 2 -> Is present in this config as a 'number'
+  # Register: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Air Temperature Ts"
+    id: "${devicename}_air_temperature_ts"
+    register_type: holding
+    address: 0x3
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    filters:
+      - multiply: 0.5
+  # Register: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DHW Tank Temperature T5s"
+    id: "${devicename}_dhw_tank_temperature_t5s"
+    register_type: holding
+    address: 0x4
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 6 -> Is present in this config as a 'number'
+  # Register: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Forced Water Tank Heating"
+    id: "${devicename}_forced_water_tank_heating"
+    register_type: holding
+    address: 0x7
+    value_type: U_WORD
+  # Register: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Forced Tank Backup Heater"
+    id: "${devicename}_forced_tbh"
+    register_type: holding
+    address: 0x8
+    value_type: U_WORD
+  # Register: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Forced Hydraulic Module Rear Electric Heater 1"
+    id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1"
+    register_type: holding
+    address: 0x9
+    value_type: U_WORD
+  # Register: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} SG operation time"
+    id: "${devicename}_sg_operation_time"
+    register_type: holding
+    address: 0xa
+    value_type: U_WORD
+    unit_of_measurement: hr
+
+  # Register: 100
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Compressor Operating Frequency"
+    id: "${devicename}_compressor_operating_frequency"
+    register_type: holding
+    address: 0x64
+    value_type: U_WORD
+    unit_of_measurement: Hz
+  # Register: 101
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Operating Mode"
+    id: "${devicename}_operating_mode"
+    register_type: holding
+    address: 0x65
+    value_type: U_WORD
+  # Register: 102
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Fan Speed"
+    id: "${devicename}_fan_speed"
+    register_type: holding
+    address: 0x66
+    unit_of_measurement: "r/min"
+    value_type: U_WORD
+    icon: mdi:fan
+  # Register: 103
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} PMV Openness"
+    id: "${devicename}_pmv_openness"
+    register_type: holding
+    address: 0x67
+    value_type: U_WORD
+    unit_of_measurement: "Pa"
+  # Register: 104
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water Inlet Temperature"
+    id: "${devicename}_water_inlet_temperature"
+    register_type: holding
+    address: 0x68
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 105
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water Outlet Temperature"
+    id: "${devicename}_water_outlet_temperature"
+    register_type: holding
+    address: 0x69
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 106
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Condensor Temperature T3"
+    id: "${devicename}_condensor_temperature_t3"
+    register_type: holding
+    address: 0x6a
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 107
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Outdoor Ambient Temperature"
+    id: "${devicename}_outdoor_ambient_temperature"
+    register_type: holding
+    address: 0x6B
+    unit_of_measurement: "°C"
+    value_type: S_WORD
+  # Register: 108
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Discharge Gas Temperature"
+    id: "${devicename}_discharge_gas_temperature"
+    register_type: holding
+    address: 0x6c
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 109
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Intake Gas Temperature"
+    id: "${devicename}_intake_gas_temperature"
+    register_type: holding
+    address: 0x6d
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 110
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total Water Outlet Temperature T1"
+    id: "${devicename}_total_water_outlet_temperature_t1"
+    register_type: holding
+    address: 0x6e
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 111
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} System Total Water Outlet Temperature T1B"
+    id: "${devicename}_system_total_water_outlet_temperature_t1b"
+    register_type: holding
+    address: 0x6f
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 112
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Refrigerant Liquid Side Temperature T2"
+    id: "${devicename}_refrigerant_liquid_side_temperature_t2"
+    register_type: holding
+    address: 0x70
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 113
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Refrigerant Gas Side Temperature T2B"
+    id: "${devicename}_refrigerant_gas_side_temperature_t2b"
+    register_type: holding
+    address: 0x71
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 114
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Room Temperature Ta"
+    id: "${devicename}_room_temperature_ta"
+    register_type: holding
+    address: 0x72
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 115
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water Tank Temperature T5"
+    id: "${devicename}_water_tank_temperature_t5"
+    register_type: holding
+    address: 0x73
+    unit_of_measurement: "°C"
+    value_type: S_WORD
+    icon: mdi:thermometer-water
+  # Register: 116
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Outdoor Unit High Pressure"
+    id: "${devicename}_outdoor_unit_high_pressure"
+    register_type: holding
+    address: 0x74
+    value_type: U_WORD
+    unit_of_measurement: kPA
+  # Register: 117
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix}  Outdoor Unit Low Pressure"
+    id: "${devicename}_outdoor_unit_low_pressure"
+    register_type: holding
+    address: 0x75
+    value_type: U_WORD
+    unit_of_measurement: kPA
+  # Register: 118
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Outdoor Unit Current"
+    id: "${devicename}_outdoor_unit_current"
+    register_type: holding
+    address: 0x76
+    value_type: U_WORD
+    unit_of_measurement: A
+  # Register: 119
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Outdoor Unit Voltage"
+    id: "${devicename}_outdoor_unit_voltage"
+    register_type: holding
+    address: 0x77
+    value_type: U_WORD
+    unit_of_measurement: V
+  # Register: 120
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Tbt1"
+    id: "${devicename}_tbt1"
+    register_type: holding
+    address: 0x78
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 121
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Tbt2"
+    id: "${devicename}_tbt2"
+    register_type: holding
+    address: 0x79
+    value_type: s_WORD
+    unit_of_measurement: "°C"
+  # Register: 122
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Compressor Operation Time"
+    id: "${devicename}_compressor_operation_time"
+    register_type: holding
+    address: 0x7a
+    value_type: U_WORD
+    unit_of_measurement: hr
+  # Register: 123
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Unit Capacity"
+    id: "${devicename}_unit_capacity"
+    register_type: holding
+    address: 0x7b
+    value_type: U_WORD
+  # Register: 124
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Current Fault"
+    id: "${devicename}_current_fault"
+    register_type: holding
+    entity_category: diagnostic
+    address: 0x7c
+    value_type: U_WORD
+  # Register: 125
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Fault 1"
+    id: "${devicename}_fault_1"
+    register_type: holding
+    entity_category: diagnostic
+    address: 0x7d
+    value_type: U_WORD
+  # Register: 126
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Fault 2"
+    id: "${devicename}_fault_2"
+    register_type: holding
+    entity_category: diagnostic
+    address: 0x7e
+    value_type: U_WORD
+  # Register: 127
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Fault 3"
+    id: "${devicename}_fault_3"
+    register_type: holding
+    entity_category: diagnostic
+    address: 0x7f
+    value_type: U_WORD
+  # Register: 130
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Indoor Unit Software Version"
+    id: "${devicename}_indoor_unit_software_version"
+    register_type: holding
+    address: 0x82
+    value_type: U_WORD
+  # Register: 131
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Wired Controller Version Number"
+    id: "${devicename}_wired_controller_version_number"
+    register_type: holding
+    address: 0x83
+    value_type: U_WORD
+  # Register: 132
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Compressor Target Frequency"
+    id: "${devicename}_compressor_target_frequency"
+    register_type: holding
+    address: 0x84
+    value_type: U_WORD
+    unit_of_measurement: Hz
+  # Register: 133
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DC Bus Current"
+    id: "${devicename}_dc_bus_current"
+    register_type: holding
+    address: 0x85
+    value_type: U_WORD
+    unit_of_measurement: A
+  # Register: 134
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DC Bus Voltage"
+    id: "${devicename}_dc_bus_voltage"
+    register_type: holding
+    address: 0x86
+    value_type: U_WORD
+    unit_of_measurement: V
+    filters:
+      - multiply: 10
+  # Register: 135
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} TF module temperature"
+    id: "${devicename}_tf_module_temperature"
+    register_type: holding
+    address: 0x87
+    unit_of_measurement: "°C"
+    value_type: S_WORD
+  # Register: 136
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Climate Curve T1S Calculated Value 1"
+    id: "${devicename}_climate_curve_t1s_calculated_value_1"
+    register_type: holding
+    address: 0x88
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 137
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Climate Curve T1S Calculated Value 2"
+    id: "${devicename}_climate_curve_t1s_calculated_value_2"
+    register_type: holding
+    address: 0x89
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+  # Register: 138
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water Flow"
+    id: "${devicename}_water_flow"
+    register_type: holding
+    address: 0x8a
+    value_type: U_WORD
+    unit_of_measurement: m3/H
+    accuracy_decimals: 2
+    filters:
+      - lambda: return x * 0.01;
+  # Register: 139
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Outdoor Unit Frequency Limitation"
+    id: "${devicename}_outdoor_unit_frequency_limitation"
+    register_type: holding
+    address: 0x8b
+    value_type: U_WORD
+  # Register: 140
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Indoor Unit Capacity"
+    id: "${devicename}_indoor_unit_capacity"
+    register_type: holding
+    address: 0x8c
+    value_type: U_WORD
+    unit_of_measurement: kW
+    accuracy_decimals: 2
+    filters:
+      - lambda: return x * 0.01;
+  # Register: 141
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Solar T"
+    id: "${devicename}_solar_t"
+    register_type: holding
+    address: 0x8d
+    value_type: U_WORD
+  # Register: 143 and 144
+  # U_DWORD combines this register with the next one
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Electricity Consumption"
+    id: "${devicename}_electricity_consumption"
+    register_type: holding
+    unit_of_measurement: "kWh"
+    state_class: total_increasing
+    address: 0x8f
+    value_type: U_DWORD
+  # Register: 145 and 146
+  # U_DWORD combines this register with the next one
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Power Output"
+    id: "${devicename}_power_output"
+    register_type: holding
+    unit_of_measurement: "kWh"
+    state_class: total_increasing
+    address: 0x91
+    value_type: U_DWORD
+  # Register: 147
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} AHS power supply output to EDGE series Unit Capacity"
+    id: "${devicename}_ahs_power_supply_output_to_edge_series_unit_capacity"
+    register_type: holding
+    address: 0x93
+    value_type: U_WORD
+    unit_of_measurement: V
+    accuracy_decimals: 2
+    filters:
+      - multiply: 10
+  # Register: 148
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time heating energy produced for master unit"
+    id: "${devicename}_real-time_heating_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0x94
+    value_type: U_WORD
+  # Register: 149
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time heating RE energy produced for master unit"
+    id: "${devicename}_real-time_heating_re_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0x95
+    value_type: U_WORD
+  # Register: 150
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time COP in heating mode for master unit"
+    id: "${devicename}_real-time_cop_in_heating_mode_for_master_unit"
+    register_type: holding
+    address: 0x96
+    value_type: U_WORD
+  # Register: 151
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time heating power consumed for master unit"
+    id: "${devicename}_real-time_heating_power_consumed_for_master_unit"
+    register_type: holding
+    address: 0x97
+    value_type: U_WORD
+  # Register: 152 and 153
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total heating energy produced for system"
+    id: "${devicename}_total_heating_energy_produced_for_system"
+    register_type: holding
+    address: 0x98
+    value_type: U_DWORD
+  # Register: 154 and 155
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total heating RE energy produced for system"
+    id: "${devicename}_total_heating_re_energy_produced_for_system"
+    register_type: holding
+    address: 0x9a
+    value_type: U_DWORD
+  # Register: 156 and 157
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total heating power consumed for system"
+    id: "${devicename}_total_heating_power_consumed_for_system"
+    register_type: holding
+    address: 0x9c
+    value_type: U_DWORD
+  # Register: 158 and 159
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total heating energy produced for master unit"
+    id: "${devicename}_total_heating_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0x9e
+    value_type: U_DWORD
+  # Register: 160 and 161
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total heating RE energy produced for master unit"
+    id: "${devicename}_total_heating_re_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xa0
+    value_type: U_DWORD
+  # Register: 162 and 163
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total heating power consumed for master unit"
+    id: "${devicename}_total_heating_power_consumed_for_master_unit"
+    register_type: holding
+    address: 0xa2
+    value_type: U_DWORD
+  # Register: 164
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total COP in heating mode for master unit"
+    id: "${devicename}_total_cop_in_heating_mode_for_master_unit"
+    register_type: holding
+    address: 0xa4
+    value_type: U_WORD
+  # Register: 165 and 166
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total cooling energy produced for master unit"
+    id: "${devicename}_total_cooling_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xa5
+    value_type: U_DWORD
+  # Register: 167 and 168
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total cooling RE energy produced for master unit"
+    id: "${devicename}_total_cooling_re_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xa7
+    value_type: U_DWORD
+  # Register: 169 and 170
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total cooling power consumed for master unit"
+    id: "${devicename}_total_cooling_power_consumed_for_master_unit"
+    register_type: holding
+    address: 0xa9
+    value_type: U_DWORD
+  # Register: 172 and 173
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total cooling power consumed for master unit"
+    id: "${devicename}_total_cooling_power_consumed_for_master_unit"
+    register_type: holding
+    address: 0xac
+    value_type: U_DWORD
+  # Register: 174 and 175
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total DHW RE energy produced for master unit"
+    id: "${devicename}_total_dhw_re_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xae
+    value_type: U_DWORD
+  # Register: 176 and 177
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total DHW power consumed for master unit"
+    id: "${devicename}_total_dhw_power_consumed_for_master_unit"
+    register_type: holding
+    address: 0xb0
+    value_type: U_DWORD
+  # Register: 178
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Total COP in DHW mode for master unit"
+    id: "${devicename}_total_cop_in_dhw_mode_for_master_unit"
+    register_type: holding
+    address: 0xb2
+    value_type: U_WORD
+  # Register: 179
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time cooling energy produced for master unit"
+    id: "${devicename}_real-time_cooling_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xb3
+    value_type: U_WORD
+  # Register: 180
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time cooling RE energy produced for master unit"
+    id: "${devicename}_real-time_cooling_re_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xb4
+    value_type: U_WORD
+  # Register: 181
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time cooling power consumed for master unit"
+    id: "${devicename}_real-time_cooling_power_consumed_for_master_unit"
+    register_type: holding
+    address: 0xb5
+    value_type: U_WORD
+  # Register: 182
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time EER in cooling mode for master unit"
+    id: "${devicename}_real-time_eer_in_cooling_mode_for_master_unit"
+    register_type: holding
+    address: 0xb6
+    value_type: U_WORD
+  # Register: 183
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time DHW energy produced for master unit"
+    id: "${devicename}_real-time_dhw_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xb7
+    value_type: U_WORD
+  # Register: 184
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time DHW RE energy produced for master unit"
+    id: "${devicename}_real-time_dhw_re_energy_produced_for_master_unit"
+    register_type: holding
+    address: 0xb8
+    value_type: U_WORD
+  # Register: 185
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time DHW power consumed for master unit"
+    id: "${devicename}_real-time_dhw_power_consumed_for_master_unit"
+    register_type: holding
+    address: 0xb9
+    value_type: U_WORD
+  # Register: 186
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Real-time COP in DHW mode for master unit"
+    id: "${devicename}_real-time_cop_in_dhw_mode_for_master_unit"
+    register_type: holding
+    address: 0xba
+    value_type: U_WORD
+
+  # The following register address 200-208 can only use 03H (Read register) function code.
+  # Register address 209 and after can use 03H, 06H (write single register), 10H (write multiple register).
+  # Register: 200 (High byte)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Home Appliance Type"
+    id: "${devicename}_home_appliance_type"
+    register_type: holding
+    address: 0xc8
+    value_type: U_WORD
+    bitmask: 0x00FF
+  # Register: 200 (Low byte, first 4 bits)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Home Appliance Sub Type"
+    id: "${devicename}_home_appliance_sub_type"
+    register_type: holding
+    address: 0xc8
+    value_type: U_WORD
+    bitmask: 0xF000
+  # Register: 200 (Low byte, second 4 bits)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Home Appliance Product Code"
+    id: "${devicename}_home_appliance_product_code"
+    register_type: holding
+    address: 0xc8
+    value_type: U_WORD
+    bitmask: 0x0F00
+  # Register: 201 (Low), default: 25, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of T1S Cooling Zone 1"
+    id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_1"
+    register_type: holding
+    address: 0xc9
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0x00FF
+  # Register: 201 (High), default: 25, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of T1S Cooling Zone 2"
+    id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_2"
+    register_type: holding
+    address: 0xc9
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0xFF00
+  # Register: 202 (Low), default: 5, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of T1S Cooling Zone 1"
+    id: "${devicename}_temperature_lower_limit_of_t1s_cooling_zone_1"
+    register_type: holding
+    address: 0xca
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0x00FF
+  # Register: 202 (High), default: 5, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of T1S Cooling Zone 2"
+    id: "${devicename}_temperature_lower_limit_of_t1s_cooling_zone_2"
+    register_type: holding
+    address: 0xca
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0xFF00
+  # Register: 203 (Low), default: 55, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of T1S Heating Zone 1"
+    id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_1"
+    register_type: holding
+    address: 0xcb
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0x00FF
+  # Register: 203 (High), default: 55, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of T1S Heating Zone 2"
+    id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_2"
+    register_type: holding
+    address: 0xcb
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0xFF00
+  # Register: 204 (Low), default: 25, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of T1S Heating Zone 1"
+    id: "${devicename}_temperature_lower_limit_of_t1s_heating_zone_1"
+    register_type: holding
+    address: 0xcc
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0x00FF
+  # Register: 204 (High), default: 25, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of T1S Heating Zone 2"
+    id: "${devicename}_temperature_lower_limit_of_t1s_heating_zone_2"
+    register_type: holding
+    address: 0xcc
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    bitmask: 0xFF00
+  # Register: 205
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of TS Setting"
+    id: "${devicename}_temperature_upper_limit_of_ts_setting"
+    register_type: holding
+    address: 0xcd
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    filters:
+      - multiply: 0.5
+  # Register: 206
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of TS Setting"
+    id: "${devicename}_temperature_lower_limit_of_ts_setting"
+    register_type: holding
+    address: 0xce
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    filters:
+      - multiply: 0.5
+  # Register: 207
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Upper Limit Of water Heating"
+    id: "${devicename}_temperature_upper_limit_of_water_heating"
+    register_type: holding
+    address: 0xcf
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+  # Register: 208
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Lower Limit Of Water Heating"
+    id: "${devicename}_temperature_lower_limit_of_water_heating"
+    register_type: holding
+    address: 0xd0
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+  # Register: 209 -> Is present in this config as a 'number'
+  # Register: 212 -> Is present in this config as a 'number'
+  # Register: 213 -> Is present in this config as a 'number'
+  # Register: 214 -> Is present in this config as a 'number'
+  # Register: 215 -> Is present in this config as a 'number'
+  # Register: 216 -> Is present in this config as a 'number'
+  # Register: 217 -> Is present in this config as a 'number'
+  # Register: 218 -> Is present in this config as a 'number'
+  # Register: 219 -> Is present in this config as a 'number'
+  # Register: 220 -> Is present in this config as a 'number'
+  # Register: 221 -> Is present in this config as a 'number'
+  # Register: 222 -> Is present in this config as a 'number'
+  # Register: 223 -> Is present in this config as a 'number'
+  # Register: 224 -> Is present in this config as a 'number'
+  # Register: 225 -> Is present in this config as a 'number'
+  # Register: 226 -> Is present in this config as a 'number'
+  # Register: 227 -> Is present in this config as a 'number'
+  # Register: 228 -> Is present in this config as a 'number'
+  # Register: 229 -> Is present in this config as a 'number'
+  # Register: 230 -> Is present in this config as a 'number'
+  # Register: 231 -> Is present in this config as a 'number'
+  # Register: 232 -> Is present in this config as a 'number'
+  # Register: 233 -> Is present in this config as a 'number'
+  # Register: 234 -> Is present in this config as a 'number'
+  # Register: 235 -> Is present in this config as a 'number'
+  # Register: 237 -> Is present in this config as a 'number'
+  # Register: 238 -> Is present in this config as a 'number'
+  # Register: 240 -> Is present in this config as a 'number'
+  # Register: 241 -> Is present in this config as a 'number'
+  # Register: 242 -> Is present in this config as a 'number'
+  # Register: 243 -> Is present in this config as a 'number'
+  # Register: 244 -> Is present in this config as a 'number'
+  # Register: 245 -> Is present in this config as a 'number'
+  # Register: 246 -> Is present in this config as a 'number'
+  # Register: 247 -> Is present in this config as a 'number'
+  # Register: 248 -> Is present in this config as a 'number'
+  # Register: 249 -> Is present in this config as a 'number'
+  # Register: 250 -> Is present in this config as a 'number'
+  # Register: 251 -> Is present in this config as a 'number'
+  # Register: 252 -> Is present in this config as a 'number'
+  # Register: 253
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Comfort Parameter Reserved 3"
+    id: "${devicename}_comfort_parameter_3"
+    register_type: holding
+    address: 0xfd
+    value_type: U_WORD
+  # Register: 254
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Comfort Parameter Reserved 4"
+    id: "${devicename}_comfort_parameter_4"
+    register_type: holding
+    address: 0xfe
+    value_type: U_WORD
+  # Register: 255 -> Is present in this config as a 'number'
+  # Register: 256 -> Is present in this config as a 'number'
+  # Register: 257 -> Is present in this config as a 'number'
+  # Register: 258 -> Is present in this config as a 'number'
+  # Register: 259 -> Is present in this config as a 'number'
+  # Register: 260 -> Is present in this config as a 'number'
+  # Register: 261 -> Is present in this config as a 'number'
+  # Register: 262 -> Is present in this config as a 'number'
+  # Register: 263 -> Is present in this config as a 'number'
+  # Register: 264 -> Is present in this config as a 'number'
+  # Register: 265 -> Is present in this config as a 'number'
+  # Register: 266 -> Is present in this config as a 'number'
+  # Register: 267 -> Is present in this config as a 'number'
+  # Register: 268 -> Is present in this config as a 'number'
+  # Register: 269 -> Is present in this config as a 'select'
+  # Register: 270 -> Is present in this config as a 'number'
+  # Register: 271 -> Is present in this config as a 'number'
+  # Register: 272 (Low, first 4 bits), default: 0, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Zone 1 End Heating Mode Emission Type"
+    id: "${devicename}_zone_1_end_heating_mod_emission_type"
+    register_type: holding
+    address: 0x110
+    value_type: U_WORD
+    bitmask: 0xF000
+  # Register: 272 (Low, second 4 bits), default: 0, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Zone 2 End Heating Mode Emission Type"
+    id: "${devicename}_zone_2_end_heating_mod_emission_type"
+    register_type: holding
+    address: 0x110
+    value_type: U_WORD
+    bitmask: 0x0F00
+  # Register: 272 (High, first 4 bits), default: 2, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Zone 1 End Cooling Mode Emission Type"
+    id: "${devicename}_zone_1_end_cooling_mod_emission_type"
+    register_type: holding
+    address: 0x110
+    value_type: U_WORD
+    bitmask: 0x00F0
+  # Register: 272 (High, second 4 bits), default: 2, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Zone 2 End Cooling Mode Emission Type"
+    id: "${devicename}_zone_2_end_cooling_mod_emission_type"
+    register_type: holding
+    address: 0x110
+    value_type: U_WORD
+    bitmask: 0x000F
+
+binary_sensor:
+  # Register: 0
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Room temperature thermostat control"
+    id: "${devicename}_room_temperature_thermostat_control"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x1
+  # Bit: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water flow temperature control - zone 1"
+    id: "${devicename}_water_flow_temperature_control_zone_1"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x2
+  # Bit: 2 -> Is present in this config as a 'switch'
+  # Bit: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water flow temperature control - zone 2"
+    id: "${devicename}_water_flow_temperature_control_zone_2"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x8
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 4"
+    id: "${devicename}_register_0_reserved_bit_4"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 5"
+    id: "${devicename}_register_0_reserved_bit_5"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 6"
+    id: "${devicename}_register_0_reserved_bit_6"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 7"
+    id: "${devicename}_register_0_reserved_bit_7"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 8"
+    id: "${devicename}_register_0_reserved_bit_8"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 9"
+    id: "${devicename}_register_0_reserved_bit_9"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 10"
+    id: "${devicename}_register_0_reserved_bit_10"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 11"
+    id: "${devicename}_register_0_reserved_bit_11"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x800
+  # Bit: 12
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 12"
+    id: "${devicename}_register_0_reserved_bit_12"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x1000
+  # Bit: 13
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 13"
+    id: "${devicename}_register_0_reserved_bit_13"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x2000
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 14"
+    id: "${devicename}_register_0_reserved_bit_14"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 0 Reserved BIT 15"
+    id: "${devicename}_register_0_reserved_bit_15"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x8000
+
+  # Register: 5
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 5 Reserved BIT 0"
+    id: "${devicename}_register_5_reserved_bit_0"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x1
+  # Bit: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 5 Reserved BIT 1"
+    id: "${devicename}_register_5_reserved_bit_1"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x2
+  # Bit: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 5 Reserved BIT 2"
+    id: "${devicename}_register_5_reserved_bit_2"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x4
+  # Bit: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 5 Reserved BIT 3"
+    id: "${devicename}_register_5_reserved_bit_3"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x8
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Disinfect"
+    id: "${devicename}_disinfect"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Holiday Away"
+    id: "${devicename}_holiday_away"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Silent Mode"
+    id: "${devicename}_silent_mode"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Silent Mode Level"
+    id: "${devicename}_silent_mode_level"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Holiday Home"
+    id: "${devicename}_holiday_home"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 5 Reserved BIT 9"
+    id: "${devicename}_register_5_reserved_bit_9"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} ECO Mode"
+    id: "${devicename}_eco_mode"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DHW pump operating with return water at constant temperature"
+    id: "${devicename}_dhw_pump_operating_with_return_water_at_constant_temperature"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x800
+  # Bit: 12 -> Is present in this config as a 'switch'
+  # Bit: 13 -> Is present in this config as a 'switch'
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 5 Reserved BIT 14"
+    id: "${devicename}_register_5_reserved_bit_14"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Register 5 Reserved BIT 15"
+    id: "${devicename}_register_5_reserved_bit_15"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x8000
+
+  # Register: 128
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Pump In Forced Operation"
+    id: "${devicename}_pump_in_forced_operation"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x1
+  # Bit: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Defrosting"
+    id: "${devicename}_defrosting"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x2
+  # Bit: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Anti Freeze"
+    id: "${devicename}_anti_freeze"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x4
+  # Bit: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Oil Return"
+    id: "${devicename}_oil_return"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x8
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Remote On/Off"
+    id: "${devicename}_remote_on_off"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Outdoor Unit Test Mode"
+    id: "${devicename}_outdoor_unit_test_mode"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Room Thermostat In Heating Mode"
+    id: "${devicename}_room_thermostat_in_heating_mode"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Room Thermostat In Cooling Mode"
+    id: "${devicename}_room_thermostat_in_cooling_mode"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Solar Energy Signal Input"
+    id: "${devicename}_solar_energy_signal_input"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Anti Freeze Operation For Water Tank"
+    id: "${devicename}_anti_freeze_operation_for_water_tank"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} SG State"
+    id: "${devicename}_sg_state"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} EVU State"
+    id: "${devicename}_evu_state"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x800
+  # Bit: 12
+  - platform: modbus_controller
+    name: "${entity_prefix} Register 128 reserved BIT 12"
+    modbus_controller_id: "${devicename}"
+    id: "${devicename}_register_128_reserved_bit_12"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x1000
+  # Bit: 13
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Request Serial Number Code"
+    id: "${devicename}_request_serial_number_code"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x2000
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Request Software Version"
+    id: "${devicename}_request_software_version"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Request Operation Parameter"
+    id: "${devicename}_request_operation_parameter"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x8000
+
+  # Register: 129
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Electric Heater IBH 1"
+    id: "${devicename}_load_output_electric_heater_ibh1"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x1
+  # Bit: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Electric Heater IBH 2"
+    id: "${devicename}_load_output_reserved"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x2
+  # Bit: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Electric Heater TBH"
+    id: "${devicename}_load_output_electric_heater_tbh"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x4
+  # Bit: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Water Pump PUMP_I"
+    id: "${devicename}_load_output_water_pump_pump_i"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x8
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output SV 1"
+    id: "${devicename}_load_output_sv1"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output SV 2"
+    id: "${devicename}_load_output_sv2"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output External Water Pump P_o"
+    id: "${devicename}_load_output_external_water_pump_p_o"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Water Return Water P_d"
+    id: "${devicename}_load_output_water_return_water_p_d"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Mixed Water Pump P_c"
+    id: "${devicename}_load_output_mixed_water_pump_p_c"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output SV 3"
+    id: "${devicename}_load_output_sv3"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output HEAT 4"
+    id: "${devicename}_load_output_heat4"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Solar Water Pump"
+    id: "${devicename}_load_output_solar_water_pump"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x800
+  # Bit: 12
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} ALARM"
+    id: "${devicename}_load_output_alarm"
+    register_type: holding
+    entity_category: diagnostic
+    address: 0x81
+    bitmask: 0x1000
+  # Bit: 13
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output RUN"
+    id: "${devicename}_load_output_run"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x2000
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output Auxiliary Heat Source"
+    id: "${devicename}_load_output_auxiliary_heat_source"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Load Output DEFROST"
+    id: "${devicename}_load_output_defrost"
+    register_type: holding
+    address: 0x81
+    bitmask: 0x8000
+  # Bit: 0
+
+  # Register: 142
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit Online Status: Reserved BIT 0"
+    id: "${devicename}_slave_unit_online_status_reserved_bit_0"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x1
+  # Bit: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 1 Online Status"
+    id: "${devicename}_slave_unit_1_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x2
+  # Bit: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 2 Online Status"
+    id: "${devicename}_slave_unit_2_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x4
+  # Bit: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 3 Online Status"
+    id: "${devicename}_slave_unit_3_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x8
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 4 Online Status"
+    id: "${devicename}_slave_unit_4_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 5 Online Status"
+    id: "${devicename}_slave_unit_5_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 6 Online Status"
+    id: "${devicename}_slave_unit_6_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 7 Online Status"
+    id: "${devicename}_slave_unit_7_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 8 Online Status"
+    id: "${devicename}_slave_unit_8_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 9 Online Status"
+    id: "${devicename}_slave_unit_9_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 10 Online Status"
+    id: "${devicename}_slave_unit_10_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 11 Online Status"
+    id: "${devicename}_slave_unit_11_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x800
+  # Bit: 12
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 12 Online Status"
+    id: "${devicename}_slave_unit_12_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x1000
+  # Bit: 13
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 13 Online Status"
+    id: "${devicename}_slave_unit_13_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x2000
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 14 Online Status"
+    id: "${devicename}_slave_unit_14_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Slave Unit 15 Online Status"
+    id: "${devicename}_slave_unit_15_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x8000
+
+  # Register: 210, default: true, TODO: verify default
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Heating And Cooling First Or Water First"
+    id: "${devicename}_parameter_setting_1_heating_and_cooling_first_or_water_first"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x1
+  # Bit: 1, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Dual Room Thermostat Supported"
+    id: "${devicename}_parameter_setting_1_dual_room_thermostat_supported"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x2
+  # Bit: 2, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Room Thermostat"
+    id: "${devicename}_parameter_setting_1_room_thermostat"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x4
+  # Bit: 3, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Supports Room Thermostat"
+    id: "${devicename}_parameter_setting_1_supports_room_thermostat"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x8
+  # Bit: 4, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Supports Room Temperature Sensor Ta"
+    id: "${devicename}_parameter_setting_1_supports_room_temperature_sensor_ta"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x10
+  # Bit: 5, default: false, TODO: verify default
+  # Midea: PUMPI silent mode, 1; valid, 0: invalid
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Supports T1 Sensor"
+    id: "${devicename}_parameter_setting_1_supports_t1_sensor"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x20
+  # Bit: 6, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 T1S Heating High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x40
+  # Bit: 7, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Enable Heating"
+    id: "${devicename}_parameter_setting_1_enable_heating"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x80
+  # Bit: 8, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 T1s Cooling High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x100
+  # Bit: 9, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Enable Cooling"
+    id: "${devicename}_parameter_setting_1_enable_cooling"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x200
+  # Bit: 10, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 DHW Pump Supports Pipe Disinfect"
+    id: "${devicename}_parameter_setting_1_dhw_pump_supports_pipe_disinfect"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x400
+  # Bit: 11, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Reserved BIT 11"
+    id: "${devicename}_parameter_setting_1_reserved_bit_11"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x800
+  # Bit: 12, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 DHW Pump Supported"
+    id: "${devicename}_parameter_setting_1_dhw_pump_supported"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x1000
+  # Bit: 13, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Supports Disinfection"
+    id: "${devicename}_parameter_setting_1_supports_disinfection"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x2000
+  # Bit: 14, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Supports Water Tank Electric Heater TBH"
+    id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x4000
+  # Bit: 15, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 1 Enable Water Heating"
+    id: "${devicename}_parameter_setting_1_enable_water_heating"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x8000
+
+  # Register: 211
+  # Bit: 0, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 IBH AHS Installation Position"
+    id: "${devicename}_parameter_setting_2_ibh_ahs_installation_position"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x1
+  # Bit: 1, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Tbt Sensor Enable"
+    id: "${devicename}_parameter_setting_2_tbt_sensor_enable"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x2
+  # Bit: 2, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Ta Sensor Position"
+    id: "${devicename}_parameter_setting_2_ta_sensor_position"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x4
+  # Bit: 3, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Double Zone Setting Is Valid"
+    id: "${devicename}_parameter_setting_2_double_zone_setting_is_valid"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x8
+  # Bit: 4, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Setting The High Low Temperature Of Heating Mode T1S"
+    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_heating_mode_t1s"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x10
+  # Bit: 5, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Setting The High Low Temperature Of Cooling Mode T1S"
+    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x20
+  # Bit: 6, default: false, TODO: verify default
+  # Midea: T1B sensor enable
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Tw2 Enabled"
+    id: "${devicename}_parameter_setting_2_tw2_enabled"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x40
+  # Bit: 7, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Smart Grid"
+    id: "${devicename}_parameter_setting_2_smart_grid"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x80
+  # Bit: 8, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Port Definition"
+    id: "${devicename}_parameter_setting_2_port_definition"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x100
+  # Bit: 9, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Solar Energy Kit Enable"
+    id: "${devicename}_parameter_setting_2_solar_energy_kit_enable"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x200
+  # Bit: 10, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Solar Energy Input Port"
+    id: "${devicename}_parameter_setting_2_solar_energy_input_port"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x400
+  # Bit: 11, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Piping Length Selection"
+    id: "${devicename}_parameter_setting_2_piping_length_selection"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x800
+  # Bit: 12, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Tbt2 Sensor Is Valid"
+    id: "${devicename}_parameter_setting_2_tbt2_sensor_is_valid"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x1000
+  # Bit: 13, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Enable Temperature Collection Kit"
+    id: "${devicename}_parameter_setting_2_enable_temperature_collection_kit"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x2000
+  # Bit: 14, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 M1M2 Is Used For AHS Control"
+    id: "${devicename}_parameter_setting_2_m1m2_is_used_for_ahs_control"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x4000
+  # Bit: 15, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Parameter Setting 2 Reserved BIT 15"
+    id: "${devicename}_parameter_setting_2_reserved_bit_15"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x8000
+  # Template binary sensor which shows if the heat pump is running
+  - platform: template
+    name: "${entity_prefix} Heat pump running"
+    id: "${devicename}_heat_pump_running"
+    lambda: |-
+      int fan_speed = id(${devicename}_fan_speed).state;
+      int compressor_frequency = id(${devicename}_compressor_operating_frequency).state;
+      bool external_water_pump_on = id(${devicename}_load_output_external_water_pump_p_o).state;
+
+      // If fan_speed is above 0, compressor_frequency is above 0 or external_water_pump_on is true,
+      // then the outside unit of the heat pump system is running
+      if (fan_speed > 0 || compressor_frequency > 0 || external_water_pump_on) {
+          return true;
+      } else {
+          return false;
+      }
+
+switch:
+  - platform: factory_reset
+    name: "Restart ${description} with Factory Default Settings"
+  # Register: 0 -> Bit 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Power DHW T5S"
+    id: "${devicename}_power_dhw_t5s"
+    register_type: holding
+    entity_category: config
+    address: 0x0
+    bitmask: 0x4
+  # Register: 5 -> Bit 12
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Weather Compensation Zone 1"
+    id: "${devicename}_weather_compensation_zone_1"
+    register_type: holding
+    entity_category: config
+    address: 0x5
+    bitmask: 0x1000
+  # Register: 5 -> Bit 13
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Weather Compensation Zone 2"
+    id: "${devicename}_weather_compensation_zone_2"
+    register_type: holding
+    entity_category: config
+    address: 0x5
+    bitmask: 0x2000
+
+  # Register: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Forced Water Tank Heating On/Off"
+    id: "${devicename}_forced_water_tank_heating_on_off"
+    icon: mdi:fire-alert
+    address: 0x7
+    register_type: holding
+    entity_category: config
+    write_lambda: |-
+      uint16_t value = 0;
+
+      if (x == 1) {
+        ESP_LOGI("main", "Set forced water tank heating ON");
+        value = 1;
+      } else {
+        ESP_LOGI("main", "Set forced water tank heating OFF");
+        value = 2;
+      }
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x7, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+
+number:
+  # Register: 2 (Zone 1, Low)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Set Water Temperature T1S Zone 1"
+    id: "${devicename}_set_water_temperature_t1s_zone_1"
+    register_type: holding
+    address: 0x2
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 60
+    mode: slider
+    lambda: |-
+      // Update the global var unmasked_value_water_temperature_t1s
+      id(unmasked_value_water_temperature_t1s) = x;
+
+      // ESP_LOGI("","unmasked_value_water_temperature_t1s: %d",id(unmasked_value_water_temperature_t1s));
+
+      uint8_t value_bytes[2];
+      uint16_t value = x;
+      value_bytes[0] = value >> 8;     // high byte (zone 2)
+      value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+
+      // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
+      // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
+
+      return value_bytes[1];
+    write_lambda: |-
+      uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
+      uint8_t value_byte = x;                                    // New byte value with the new temp for zone 1
+
+      value &= 0xFF00;      // Clear the lower byte of the value
+      value |= value_byte;  // Update the lower byte with the new byte value
+
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_water_temperature_t1s));
+      // ESP_LOGI("main", "New value: %d", value);
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+
+  # Register: 2 (Zone 2, High)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Set Water Temperature T1S Zone 2"
+    id: "${devicename}_set_water_temperature_t1s_zone_2"
+    register_type: holding
+    address: 0x2
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 60
+    mode: slider
+    lambda: |-
+      // The global var unmasked_value_water_temperature_t1s is already
+      // updated in the previous, where the low byte variant is executed
+      // id(unmasked_value_water_temperature_t1s) = x;
+
+      uint8_t value_bytes[2];
+      uint16_t value = x;
+      value_bytes[0] = value >> 8;     // high byte (zone 2)
+      value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+
+      return value_bytes[0];
+    write_lambda: |-
+      uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
+      uint8_t value_byte = x;                                    // New byte value with the new temp for zone 2
+
+      value &= 0x00FF;             // Clear the upper byte of the value
+      value |= (value_byte << 8);  // Update the upper byte with the new byte value
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+
+  # Register: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Set DHW Tank Temperature T5s"
+    id: "${devicename}_set_dhw_tank_temperature_t5s"
+    register_type: holding
+    address: 0x4
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 60
+    mode: slider
+
+  # Register: 6 (Zone 1, Low)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Weather Compensation Curve Zone 1"
+    id: "${devicename}_weather_compensation_curve_zone_1"
+    register_type: holding
+    address: 0x6
+    value_type: U_WORD
+    entity_category: config
+    min_value: 1
+    max_value: 9
+    mode: slider
+    lambda: |-
+      // Update the global var unmasked_curve_selection
+      id(unmasked_curve_selection) = x;
+
+      // ESP_LOGI("","unmasked_curve_selection: %d",id(unmasked_curve_selection));
+
+      uint8_t value_bytes[2];
+      uint16_t value = x;
+      value_bytes[0] = value >> 8;     // high byte (zone 2)
+      value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+
+      // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
+      // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
+
+      return value_bytes[1];
+    write_lambda: |-
+      uint16_t value = id(unmasked_curve_selection); // The original unmasked value
+      uint8_t value_byte = x;                        // New byte value with the new temp for zone 1
+
+      value &= 0xFF00;      // Clear the lower byte of the value
+      value |= value_byte;  // Update the lower byte with the new byte value
+
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_curve_selection));
+      // ESP_LOGI("main", "New value: %d", value);
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x6, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+  # Register: 6 (Zone 2, High)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Weather Compensation Curve Zone 2"
+    id: "${devicename}_weather_compensation_curve_zone_2"
+    register_type: holding
+    address: 0x6
+    value_type: U_WORD
+    entity_category: config
+    min_value: 1
+    max_value: 9
+    mode: slider
+    lambda: |-
+      // The global var unmasked_curve_selection is already
+      // updated in the previous, where the low byte variant is executed
+      // id(unmasked_curve_selection) = x;
+
+      uint8_t value_bytes[2];
+      uint16_t value = x;
+      value_bytes[0] = value >> 8;     // high byte (zone 2)
+      value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+
+      return value_bytes[0];
+    write_lambda: |-
+      uint16_t value = id(unmasked_curve_selection); // The original unmasked value
+      uint8_t value_byte = x;                        // New byte value with the new temp for zone 2
+
+      value &= 0x00FF;             // Clear the upper byte of the value
+      value |= (value_byte << 8);  // Update the upper byte with the new byte value
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x6, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+  # Register: 11, seems to be the same as register 2
+  # Register: 12, seems to be the same as register 2
+  # Register: 209, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DHW Pump Return Running Time"
+    id: "${devicename}_dhw_pump_return_running_time"
+    register_type: holding
+    address: 0xd1
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 120
+  # Register: 212, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT5_On"
+    id: "${devicename}_dt5_on"
+    register_type: holding
+    address: 0xd4
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 2
+    max_value: 10
+  # Register: 213, default: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT1S5"
+    id: "${devicename}_dt1s5"
+    register_type: holding
+    address: 0xd5
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 40
+  # Register: 214, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T Interval DHW"
+    id: "${devicename}_t_interval_dhw"
+    register_type: holding
+    address: 0xd6
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 30
+  # Register: 215, default: 43
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4 DHW max"
+    id: "${devicename}_t4_dhw_max"
+    register_type: holding
+    address: 0xd7
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 35
+    max_value: 43
+  # Register: 216, default: -10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4 DHW min"
+    id: "${devicename}_t4dhwmin"
+    register_type: holding
+    address: 0xd8
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 5
+  # Register: 217, default: 30
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} t TBH Delay"
+    id: "${devicename}_t_tbh_delay"
+    register_type: holding
+    address: 0xd9
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 0
+    max_value: 240
+    step: 5
+  # Register: 218, default: 5
+  # Also known as dT5S TBH Off (dt5s_tbh_off)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT5 TBH Off"
+    id: "${devicename}_dt5_tbh_off"
+    register_type: holding
+    address: 0xda
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 0
+    max_value: 10
+  # Register: 219, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4 TBH On"
+    id: "${devicename}_t4_tbh_on"
+    register_type: holding
+    address: 0xdb
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 20
+  # Register: 220, default: 65
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature For Disinfection Operation"
+    id: "${devicename}_t5s_di"
+    register_type: holding
+    address: 0xdc
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 60
+    max_value: 70
+  # Register: 221, default: 210
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Maximum Disinfection Duration"
+    id: "${devicename}_t_di_max"
+    register_type: holding
+    address: 0xdd
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 90
+    max_value: 300
+  # Register: 222, default: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Disinfection High Temperature Duration"
+    id: "${devicename}_t_di_hightemp"
+    register_type: holding
+    address: 0xde
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 60
+  # Register: 223, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Time Interval Of Compressor Startup In Cooling mode"
+    id: "${devicename}_t_interval_c"
+    register_type: holding
+    address: 0xdf
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 30
+  # Register: 224, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT1SC"
+    id: "${devicename}_dt1sc"
+    register_type: holding
+    address: 0xe0
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 2
+    max_value: 10
+  # Register: 225, default: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dTSC"
+    id: "${devicename}_dtsc"
+    register_type: holding
+    address: 0xe1
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 1
+    max_value: 10
+  # Register: 226, default: 43
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4cmax"
+    id: "${devicename}_t4cmax"
+    register_type: holding
+    address: 0xe2
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 35
+    max_value: 46
+  # Register: 227, default: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4cmin"
+    id: "${devicename}_t4cmin"
+    register_type: holding
+    address: 0xe3
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 25
+  # Register: 228, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Time Interval Of Compressor Startup In Heating mode"
+    id: "${devicename}_t_interval_h"
+    register_type: holding
+    address: 0xe4
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 5
+    max_value: 60
+  # Register: 229, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dT1SH"
+    id: "${devicename}_dt1sh"
+    register_type: holding
+    address: 0xe5
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 2
+    max_value: 10
+  # Register: 230, default: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} dTSH"
+    id: "${devicename}_dtsh"
+    register_type: holding
+    address: 0xe6
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 1
+    max_value: 10
+  # Register: 231, default: 25
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4hmax"
+    id: "${devicename}_t4hmax"
+    register_type: holding
+    address: 0xe7
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 35
+  # Register: 232, default: -15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4hmin"
+    id: "${devicename}_t4hmin"
+    register_type: holding
+    address: 0xe8
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 5
+  # Register: 233, default: -5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Ambient Temperature For Enabling Hydraulic Module Auxiliary Electric Heating IBH"
+    id: "${devicename}_t4_ibh_on"
+    register_type: holding
+    address: 0xe9
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -15
+    max_value: 10
+  # Register: 234, default: 5, TODO: verify min/max value
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
+    id: "${devicename}_dt1_ibh_on"
+    register_type: holding
+    address: 0xea
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 1
+    max_value: 7
+  # Register: 235, default: 30
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
+    id: "${devicename}_t_ibh_delay"
+    register_type: holding
+    address: 0xeb
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 15
+    max_value: 120
+  # Register: 237, default: 10, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Ambient Temperature Trigger For AHS"
+    id: "${devicename}_t4_ahs_on"
+    register_type: holding
+    address: 0xed
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -15
+    max_value: 10
+  # Register: 238, default: 5, TODO: verify max/max value
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Trigger Temperature Difference Between T1S And Current Heat for AHS"
+    id: "${devicename}_dt1_ahs_on"
+    register_type: holding
+    address: 0xee
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 1
+    max_value: 7
+  # Register: 241, default: 120
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Water Heating Max Duration"
+    id: "${devicename}_t_dhwhp_max"
+    register_type: holding
+    address: 0xf1
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 10
+    max_value: 600
+  # Register: 242, default: 30
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T DHWHP Restrict"
+    id: "${devicename}_t_dhwhp_restrict"
+    register_type: holding
+    address: 0xf2
+    value_type: U_WORD
+    unit_of_measurement: min
+    entity_category: config
+    min_value: 10
+    max_value: 600
+  # Register: 243, default: 25
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4autocmin"
+    id: "${devicename}_t4autocmin"
+    register_type: holding
+    address: 0xf3
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 29
+  # Register: 244, default: 17
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4autohmax"
+    id: "${devicename}_t4autohmax"
+    register_type: holding
+    address: 0xf4
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 10
+    max_value: 17
+  # Register: 245, default: 25
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Heating Or Cooling Temperature When Holiday Mode Is Active"
+    id: "${devicename}_t1s_h_a_h"
+    register_type: holding
+    address: 0xf5
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 29
+  # Register: 246, default: 25
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Domestic Hot Water Temperature When Holiday Mode is Active"
+    id: "${devicename}_t5s_h_a_dhw"
+    register_type: holding
+    address: 0xf6
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 20
+    max_value: 25
+  # Register: 247, default: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} PER START Ratio"
+    id: "${devicename}_per_start_ratio"
+    register_type: holding
+    address: 0xf7
+    value_type: U_WORD
+    entity_category: config
+    min_value: 10
+    max_value: 100
+    step: 10
+  # Register: 248, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} TIME ADJUST"
+    id: "${devicename}_time_adjust"
+    register_type: holding
+    address: 0xf8
+    value_type: U_WORD
+    entity_category: config
+    min_value: 1
+    max_value: 60
+  # Register: 249, default: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} DTbt2"
+    id: "${devicename}_dtbt2"
+    register_type: holding
+    address: 0xf9
+    value_type: U_WORD
+    entity_category: config
+    min_value: 0
+    max_value: 50
+  # Register: 250, default: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} IBH1 Power"
+    id: "${devicename}_ibh1_power"
+    register_type: holding
+    address: 0xfa
+    value_type: U_WORD
+    unit_of_measurement: W
+    entity_category: config
+    min_value: 0
+    max_value: 200
+  # Register: 251, default: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} IBH2 Power"
+    id: "${devicename}_ibh2_power"
+    register_type: holding
+    address: 0xfb
+    value_type: U_WORD
+    unit_of_measurement: W
+    entity_category: config
+    min_value: 0
+    max_value: 200
+  # Register: 252, default: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} TBH Power"
+    id: "${devicename}_tbh_power"
+    register_type: holding
+    address: 0xfc
+    value_type: U_WORD
+    unit_of_measurement: W
+    entity_category: config
+    min_value: 0
+    max_value: 200
+  # Register: 255, default: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Rise Day Number"
+    id: "${devicename}_t_dryup"
+    register_type: holding
+    address: 0xff
+    value_type: U_WORD
+    entity_category: config
+    min_value: 4
+    max_value: 15
+  # Register: 256, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Drying Day Number"
+    id: "${devicename}_t_highpeak"
+    register_type: holding
+    address: 0x100
+    value_type: U_WORD
+    entity_category: config
+    min_value: 3
+    max_value: 7
+  # Register: 257, default: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Temperature Drop Day Number"
+    id: "${devicename}_t_dryd"
+    register_type: holding
+    address: 0x101
+    value_type: U_WORD
+    entity_category: config
+    min_value: 4
+    max_value: 15
+  # Register: 258, default: 45
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Highest Drying Temperature"
+    id: "${devicename}_t_drypeak"
+    register_type: holding
+    address: 0x102
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 30
+    max_value: 55
+  # Register: 259, default: 72
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Running Time Of Floor Heating For The First Time"
+    id: "${devicename}_t_firstfh"
+    register_type: holding
+    address: 0x103
+    value_type: U_WORD
+    unit_of_measurement: hr
+    entity_category: config
+    min_value: 48
+    max_value: 96
+  # Register: 260, default: 25
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1S Of Floor Heating For The First Time"
+    id: "${devicename}_t1s_firstfh"
+    register_type: holding
+    address: 0x104
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 35
+  # Register: 261, default: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetC1"
+    id: "${devicename}_t1setc1"
+    register_type: holding
+    address: 0x105
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 25
+  # Register: 262, default: 16
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetC2"
+    id: "${devicename}_t1setc2"
+    register_type: holding
+    address: 0x106
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 25
+  # Register: 263, default: 35
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4C1"
+    id: "${devicename}_t4c1"
+    register_type: holding
+    address: 0x107
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 46
+  # Register: 264, default: 25
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4C2"
+    id: "${devicename}_t4c2"
+    register_type: holding
+    address: 0x108
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -5
+    max_value: 46
+  # Register: 265, default: 35
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetH1"
+    id: "${devicename}_t1seth1"
+    register_type: holding
+    address: 0x109
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 65
+  # Register: 266, default: 28
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T1SetH2"
+    id: "${devicename}_t1seth2"
+    register_type: holding
+    address: 0x10a
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 65
+  # Register: 267, default: -5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4H1"
+    id: "${devicename}_t4h1"
+    register_type: holding
+    address: 0x10b
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 30
+  # Register: 268, default: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} T4H2"
+    id: "${devicename}_t4h2"
+    register_type: holding
+    address: 0x10c
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: -25
+    max_value: 30
+  # Register: 270 (Low, heating), default: 0.5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} t_T4 FRESH_H"
+    id: "${devicename}_t_t4_fresh_h"
+    register_type: holding
+    address: 0x10e
+    value_type: U_WORD
+    unit_of_measurement: hr
+    entity_category: config
+    min_value: 0.5
+    max_value: 6.0
+    step: 0.5
+    mode: slider
+    lambda: |-
+      // Update the global var unmasked_value_register_270
+      id(unmasked_value_register_270) = x;
+
+      float value_floats[2];
+      uint16_t value = x;
+
+      // Extracting the high byte (Cooling) and storing it as a float
+      value_floats[0] = (float)(value >> 8) * 0.5;
+
+      // Extracting the low byte (Heating) and storing it as a float
+      value_floats[1] = (float)(value & 0x00FF) * 0.5;
+
+      // ESP_LOGI("","t_T4 FRESH_H is %f", value_floats[1]);
+      // ESP_LOGI("","t_T4 FRESH_C is %f", value_floats[0]);
+
+      return value_floats[1];
+    write_lambda: |-
+      uint16_t value = id(unmasked_value_register_270); // The original unmasked value
+      float input = x * 2.0;                            // Multiply x (the input from the slider) by 2
+
+      // Multiply the input from the slider (x) by by
+      // and convert to uint8_t
+      uint8_t input_byte = static_cast<uint8_t>(x * 2.0);
+
+      value &= 0xFF00;      // Clear the lower byte of the value
+      value |= input_byte;  // Update the lower byte with the new byte value
+
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_270));
+      // ESP_LOGI("main", "New value: %d", value);
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+  # Register: 270 (High, cooling), default: 0.5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} t_T4 FRESH_C"
+    id: "${devicename}_t_t4_fresh_c"
+    register_type: holding
+    address: 0x10e
+    value_type: U_WORD
+    unit_of_measurement: hr
+    entity_category: config
+    min_value: 0.5
+    max_value: 6.0
+    step: 0.5
+    mode: slider
+    lambda: |-
+      // Update the global var unmasked_value_register_270
+      id(unmasked_value_register_270) = x;
+
+      float value_floats[2];
+      uint16_t value = x;
+
+      // Extracting the high byte (Cooling) and storing it as a float
+      value_floats[0] = (float)(value >> 8) * 0.5;
+
+      // Extracting the low byte (Heating) and storing it as a float
+      value_floats[1] = (float)(value & 0x00FF) * 0.5;
+
+      return value_floats[1];
+    write_lambda: |-
+      uint16_t value = id(unmasked_value_register_270); // The original unmasked value
+      float input = x * 2.0;                            // Multiply x (the input from the slider) by 2
+
+      // Multiply the input from the slider (x) by by
+      // and convert to uint8_t
+      uint8_t input_byte = static_cast<uint8_t>(x * 2.0);
+
+      value &= 0x00FF;             // Clear the upper byte of the value
+      value |= (input_byte << 8);  // Update the upper byte with the new byte value
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+  # Register: 271, default: 2
+  # In modbus register this is called T_PUMPI_DELAY, in the menu this is called t_DELAY_PUMP
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Built-in Circulating Pump Delay"
+    id: "${devicename}_t_delay_pump"
+    register_type: holding
+    address: 0x10f
+    value_type: U_WORD
+    unit_of_measurement: min
+    multiply: 2.0
+    entity_category: config
+    min_value: 2.0
+    max_value: 20.0
+    step: 0.5
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
+  # Active State
+  - platform: template
+    name: "${entity_prefix} Active State"
+    id: "${devicename}_active_state"
+    lambda: |-
+      if (id(${devicename}_load_output_run).state) {
+        // The heat pump is on
+        if (id(${devicename}_status_bit_1_defrosting).state) {
+          return {"Defrosting"};
+        } else if (id(${devicename}_load_output_sv1).state) {
+          return {"DHW"};
+        } else {
+          if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state) {
+            return {"Heating"};
+          } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state) {
+            return {"Cooling"};
+          } else {
+            return {"Unknown"};
+          }
+        }
+      } else {
+        // The heat pump is off
+        return {"Inactive"};
+      }
+  # Current fault mapped to error code
+  - platform: template
+    name: "${entity_prefix} Current Fault Error Code"
+    id: "${devicename}_current_fault_error_code"
+    lambda: |-
+      int current_fault = id(${devicename}_current_fault).state;
+
+      // ESP_LOGI("main", "Current fault: %d", current_fault);
+
+      if (current_fault >= 0 && current_fault <= 143) {
+        return std::to_string(current_fault);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9
+  # Current fault mapped to error code description
+  - platform: template
+    name: "${entity_prefix} Current Fault Error Code Description"
+    id: "${devicename}_current_fault_error_code_description"
+    lambda: |-
+      int current_fault = id(${devicename}_current_fault).state;
+
+      // ESP_LOGI("main", "Current fault: %d", current_fault);
+
+      if (current_fault >= 0 && current_fault <= 143) {
+        return std::to_string(current_fault);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> Water flow fault(E8 displayed 3 times)
+        - 2 -> Phase loss or neutral wire and live wire are connected reversely(only for three phase unit)
+        - 3 -> Communication fault between controller and hydraulic module
+        - 4 -> Final outlet water temp. sensor(T1) fault
+        - 5 -> Water tank temp. sensor(T5) fault
+        - 6 -> The condenser outlet refrigerant temperature sensor(T3) fault
+        - 7 -> The ambient temperature sensor(T4) fault
+        - 8 -> Buffer tank up temp. sensor(Tbt1) fault
+        - 9 -> Water flow failure
+        - 10 -> Suction temp. sensor (Th) fault
+        - 11 -> Discharge temp. sensor (Tp) fault
+        - 12 -> Solar temp. sensor(Tsolar) fault
+        - 13 -> Buffer tank low temp. sensor(Tbt2) fault
+        - 14 -> Inlet water temp. sensor(Tw_in) malfunction
+        - 15 -> Hydraulic module EEprom failure
+        - 20 -> Low pressure switch protection
+        - 21 -> High pressure switch protection
+        - 23 -> Compressor overcurrent protection
+        - 24 -> High discharge temperature protection
+        - 25 -> |Tw_out - Tw_in| value too big protection
+        - 26 -> Inverter module protection
+        - 31 -> Anti-freeze mode
+        - 33 -> High temperature protection of refrigerant outlet temp. of condenser
+        - 38 -> Tw_out - Tw_in unusual protection
+        - 39 -> Communication fault between main board PCB B and main control board of hydraulic module
+        - 40 -> Communication fault between inverter module PCB A and main control board PCB B
+        - 41 -> Refrigerant liquid temp. sensor(T2) fault
+        - 42 -> Refrigerant gas temp. sensor(T2B) fault
+        - 43 -> Three times P6(L0/L1) protection
+        - 44 -> Room temo. sensor (Ta) fault
+        - 45 -> DC fan motor fault
+        - 46 -> Voltage protection
+        - 47 -> Pressure sensor fault
+        - 48 -> Outlet water for zone 2 temp. sensor(Tw2) fault
+        - 49 -> Outlet water temp. sensor(Tw_out) fault
+        - 50 -> 3 times PP protection and Tw_out<7℃
+        - 52 -> Communication fault between hydraulic module parallel
+        - 53 -> Communication error between main board and thermostat transfer board
+        - 54 -> Inverter module board EE PROM fault
+        - 55 -> H6 display 10 times in 2 hours
+        - 57 -> Low pressure protection (Pe<0.6) occurred 3 times in 1 hour
+        - 65 -> Transducer module temperature too high protection
+        - 112 -> PED PCB fault
+        - 116 -> Low DC generatrix voltage protection
+        - 134 -> Module protection
+        - 135 -> DC generatrix low voltage protection
+        - 136 -> DC generatrix high voltage protection
+        - 138 -> MCE fault
+        - 139 -> Zero speed protection
+        - 141 -> Phase sequence fault
+        - 142 -> Speed difference > 15Hz protection between the front and the back clock
+        - 143 -> Speed difference > 15Hz protection between the real and the setting speed
+  # Fault 1 mapped to error code
+  - platform: template
+    name: "${entity_prefix} Fault 1 Error Code"
+    id: "${devicename}_fault_1_error_code"
+    lambda: |-
+      int fault_one = id(${devicename}_fault_1).state;
+
+      if (fault_one >= 0 && fault_one <= 143) {
+        return std::to_string(fault_one);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9
+  # Fault 2 mapped to error code
+  - platform: template
+    name: "${entity_prefix} Fault 2 Error Code"
+    id: "${devicename}_fault_2_error_code"
+    lambda: |-
+      int fault_two = id(${devicename}_fault_2).state;
+
+      if (fault_two >= 0 && fault_two <= 143) {
+        return std::to_string(fault_two);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9
+  # Fault 3 mapped to error code
+  - platform: template
+    name: "${entity_prefix} Fault 3 Error Code"
+    id: "${devicename}_fault_3_error_code"
+    lambda: |-
+      int fault_three = id(${devicename}_fault_3).state;
+
+      if (fault_three >= 0 && fault_three <= 143) {
+        return std::to_string(fault_three);
+      } else {
+        return {"Unknown"};
+      }
+    filters:
+      - map:
+        - 0 -> OK
+        - 1 -> E0
+        - 2 -> E1
+        - 3 -> E2
+        - 4 -> E3
+        - 5 -> E4
+        - 6 -> E5
+        - 7 -> E6
+        - 8 -> E7
+        - 9 -> E8
+        - 10 -> E9
+        - 11 -> EA
+        - 12 -> Eb
+        - 13 -> Ec
+        - 14 -> Ed
+        - 15 -> EE
+        - 20 -> P0
+        - 21 -> P1
+        - 23 -> P3
+        - 24 -> P4
+        - 25 -> P5
+        - 26 -> P6
+        - 31 -> Pb
+        - 33 -> Pd
+        - 38 -> PP
+        - 39 -> H0
+        - 40 -> H1
+        - 41 -> H2
+        - 42 -> H3
+        - 43 -> H4
+        - 44 -> H5
+        - 45 -> H6
+        - 46 -> H7
+        - 47 -> H8
+        - 48 -> H9
+        - 49 -> HA
+        - 50 -> Hb
+        - 52 -> Hd
+        - 53 -> HE
+        - 54 -> HF
+        - 55 -> HH
+        - 57 -> HP
+        - 65 -> C7
+        - 112 -> bH
+        - 116 -> F1
+        - 134 -> L0
+        - 135 -> L1
+        - 136 -> L2
+        - 138 -> L4
+        - 139 -> L5
+        - 141 -> L7
+        - 142 -> L8
+        - 143 -> L9

@@ -16,6 +16,10 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
+  - id: unmasked_value_register_272
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 esphome:
   name: "${devicename}"
@@ -103,6 +107,134 @@ select:
       "6": 6
       "7": 7
       "8": 8
+  # Register: 272 (Low, first 4 bits), default: 0, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Zone 1 End Heating Mode Emission Type"
+    id: "${devicename}_zone_1_end_heating_mod_emission_type"
+    address: 0x110
+    value_type: U_WORD
+    optimistic: true
+    optionsmap:
+      "Fan Coil Unit": 0
+      "Radiator": 1
+      "Underfloor Heating": 2
+    lambda: |-
+      // Update the global var unmasked_value_register_272
+      id(unmasked_value_register_272) = x;
+
+      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
+      // Extracting 4-bit values
+      uint8_t zone2_c_emission = (x >> 12) & 0xF;
+      uint8_t zone1_c_emission = (x >> 8) & 0xF;
+      uint8_t zone2_h_emission = (x >> 4) & 0xF;
+      uint8_t zone1_h_emission = x & 0xF;
+
+      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
+      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
+      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
+      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
+
+      // Map/dictionary with the possible values
+      std::map<int, std::string> myOptions;
+      myOptions[0] = "Fan Coil Unit";
+      myOptions[1] = "Radiator";
+      myOptions[2] = "Underfloor Heating";
+
+      return myOptions[zone1_h_emission];
+    write_lambda: |-
+      // ESP_LOGI("zone1_h_emission", "Set option to %s (%lld)", x.c_str(), value);
+
+      uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
+      uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 1
+
+      new_value &= 0xFFF0;     // Clear the first 4 bits
+      new_value |= value_byte; // Set the first 4 bits with the new value
+
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
+      // ESP_LOGI("main", "New value: %d", new_value);
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
+  # Register: 272 (Low, second 4 bits), default: 0, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Zone 2 End Heating Mode Emission Type"
+    id: "${devicename}_zone_2_end_heating_mod_emission_type"
+    address: 0x110
+    value_type: U_WORD
+    optimistic: true
+    optionsmap:
+      "Fan Coil Unit": 0
+      "Radiator": 1
+      "Underfloor Heating": 2
+    lambda: |-
+      // Updating the global var unmasked_value_register_272 is already done
+      // in the first part of this register
+      ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
+      // Extracting 4-bit values
+      uint8_t zone2_c_emission = (x >> 12) & 0xF;
+      uint8_t zone1_c_emission = (x >> 8) & 0xF;
+      uint8_t zone2_h_emission = (x >> 4) & 0xF;
+      uint8_t zone1_h_emission = x & 0xF;
+
+      ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
+      ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
+      ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
+      ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
+
+      // Map/dictionary with the possible values
+      std::map<int, std::string> myOptions;
+      myOptions[0] = "Fan Coil Unit";
+      myOptions[1] = "Radiator";
+      myOptions[2] = "Underfloor Heating";
+
+      return myOptions[zone2_h_emission];
+    write_lambda: |-
+      ESP_LOGI("zone2_h_emission", "Set option to %s (%lld)", x.c_str(), value);
+
+      uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
+      uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 2
+
+      new_value &= 0xF0FF;             // Clear the second pair of 4 bits
+      new_value |= (value_byte << 8);  // Set the second pair of 4 bits with the new value
+
+      ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
+      ESP_LOGI("main", "New value: %d", new_value);
+
+      // esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
+      // ${devicename}->queue_command(set_payload_command);
+
+      return {};
+
+
+
+
+
+  # # Register: 272 (High, first 4 bits), default: 2, TODO: verify default
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "${entity_prefix} Zone 1 End Cooling Mode Emission Type"
+  #   id: "${devicename}_zone_1_end_cooling_mod_emission_type"
+  #   register_type: holding
+  #   address: 0x110
+  #   value_type: U_WORD
+  #   bitmask: 0x00F0
+  # # Register: 272 (High, second 4 bits), default: 2, TODO: verify default
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "${entity_prefix} Zone 2 End Cooling Mode Emission Type"
+  #   id: "${devicename}_zone_2_end_cooling_mod_emission_type"
+  #   register_type: holding
+  #   address: 0x110
+  #   value_type: U_WORD
+  #   bitmask: 0x000F
+
+
 
 sensor:
   - platform: uptime
@@ -773,42 +905,7 @@ sensor:
   # Register: 269 -> Is present in this config as a 'select'
   # Register: 270 -> Is present in this config as a 'number'
   # Register: 271 -> Is present in this config as a 'number'
-  # Register: 272 (Low, first 4 bits), default: 0, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Zone 1 End Heating Mode Emission Type"
-    id: "${devicename}_zone_1_end_heating_mod_emission_type"
-    register_type: holding
-    address: 0x110
-    value_type: U_WORD
-    bitmask: 0xF000
-  # Register: 272 (Low, second 4 bits), default: 0, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Zone 2 End Heating Mode Emission Type"
-    id: "${devicename}_zone_2_end_heating_mod_emission_type"
-    register_type: holding
-    address: 0x110
-    value_type: U_WORD
-    bitmask: 0x0F00
-  # Register: 272 (High, first 4 bits), default: 2, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Zone 1 End Cooling Mode Emission Type"
-    id: "${devicename}_zone_1_end_cooling_mod_emission_type"
-    register_type: holding
-    address: 0x110
-    value_type: U_WORD
-    bitmask: 0x00F0
-  # Register: 272 (High, second 4 bits), default: 2, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Zone 2 End Cooling Mode Emission Type"
-    id: "${devicename}_zone_2_end_cooling_mod_emission_type"
-    register_type: holding
-    address: 0x110
-    value_type: U_WORD
-    bitmask: 0x000F
+  # Register: 272 -> Is present in this config as a 'select'
 
 binary_sensor:
   # Register: 0

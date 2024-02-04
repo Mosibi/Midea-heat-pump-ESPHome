@@ -361,7 +361,7 @@ sensor:
     id: "${devicename}_tbt2"
     register_type: holding
     address: 0x79
-    value_type: s_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
   # Register: 122
   - platform: modbus_controller
@@ -566,7 +566,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time heating energy produced for master unit"
-    id: "${devicename}_real-time_heating_energy_produced_for_master_unit"
+    id: "${devicename}_real_time_heating_energy_produced_for_master_unit"
     register_type: holding
     address: 0x94
     value_type: U_WORD
@@ -574,7 +574,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time heating RE energy produced for master unit"
-    id: "${devicename}_real-time_heating_re_energy_produced_for_master_unit"
+    id: "${devicename}_real_time_heating_re_energy_produced_for_master_unit"
     register_type: holding
     address: 0x95
     value_type: U_WORD
@@ -582,7 +582,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time COP in heating mode for master unit"
-    id: "${devicename}_real-time_cop_in_heating_mode_for_master_unit"
+    id: "${devicename}_real_time_cop_in_heating_mode_for_master_unit"
     register_type: holding
     address: 0x96
     value_type: U_WORD
@@ -590,7 +590,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time heating power consumed for master unit"
-    id: "${devicename}_real-time_heating_power_consumed_for_master_unit"
+    id: "${devicename}_real_time_heating_power_consumed_for_master_unit"
     register_type: holding
     address: 0x97
     value_type: U_WORD
@@ -674,14 +674,29 @@ sensor:
     register_type: holding
     address: 0xa9
     value_type: U_DWORD
-  # Register: 172 and 173
+
+  # Register: 171
+  # According the documentation, this should be "Total cooling RE energy produced for master unit low bit",
+  # but that is already covered by register 168
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Total cooling power consumed for master unit"
-    id: "${devicename}_total_cooling_power_consumed_for_master_unit"
+    name: "${entity_prefix} Register 171 Unknown"
+    id: "${devicename}_register_171_unknown"
+    register_type: holding
+    address: 0xa4
+    value_type: U_WORD
+
+  # Register: 172 and 173
+  # According the documentation, this should be "Total cooling power consumed for master unit",
+  # but that is already covered by registers 169 and 170
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "${entity_prefix} Registers 172 And 173 Unknown"
+    id: "${devicename}_registers_172_and_173_unknown"
     register_type: holding
     address: 0xac
     value_type: U_DWORD
+
   # Register: 174 and 175
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -706,70 +721,88 @@ sensor:
     register_type: holding
     address: 0xb2
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 179
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time cooling energy produced for master unit"
-    id: "${devicename}_real-time_cooling_energy_produced_for_master_unit"
+    id: "${devicename}_real_time_cooling_energy_produced_for_master_unit"
     register_type: holding
     address: 0xb3
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 180
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time cooling RE energy produced for master unit"
-    id: "${devicename}_real-time_cooling_re_energy_produced_for_master_unit"
+    id: "${devicename}_real_time_cooling_re_energy_produced_for_master_unit"
     register_type: holding
     address: 0xb4
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 181
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time cooling power consumed for master unit"
-    id: "${devicename}_real-time_cooling_power_consumed_for_master_unit"
+    id: "${devicename}_real_time_cooling_power_consumed_for_master_unit"
     register_type: holding
     address: 0xb5
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 182
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time EER in cooling mode for master unit"
-    id: "${devicename}_real-time_eer_in_cooling_mode_for_master_unit"
+    id: "${devicename}_real_time_eer_in_cooling_mode_for_master_unit"
     register_type: holding
     address: 0xb6
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 183
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time DHW energy produced for master unit"
-    id: "${devicename}_real-time_dhw_energy_produced_for_master_unit"
+    id: "${devicename}_real_time_dhw_energy_produced_for_master_unit"
     register_type: holding
     address: 0xb7
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 184
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time DHW RE energy produced for master unit"
-    id: "${devicename}_real-time_dhw_re_energy_produced_for_master_unit"
+    id: "${devicename}_real_time_dhw_re_energy_produced_for_master_unit"
     register_type: holding
     address: 0xb8
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 185
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time DHW power consumed for master unit"
-    id: "${devicename}_real-time_dhw_power_consumed_for_master_unit"
+    id: "${devicename}_real_time_dhw_power_consumed_for_master_unit"
     register_type: holding
     address: 0xb9
     value_type: U_WORD
+    filters:
+      - multiply: 100
   # Register: 186
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "${entity_prefix} Real-time COP in DHW mode for master unit"
-    id: "${devicename}_real-time_cop_in_dhw_mode_for_master_unit"
+    id: "${devicename}_real_time_cop_in_dhw_mode_for_master_unit"
     register_type: holding
     address: 0xba
     value_type: U_WORD
+    filters:
+      - multiply: 100
 
   # The following register address 200-208 can only use 03H (Read register) function code.
   # Register address 209 and after can use 03H, 06H (write single register), 10H (write multiple register).
@@ -2919,14 +2952,14 @@ text_sensor:
     lambda: |-
       if (id(${devicename}_load_output_run).state) {
         // The heat pump is on
-        if (id(${devicename}_status_bit_1_defrosting).state) {
+        if (id(${devicename}_defrosting).state) {
           return {"Defrosting"};
         } else if (id(${devicename}_load_output_sv1).state) {
           return {"DHW"};
         } else {
-          if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state) {
+          if (id(${devicename}_room_thermostat_in_heating_mode).state) {
             return {"Heating"};
-          } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state) {
+          } else if (id(${devicename}_room_thermostat_in_cooling_mode).state) {
             return {"Cooling"};
           } else {
             return {"Unknown"};

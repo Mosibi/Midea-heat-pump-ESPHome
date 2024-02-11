@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.0.0] - 2024-02-11
 
 ### Changed
 
@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The following registers are changed from type `sensor` to `number` to make them configurable:
   - register: 270, t_T4 FRESH_H and t_T4 FRESH_C
   - register: 271, Built-in Circulating Pump Delay
-
+- Register 272: Emission type for heating zone 1 and 2 and cooling zone 1 and 2 is now configurable with a list of options
 
 ## [2.0.0] - 2024-01-20
 

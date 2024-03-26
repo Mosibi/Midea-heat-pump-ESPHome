@@ -989,16 +989,16 @@ binary_sensor:
   # Bit: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Power Floor Heating Zone 1"
-    id: "${devicename}_power_floor_heating_zone_1"
+    name: "${entity_prefix} Power Air Conditioner Zone 1"
+    id: "${devicename}_power_air_conditioner_zone_1"
     register_type: holding
     address: 0x0
     bitmask: 0x1
   # Bit: 1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Power Air Conditioner Zone 1"
-    id: "${devicename}_power_air_conditioner_zone_1"
+    name: "${entity_prefix} Power Floor Heating Zone 1"
+    id: "${devicename}_power_floor_heating_zone_1"
     register_type: holding
     address: 0x0
     bitmask: 0x2
@@ -2572,9 +2572,10 @@ number:
     address: 0xfa
     value_type: U_WORD
     unit_of_measurement: W
+    multiply: 0.01
     entity_category: config
     min_value: 0
-    max_value: 200
+    max_value: 20000
   # Register: 251, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2584,9 +2585,10 @@ number:
     address: 0xfb
     value_type: U_WORD
     unit_of_measurement: W
+    multiply: 0.01
     entity_category: config
     min_value: 0
-    max_value: 200
+    max_value: 20000
   # Register: 252, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -2596,9 +2598,10 @@ number:
     address: 0xfc
     value_type: U_WORD
     unit_of_measurement: W
+    multiply: 0.01
     entity_category: config
     min_value: 0
-    max_value: 200
+    max_value: 20000
   # Register: 255, default: 8
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

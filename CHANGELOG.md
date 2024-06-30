@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2024-06-30
+
+### Changed
+
+- Register 0: Bit 0, 1 and 3 changed from `binary sensor` to `switch` to make them configurable
+  - Bit 0: Power Air Conditioner Zone 1
+  - Bit 1: Power Floor Heating Zone 1
+  - Bit 3: Power Air Conditioner Zone 2
+
 ## [3.0.1] - 2024-06-23
 
 ### Fixed

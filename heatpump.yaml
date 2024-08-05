@@ -985,6 +985,16 @@ sensor:
   # Register: 271 -> Is present in this config as a 'number'
   # Register: 272 -> Is present in this config as a 'select'
 
+  # Template sensor to get the T1S value for DHW (T1S=T5+dT1S5).
+  - platform: template
+    name: "${entity_prefix} T1S DHW"
+    id: "${devicename}_t1s_dhw"
+    lambda: |-
+      int dt1s5 = id(${devicename}_dt1s5).state;
+      int t5 = id(${devicename}_water_tank_temperature_t5).state;
+      int t1s_dhw = t5 + dt1s5;
+      return t1s_dhw;
+
 binary_sensor:
   # Register: 0
   # Bit: 0 -> Is present in this config as a 'switch'

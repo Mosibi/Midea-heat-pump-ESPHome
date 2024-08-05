@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2024-08-05
+
+### Changed
+
+- Add value "T1S DHW", which is the T1S value when in DHW mode (TS1 DHW = T5 + dT1S5)
+
 ## [3.1.0] - 2024-06-30
 
 ### Changed

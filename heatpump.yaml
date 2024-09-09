@@ -746,6 +746,7 @@ sensor:
     id: "${devicename}_electricity_consumption"
     register_type: holding
     unit_of_measurement: "kWh"
+    device_class: energy
     state_class: total_increasing
     address: 0x8f
     value_type: U_DWORD
@@ -757,6 +758,7 @@ sensor:
     id: "${devicename}_power_output"
     register_type: holding
     unit_of_measurement: "kWh"
+    device_class: energy
     state_class: total_increasing
     address: 0x91
     value_type: U_DWORD

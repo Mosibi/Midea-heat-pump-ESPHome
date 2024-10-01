@@ -2906,14 +2906,15 @@ text_sensor:
           return {"Defrosting"};
         } else if (id(${devicename}_load_output_sv1).state) {
           return {"DHW"};
+        } else if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state 
+          || id(${devicename}_power_floor_heating_zone_1).state) {
+          return {"Heating"};
+        } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state
+          || id(${devicename}_power_air_conditioner_zone_1).state
+          || id(${devicename}_power_air_conditioner_zone_2).state) {
+          return {"Cooling"};
         } else {
-          if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state) {
-            return {"Heating"};
-          } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state) {
-            return {"Cooling"};
-          } else {
-            return {"Unknown"};
-          }
+          return {"Unknown"};
         }
       } else {
         // The heat pump is off

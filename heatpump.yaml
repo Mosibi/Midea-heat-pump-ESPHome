@@ -1886,18 +1886,25 @@ switch:
   - platform: factory_reset
     name: Restart with Factory Default Settings
   # Register: 0 -> Bit 0
+  # When Room Temperature Control is enabled, the temperature sensor in the remote controller
+  # will be used to define when the heatpump should be turned (powered) on or off
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Power Air Conditioner Zone 1"
-    id: "${devicename}_power_air_conditioner_zone_1"
+    name: "${entity_prefix} Room Temperature Control"
+    id: "${devicename}_room_temperature_control"
     register_type: holding
     address: 0x0
     bitmask: 0x1
   # Register: 0 -> Bit 1
+  # When Water Flow Temperature Control is enabled for thise zone, the target outlet water temperature
+  # will be used to define when the heatpump should be turned (powered) on or off
+  #
+  # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
+  # the room thermostat will decide when this will be on or off.
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Power Floor Heating Zone 1"
-    id: "${devicename}_power_floor_heating_zone_1"
+    name: "${entity_prefix} Water Flow Temperature Control Zone 1"
+    id: "${devicename}_water_flow_temperature_control_zone_1"
     register_type: holding
     address: 0x0
     bitmask: 0x2
@@ -1911,10 +1918,15 @@ switch:
     address: 0x0
     bitmask: 0x4
   # Register: 0 -> Bit 3
+  # When Water Flow Temperature Control is enabled for thise zone, the target outlet water temperature
+  # will be used to define when the heatpump should be turned (powered) on or off
+  #
+  # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
+  # the room thermostat will decide when this will be on or off.
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "${entity_prefix} Power Air Conditioner Zone 2"
-    id: "${devicename}_power_air_conditioner_zone_2"
+    name: "${entity_prefix} Water Flow Temperature Control Zone 2"
+    id: "${devicename}_water_flow_temperature_control_zone_2"
     register_type: holding
     address: 0x0
     bitmask: 0x8
@@ -2903,11 +2915,11 @@ text_sensor:
         } else if (id(${devicename}_load_output_sv1).state) {
           return {"DHW"};
         } else if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state 
-          || id(${devicename}_power_floor_heating_zone_1).state) {
+          || id(${devicename}_water_flow_temperature_control_zone_1).state) {
           return {"Heating"};
         } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state
-          || id(${devicename}_power_air_conditioner_zone_1).state
-          || id(${devicename}_power_air_conditioner_zone_2).state) {
+          || id(${devicename}_room_temperature_control).state
+          || id(${devicename}_water_flow_temperature_control_zone_2).state) {
           return {"Cooling"};
         } else {
           return {"Unknown"};

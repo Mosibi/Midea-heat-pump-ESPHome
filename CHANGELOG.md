@@ -5,9 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.2.1] - 2024-10-01
+
+## [4.0.0] - 2024-10-04
+
+### Changed
+
+- esp-idf is used as ESP32 framework instead of arduino (breaking change)
+  - This framework is recommended for ESP32 chips by ESPHome. Be aware that this is a breaking change. To apply this configuration update on an existing board, an one-time serial flash will be needed
+- Removed "ssid" and "password" from the wifi section. These will be stored by the captive portal component
+- Renamed "Power Air Conditioner Zone 1" to "Room Temperature Control", "Power Floor Heating Zone 1" to "Water Flow Temperature Control Zone 1" and "Power Air Conditioner Zone 2" to "Water Flow Temperature Control Zone 2"
 
 ### Fixed
+
+- "Active State" now also takes into account when the temperature is controlled by the water flow temperature and not only the room thermostat
+
+## [3.2.1] - 2024-10-01
+
+### Changed
 
 - 'Electricity Consumption' and 'Power Output' configured as device class 'energy'
 

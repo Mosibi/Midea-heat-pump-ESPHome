@@ -1,7 +1,6 @@
 substitutions:
   devicename: heatpump
   description: Heatpump Controller
-  entity_prefix: Heatpump
 
 globals:
   - id: unmasked_value_water_temperature_t1s

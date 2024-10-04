@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This framework is recommended for ESP32 chips by ESPHome. Be aware that this is a breaking change. To apply this configuration update on an existing board, an one-time serial flash will be needed
 - Removed "ssid" and "password" from the wifi section. These will be stored by the captive portal component
 - Renamed "Power Air Conditioner Zone 1" to "Room Temperature Control", "Power Floor Heating Zone 1" to "Water Flow Temperature Control Zone 1" and "Power Air Conditioner Zone 2" to "Water Flow Temperature Control Zone 2"
+- Removed "${entity_prefix} from all entries. Got a tip from user "Septillion" on https://tweakers.net that this is not needed (anymore?) in ESPHome (breaking change (potential))
+  - If needed, ESPHome will add the "friendly name" to an entity, which is "Heatpump Controller" in the current configuration.
 
 ### Fixed
 

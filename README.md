@@ -5,26 +5,45 @@ The Midea heat pump and clones like [Airwell](https://www.airwell.com/en/), [Art
 <span style="color: red;">**See below for a ready-made ESPHome compatible heatpump controller!!**</span>
 
 ## Changes between original project at 07-10-2024
+
 Mainly i have directly connected buffer to heatpump -in winter is heated, and in summer is cooled to cool by floor and recuperation -i defined fan coil unit to be able to cool to 5deg buffer. I have other controller to pumps to get heat/cool from buffer to rest of home...
 
 -all settings are read/write -added Register 0, 5, 210 and 211
+
 -corrected set emission type values at register 272 to be able to set
+
 -added COP calculated
+
 -added uptime at s and human readable days hours min and sec
+
 -added blinking led depends on status: wifi disconnected, connected, homeassistant connected/disconnected
+
 -add webpanel password protected
+
 -add product code decode
+
 -add status of heatpump as text descibed
+
 -added functionality to reenable Heat DHW, Zone1, Zone2 after specific time elapsed when is manually turn off -values are www or homeassistant ready to enter and switch enabling these features
+
 -Added Some default icons for homeassistant and web interface
+
 -Change check Heat Pump Running to check internal pump_i rather than external_pump ;)
+
 -map PWM pump position to percent -York example move 0-480
+
 -Commeneted some garbage:
+
 A) reserved bits -if !secret is removed (I don't understand why... but it's me ;) ) -then is logically to remove garbage not used by most of as
+
 B) commented statuses of more than 2 slave unit connected parallely -how many users use more than 1 heat pump ?
+
 -Automatically set cooling mode from 1st may or heating mode on 1st october
+
 -change for day delta T5s to 5deg and for night to 12deg -for energy save -heat often when solar production is more predicted -mean day ;)
+
 -calculate T1s from outside temperature based on averange daily temp 
+
 
 ## Disclaimer
 

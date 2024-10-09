@@ -22,11 +22,11 @@ Mainly i have directly connected buffer to heatpump -in winter is heated, and in
 
 -add product code decode
 
--add status of heatpump as text descibed
+-add status of heatpump as text descibed -Register 200 Home Appliance Type
 
 -added functionality to reenable Heat DHW, Zone1, Zone2 after specific time elapsed when is manually turn off -values are www or homeassistant ready to enter and switch enabling these features
 
--Added Some default icons for homeassistant and web interface
+-Added all default icons for homeassistant and web interface
 
 -Change check Heat Pump Running to check internal pump_i rather than external_pump ;)
 
@@ -38,7 +38,7 @@ A) reserved bits -if !secret is removed (I don't understand why... but it's me ;
 
 B) commented statuses of more than 2 slave unit connected parallely -how many users use more than 1 heat pump ?
 
--Automatically set cooling mode from 1st may or heating mode on 1st october
+-Automatically set cooling mode from 1st may or heating mode on 1st october -this is good to know: When you set Radiand or floor heating emitent than you have limited cooling temp to about 18deg. I want lower so i set as zone1 emitent to fan fold which enables for me cooling to 5deg.
 
 -change for day delta T5s to 5deg and for night to 12deg -for energy save -heat often when solar production is more predicted -mean day ;)
 

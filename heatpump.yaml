@@ -90,6 +90,7 @@ select:
     modbus_controller_id: "${devicename}"
     name: "Power Input Limitation Type"
     id: "${devicename}_power_input_limitation_type"
+    icon: mdi:state-machine
     address: 0x10d
     value_type: U_WORD
     optimistic: true
@@ -108,6 +109,7 @@ select:
     modbus_controller_id: "${devicename}"
     name: "Zone 1 End Heating Mode Emission Type"
     id: "${devicename}_zone_1_end_heating_mode_emission_type"
+    icon: mdi:heat-wave
     address: 0x110
     value_type: U_WORD
     optimistic: true
@@ -160,6 +162,7 @@ select:
     modbus_controller_id: "${devicename}"
     name: "Zone 2 End Heating Mode Emission Type"
     id: "${devicename}_zone_2_end_heating_mode_emission_type"
+    icon: mdi:heat-wave
     address: 0x110
     value_type: U_WORD
     optimistic: true
@@ -211,6 +214,7 @@ select:
     modbus_controller_id: "${devicename}"
     name: "Zone 1 End Cooling Mode Emission Type"
     id: "${devicename}_zone_1_end_cooling_mode_emission_type"
+    icon: mdi:heat-wave
     address: 0x110
     value_type: U_WORD
     optimistic: true
@@ -262,6 +266,7 @@ select:
     modbus_controller_id: "${devicename}"
     name: "Zone 2 End Cooling Mode Emission Type"
     id: "${devicename}_zone_2_end_cooling_mode_emission_type"
+    icon: mdi:heat-wave
     address: 0x110
     value_type: U_WORD
     optimistic: true
@@ -311,7 +316,9 @@ select:
 
 sensor:
   - platform: uptime
-    name: "Uptime"
+    name: Uptime
+    id: "${devicename}_uptime"
+    icon: mdi:timelapse
   # Register: 1 -> Is present in this config as a 'select'
   # Register: 2 -> Is present in this config as a 'number'
   # Register: 3
@@ -319,6 +326,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Air Temperature Ts"
     id: "${devicename}_air_temperature_ts"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x3
     value_type: U_WORD
@@ -330,6 +338,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "DHW Tank Temperature T5s"
     id: "${devicename}_dhw_tank_temperature_t5s"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x4
     value_type: S_WORD
@@ -340,6 +349,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Forced Water Tank Heating"
     id: "${devicename}_forced_water_tank_heating"
+    icon: mdi:fire-alert
     register_type: holding
     address: 0x7
     value_type: U_WORD
@@ -348,6 +358,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Forced Tank Backup Heater"
     id: "${devicename}_forced_tbh"
+    icon: mdi:fire-alert
     register_type: holding
     address: 0x8
     value_type: U_WORD
@@ -356,6 +367,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Forced Hydraulic Module Rear Electric Heater 1"
     id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1"
+    icon: mdi:fire-alert
     register_type: holding
     address: 0x9
     value_type: U_WORD
@@ -364,6 +376,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "t_SG_MAX"
     id: "${devicename}_t_sg_max"
+    icon: mdi:clock
     register_type: holding
     address: 0xa
     value_type: U_WORD
@@ -374,6 +387,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Compressor Operating Frequency"
     id: "${devicename}_compressor_operating_frequency"
+    icon: mdi:sine-wave
     register_type: holding
     address: 0x64
     value_type: U_WORD
@@ -383,6 +397,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Operating Mode"
     id: "${devicename}_operating_mode"
+    icon: mdi:state-machine
     register_type: holding
     address: 0x65
     value_type: U_WORD
@@ -391,25 +406,27 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Fan Speed"
     id: "${devicename}_fan_speed"
+    icon: mdi:fan
     register_type: holding
     address: 0x66
     unit_of_measurement: "r/min"
     value_type: U_WORD
-    icon: mdi:fan
   # Register: 103
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "PMV Openness"
     id: "${devicename}_pmv_openness"
+    icon: mdi:valve
     register_type: holding
     address: 0x67
     value_type: U_WORD
-    unit_of_measurement: "Pa"
+    unit_of_measurement: "%"
   # Register: 104
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Inlet Temperature"
     id: "${devicename}_water_inlet_temperature"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x68
     value_type: S_WORD
@@ -419,6 +436,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Water Outlet Temperature"
     id: "${devicename}_water_outlet_temperature"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x69
     value_type: S_WORD
@@ -428,6 +446,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Condensor Temperature T3"
     id: "${devicename}_condensor_temperature_t3"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x6a
     value_type: S_WORD
@@ -437,6 +456,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Outdoor Ambient Temperature"
     id: "${devicename}_outdoor_ambient_temperature"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x6B
     unit_of_measurement: "°C"
@@ -446,6 +466,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Discharge Temperature"
     id: "${devicename}_discharge_temperature"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x6c
     value_type: S_WORD
@@ -455,6 +476,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Return Air Temperature"
     id: "${devicename}_return_air_temperature"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x6d
     value_type: S_WORD
@@ -464,6 +486,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Total Water Outlet Temperature T1"
     id: "${devicename}_total_water_outlet_temperature_t1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x6e
     value_type: S_WORD
@@ -473,6 +496,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "System Total Water Outlet Temperature T1B"
     id: "${devicename}_system_total_water_outlet_temperature_t1b"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x6f
     value_type: S_WORD
@@ -482,6 +506,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Refrigerant Liquid Side Temperature T2"
     id: "${devicename}_refrigerant_liquid_side_temperature_t2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x70
     value_type: S_WORD
@@ -491,6 +516,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Refrigerant Gas Side Temperature T2B"
     id: "${devicename}_refrigerant_gas_side_temperature_t2b"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x71
     value_type: S_WORD
@@ -500,6 +526,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Room Temperature Ta"
     id: "${devicename}_room_temperature_ta"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x72
     value_type: S_WORD
@@ -509,16 +536,17 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Water Tank Temperature T5"
     id: "${devicename}_water_tank_temperature_t5"
+    icon: mdi:thermometer-water
     register_type: holding
     address: 0x73
     unit_of_measurement: "°C"
     value_type: S_WORD
-    icon: mdi:thermometer-water
   # Register: 116
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit High Pressure"
     id: "${devicename}_outdoor_unit_high_pressure"
+    icon: mdi:car-brake-worn-linings
     register_type: holding
     address: 0x74
     value_type: U_WORD
@@ -528,6 +556,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: " Outdoor Unit Low Pressure"
     id: "${devicename}_outdoor_unit_low_pressure"
+    icon: mdi:car-brake-low-pressure
     register_type: holding
     address: 0x75
     value_type: U_WORD
@@ -537,6 +566,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Current"
     id: "${devicename}_outdoor_unit_current"
+    icon: mdi:alpha-a
     register_type: holding
     address: 0x76
     value_type: U_WORD
@@ -546,6 +576,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Voltage"
     id: "${devicename}_outdoor_unit_voltage"
+    icon: mdi:alpha-v
     register_type: holding
     address: 0x77
     value_type: U_WORD
@@ -556,6 +587,8 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Hydraulic Module Current 1"
     id: "${devicename}_hydraulic_module_current_1"
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
     register_type: holding
     address: 0x78
     value_type: U_WORD
@@ -565,6 +598,8 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Hydraulic Module Current 2"
     id: "${devicename}_hydraulic_module_current_2"
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
     register_type: holding
     address: 0x79
     value_type: U_WORD
@@ -573,6 +608,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Compressor Operation Time"
     id: "${devicename}_compressor_operation_time"
+    icon: mdi:av-timer
     register_type: holding
     address: 0x7a
     value_type: U_WORD
@@ -582,14 +618,17 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Unit Capacity"
     id: "${devicename}_unit_capacity"
+    icon: mdi:lightning-bolt-circle
     register_type: holding
     address: 0x7b
     value_type: U_WORD
+    unit_of_measurement: "kWh"
   # Register: 124
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Current Fault"
     id: "${devicename}_current_fault"
+    icon: mdi:alert-circle
     register_type: holding
     entity_category: diagnostic
     address: 0x7c
@@ -599,6 +638,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Fault 1"
     id: "${devicename}_fault_1"
+    icon: mdi:alert-circle
     register_type: holding
     entity_category: diagnostic
     address: 0x7d
@@ -608,6 +648,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Fault 2"
     id: "${devicename}_fault_2"
+    icon: mdi:alert-circle
     register_type: holding
     entity_category: diagnostic
     address: 0x7e
@@ -617,6 +658,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Fault 3"
     id: "${devicename}_fault_3"
+    icon: mdi:alert-circle
     register_type: holding
     entity_category: diagnostic
     address: 0x7f
@@ -626,6 +668,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Software Version"
     id: "${devicename}_software_version"
+    icon: mdi:information
     register_type: holding
     address: 0x82
     value_type: U_WORD
@@ -634,6 +677,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Wired Controller Version Number"
     id: "${devicename}_wired_controller_version_number"
+    icon: mdi:information
     register_type: holding
     address: 0x83
     value_type: U_WORD
@@ -642,6 +686,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Compressor Target Frequency"
     id: "${devicename}_compressor_target_frequency"
+    icon: mdi:sine-wave
     register_type: holding
     address: 0x84
     value_type: U_WORD
@@ -651,6 +696,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "DC Bus Current"
     id: "${devicename}_dc_bus_current"
+    icon: mdi:alpha-a
     register_type: holding
     address: 0x85
     value_type: U_WORD
@@ -660,6 +706,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "DC Bus Voltage"
     id: "${devicename}_dc_bus_voltage"
+    icon: mdi:alpha-v
     register_type: holding
     address: 0x86
     value_type: U_WORD
@@ -671,6 +718,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "TF module temperature"
     id: "${devicename}_tf_module_temperature"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x87
     unit_of_measurement: "°C"
@@ -680,6 +728,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Climate Curve T1S Calculated Value 1"
     id: "${devicename}_climate_curve_t1s_calculated_value_1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x88
     value_type: S_WORD
@@ -689,6 +738,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Climate Curve T1S Calculated Value 2"
     id: "${devicename}_climate_curve_t1s_calculated_value_2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x89
     value_type: S_WORD
@@ -698,6 +748,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Water Flow"
     id: "${devicename}_water_flow"
+    icon: mdi:waves-arrow-right
     register_type: holding
     address: 0x8a
     value_type: U_WORD
@@ -710,14 +761,17 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Limit Scheme Of Outdoor Unit Current"
     id: "${devicename}_limit_scheme_of_outdoor_unit_current"
+    icon: mdi:eye
     register_type: holding
     address: 0x8b
     value_type: U_WORD
+    unit_of_measurement: "kW"
   # Register: 140
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Ability Of Hydraulic Module"
     id: "${devicename}_ability_of_hydraulic_module"
+    icon: mdi:lightning-bolt
     register_type: holding
     address: 0x8c
     value_type: U_WORD
@@ -730,15 +784,18 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Tsolar"
     id: "${devicename}_tsolar"
+    icon: mdi:thermometer
     register_type: holding
     address: 0x8d
     value_type: U_WORD
+    unit_of_measurement: "°C"
   # Register: 143 and 144
   # U_DWORD combines this register with the next one
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Electricity Consumption"
     id: "${devicename}_electricity_consumption"
+    icon: mdi:lightning-bolt-outline
     register_type: holding
     unit_of_measurement: "kWh"
     device_class: energy
@@ -751,6 +808,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Output"
     id: "${devicename}_power_output"
+    icon: mdi:lightning-bolt-outline
     register_type: holding
     unit_of_measurement: "kWh"
     device_class: energy
@@ -765,6 +823,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Home Appliance Type"
     id: "${devicename}_home_appliance_type"
+    icon: mdi:state-machine
     register_type: holding
     address: 0xc8
     value_type: U_WORD
@@ -774,6 +833,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Home Appliance Sub Type"
     id: "${devicename}_home_appliance_sub_type"
+    icon: "mdi:information-box-outline"
     register_type: holding
     address: 0xc8
     value_type: U_WORD
@@ -783,6 +843,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Home Appliance Product Code"
     id: "${devicename}_home_appliance_product_code"
+    icon: "mdi:information-box-outline"
     register_type: holding
     address: 0xc8
     value_type: U_WORD
@@ -792,6 +853,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Cooling Zone 1"
     id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xc9
     value_type: S_WORD
@@ -802,6 +864,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Cooling Zone 2"
     id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xc9
     value_type: S_WORD
@@ -812,6 +875,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Cooling Zone 1"
     id: "${devicename}_temperature_lower_limit_of_t1s_cooling_zone_1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xca
     value_type: S_WORD
@@ -822,6 +886,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Cooling Zone 2"
     id: "${devicename}_temperature_lower_limit_of_t1s_cooling_zone_2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xca
     value_type: S_WORD
@@ -832,6 +897,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Heating Zone 1"
     id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xcb
     value_type: S_WORD
@@ -842,6 +908,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Heating Zone 2"
     id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xcb
     value_type: S_WORD
@@ -852,6 +919,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Heating Zone 1"
     id: "${devicename}_temperature_lower_limit_of_t1s_heating_zone_1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xcc
     value_type: S_WORD
@@ -862,6 +930,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Heating Zone 2"
     id: "${devicename}_temperature_lower_limit_of_t1s_heating_zone_2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xcc
     value_type: S_WORD
@@ -872,6 +941,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of TS Setting"
     id: "${devicename}_temperature_upper_limit_of_ts_setting"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xcd
     value_type: U_WORD
@@ -883,6 +953,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of TS Setting"
     id: "${devicename}_temperature_lower_limit_of_ts_setting"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xce
     value_type: U_WORD
@@ -894,6 +965,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of water Heating"
     id: "${devicename}_temperature_upper_limit_of_water_heating"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xcf
     value_type: U_WORD
@@ -903,6 +975,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of Water Heating"
     id: "${devicename}_temperature_lower_limit_of_water_heating"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xd0
     value_type: U_WORD
@@ -952,6 +1025,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Comfort Parameter Reserved 3"
     id: "${devicename}_comfort_parameter_3"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0xfd
     value_type: U_WORD
@@ -960,6 +1034,7 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Comfort Parameter Reserved 4"
     id: "${devicename}_comfort_parameter_4"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0xfe
     value_type: U_WORD
@@ -986,6 +1061,8 @@ sensor:
   - platform: template
     name: "T1S DHW"
     id: "${devicename}_t1s_dhw"
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
     lambda: |-
       int dt1s5 = id(${devicename}_dt1s5).state;
       int t5 = id(${devicename}_water_tank_temperature_t5).state;
@@ -1003,6 +1080,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 4"
     id: "${devicename}_power_reserved_bit_4"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x10
@@ -1011,6 +1089,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 5"
     id: "${devicename}_power_reserved_bit_5"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x20
@@ -1019,6 +1098,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 6"
     id: "${devicename}_power_reserved_bit_6"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x40
@@ -1027,6 +1107,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 7"
     id: "${devicename}_power_reserved_bit_7"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x80
@@ -1035,6 +1116,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 8"
     id: "${devicename}_power_reserved_bit_8"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x100
@@ -1043,6 +1125,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 9"
     id: "${devicename}_power_reserved_bit_9"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x200
@@ -1051,6 +1134,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 10"
     id: "${devicename}_power_reserved_bit_10"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x400
@@ -1059,6 +1143,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 11"
     id: "${devicename}_power_reserved_bit_11"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x800
@@ -1067,6 +1152,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 12"
     id: "${devicename}_power_reserved_bit_12"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x1000
@@ -1075,6 +1161,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 13"
     id: "${devicename}_power_reserved_bit_13"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x2000
@@ -1083,6 +1170,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 14"
     id: "${devicename}_power_reserved_bit_14"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x4000
@@ -1091,6 +1179,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 15"
     id: "${devicename}_power_reserved_bit_15"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x0
     bitmask: 0x8000
@@ -1101,6 +1190,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Reserved BIT 0"
     id: "${devicename}_function_setting_reserved_bit_0"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x5
     bitmask: 0x1
@@ -1109,6 +1199,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Reserved BIT 1"
     id: "${devicename}_function_setting_reserved_bit_1"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x5
     bitmask: 0x2
@@ -1117,6 +1208,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Reserved BIT 2"
     id: "${devicename}_function_setting_reserved_bit_2"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x5
     bitmask: 0x4
@@ -1125,6 +1217,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Reserved BIT 3"
     id: "${devicename}_function_setting_reserved_bit_3"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x5
     bitmask: 0x8
@@ -1133,6 +1226,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Disinfect"
     id: "${devicename}_function_setting_disinfect"
+    icon: mdi:eye
     register_type: holding
     address: 0x5
     bitmask: 0x10
@@ -1141,6 +1235,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Holiday Away"
     id: "${devicename}_function_setting_holiday_away"
+    icon: mdi:eye
     register_type: holding
     address: 0x5
     bitmask: 0x20
@@ -1149,6 +1244,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Silent Mode"
     id: "${devicename}_function_setting_silent_mode"
+    icon: mdi:eye
     register_type: holding
     address: 0x5
     bitmask: 0x40
@@ -1157,6 +1253,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Silent Mode Level"
     id: "${devicename}_function_setting_silent_mode_level"
+    icon: mdi:eye
     register_type: holding
     address: 0x5
     bitmask: 0x80
@@ -1165,6 +1262,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Holiday Home"
     id: "${devicename}_function_setting_holiday_home"
+    icon: mdi:eye
     register_type: holding
     address: 0x5
     bitmask: 0x100
@@ -1173,6 +1271,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Reserved BIT 9"
     id: "${devicename}_function_setting_reserved_bit_9"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x5
     bitmask: 0x200
@@ -1181,6 +1280,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting ECO Mode"
     id: "${devicename}_function_setting_eco_mode"
+    icon: mdi:eye
     register_type: holding
     address: 0x5
     bitmask: 0x400
@@ -1189,6 +1289,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting DHW Pumps Running Constant Temperature Water Recycling"
     id: "${devicename}_function_setting_dhw_pumps_running_constant_temperature_water_recycling"
+    icon: mdi:eye
     register_type: holding
     address: 0x5
     bitmask: 0x800
@@ -1199,6 +1300,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Reserved BIT 14"
     id: "${devicename}_function_setting_reserved_bit_14"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x5
     bitmask: 0x4000
@@ -1207,6 +1309,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Function Setting Reserved BIT 15"
     id: "${devicename}_function_setting_reserved_bit_15"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x5
     bitmask: 0x8000
@@ -1217,6 +1320,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Reserved BIT 0"
     id: "${devicename}_status_bit_1_reserved_bit_0"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x80
     bitmask: 0x1
@@ -1225,6 +1329,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Defrosting"
     id: "${devicename}_status_bit_1_defrosting"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x2
@@ -1233,6 +1338,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Anti Freezing"
     id: "${devicename}_status_bit_1_anti_freezing"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x4
@@ -1241,6 +1347,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Oil Return"
     id: "${devicename}_status_bit_1_oil_return"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x8
@@ -1249,6 +1356,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Remote On/Off"
     id: "${devicename}_status_bit_1_remote_on_off"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x10
@@ -1257,6 +1365,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Outdoor Unit Test Mode Mark"
     id: "${devicename}_status_bit_1_outdoor_unit_test_mode_mark"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x20
@@ -1265,6 +1374,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Heating Mode Set By Room Thermostat"
     id: "${devicename}_status_bit_1_heating_mode_set_by_room_thermostat"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x40
@@ -1273,6 +1383,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Cooling Mode Set By Room Thermostat"
     id: "${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x80
@@ -1281,6 +1392,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Solar Energy Signal Input"
     id: "${devicename}_status_bit_1_solar_energy_signal_input"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x100
@@ -1289,6 +1401,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Anti Freezing Operation For Water Tank"
     id: "${devicename}_status_bit_1_anti_freezing_operation_for_water_tank"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x200
@@ -1297,6 +1410,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 SG"
     id: "${devicename}_status_bit_1_sg"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x400
@@ -1305,6 +1419,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 EUV"
     id: "${devicename}_status_bit_1_euv"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x800
@@ -1313,6 +1428,7 @@ binary_sensor:
     name: "Status BIT 1 Reserved BIT 12"
     modbus_controller_id: "${devicename}"
     id: "${devicename}_status_bit_1_reserved_bit_12"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x80
     bitmask: 0x1000
@@ -1321,6 +1437,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Request Serial Number Code"
     id: "${devicename}_status_bit_1_request_serial_number_code"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x2000
@@ -1329,6 +1446,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Request Software Version"
     id: "${devicename}_status_bit_1_request_software_version"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x4000
@@ -1337,6 +1455,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Status BIT 1 Request Operation Parameter"
     id: "${devicename}_status_bit_1_request_operation_parameter"
+    icon: mdi:eye
     register_type: holding
     address: 0x80
     bitmask: 0x8000
@@ -1347,6 +1466,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Electric Heater IBH 1"
     id: "${devicename}_load_output_electric_heater_ibh1"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x1
@@ -1355,6 +1475,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Electric Heater IBH 2"
     id: "${devicename}_load_output_reserved"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x81
     bitmask: 0x2
@@ -1363,6 +1484,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Electric Heater TBH"
     id: "${devicename}_load_output_electric_heater_tbh"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x4
@@ -1371,6 +1493,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Water Pump PUMP_I"
     id: "${devicename}_load_output_water_pump_pump_i"
+    icon: mdi:pump
     register_type: holding
     address: 0x81
     bitmask: 0x8
@@ -1379,6 +1502,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output SV 1"
     id: "${devicename}_load_output_sv1"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x10
@@ -1387,6 +1511,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Reserved BIT 5"
     id: "${devicename}_load_output_reserved_bit_5"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x81
     bitmask: 0x20
@@ -1395,6 +1520,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output External Water Pump P_o"
     id: "${devicename}_load_output_external_water_pump_p_o"
+    icon: mdi:pump
     register_type: holding
     address: 0x81
     bitmask: 0x40
@@ -1403,6 +1529,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Water Return Water P_d"
     id: "${devicename}_load_output_water_return_water_p_d"
+    icon: mdi:pump
     register_type: holding
     address: 0x81
     bitmask: 0x80
@@ -1411,6 +1538,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Mixed Water Pump P_c"
     id: "${devicename}_load_output_mixed_water_pump_p_c"
+    icon: mdi:pump
     register_type: holding
     address: 0x81
     bitmask: 0x100
@@ -1419,6 +1547,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output SV 2"
     id: "${devicename}_load_output_sv2"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x200
@@ -1427,6 +1556,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output HEAT 4"
     id: "${devicename}_load_output_heat4"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x400
@@ -1435,6 +1565,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Solar Water Pump"
     id: "${devicename}_load_output_solar_water_pump"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x800
@@ -1443,6 +1574,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output ALARM"
     id: "${devicename}_load_output_alarm"
+    icon: mdi:eye
     register_type: holding
     entity_category: diagnostic
     address: 0x81
@@ -1452,6 +1584,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output RUN"
     id: "${devicename}_load_output_run"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x2000
@@ -1460,6 +1593,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output Auxiliary Heat Source"
     id: "${devicename}_load_output_auxiliary_heat_source"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x4000
@@ -1468,6 +1602,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Load Output DEFROST"
     id: "${devicename}_load_output_defrost"
+    icon: mdi:eye
     register_type: holding
     address: 0x81
     bitmask: 0x8000
@@ -1479,6 +1614,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit Online Status: Reserved BIT 0"
     id: "${devicename}_slave_unit_online_status_reserved_bit_0"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0x8e
     bitmask: 0x1
@@ -1487,6 +1623,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 1 Online Status"
     id: "${devicename}_slave_unit_1_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x2
@@ -1495,6 +1632,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 2 Online Status"
     id: "${devicename}_slave_unit_2_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x4
@@ -1503,6 +1641,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 3 Online Status"
     id: "${devicename}_slave_unit_3_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x8
@@ -1511,6 +1650,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 4 Online Status"
     id: "${devicename}_slave_unit_4_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x10
@@ -1519,6 +1659,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 5 Online Status"
     id: "${devicename}_slave_unit_5_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x20
@@ -1527,6 +1668,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 6 Online Status"
     id: "${devicename}_slave_unit_6_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x40
@@ -1535,6 +1677,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 7 Online Status"
     id: "${devicename}_slave_unit_7_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x80
@@ -1543,6 +1686,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 8 Online Status"
     id: "${devicename}_slave_unit_8_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x100
@@ -1551,6 +1695,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 9 Online Status"
     id: "${devicename}_slave_unit_9_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x200
@@ -1559,6 +1704,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 10 Online Status"
     id: "${devicename}_slave_unit_10_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x400
@@ -1567,6 +1713,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 11 Online Status"
     id: "${devicename}_slave_unit_11_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x800
@@ -1575,6 +1722,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 12 Online Status"
     id: "${devicename}_slave_unit_12_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x1000
@@ -1583,6 +1731,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 13 Online Status"
     id: "${devicename}_slave_unit_13_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x2000
@@ -1591,6 +1740,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 14 Online Status"
     id: "${devicename}_slave_unit_14_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x4000
@@ -1599,6 +1749,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 15 Online Status"
     id: "${devicename}_slave_unit_15_online_status"
+    icon: mdi:eye
     register_type: holding
     address: 0x8e
     bitmask: 0x8000
@@ -1609,6 +1760,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Heating And Cooling First Or Water First"
     id: "${devicename}_parameter_setting_1_heating_and_cooling_first_or_water_first"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x1
@@ -1617,6 +1769,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Dual Room Thermostat Supported"
     id: "${devicename}_parameter_setting_1_dual_room_thermostat_supported"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x2
@@ -1625,6 +1778,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Room Thermostat"
     id: "${devicename}_parameter_setting_1_room_thermostat"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x4
@@ -1633,6 +1787,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Supports Room Thermostat"
     id: "${devicename}_parameter_setting_1_supports_room_thermostat"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x8
@@ -1641,6 +1796,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Supports Room Temperature Sensor Ta"
     id: "${devicename}_parameter_setting_1_supports_room_temperature_sensor_ta"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x10
@@ -1650,6 +1806,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Supports T1 Sensor"
     id: "${devicename}_parameter_setting_1_supports_t1_sensor"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x20
@@ -1658,6 +1815,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 T1S Heating High Low Temperature Settings"
     id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x40
@@ -1666,6 +1824,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Enable Heating"
     id: "${devicename}_parameter_setting_1_enable_heating"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x80
@@ -1674,6 +1833,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 T1s Cooling High Low Temperature Settings"
     id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x100
@@ -1682,6 +1842,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Enable Cooling"
     id: "${devicename}_parameter_setting_1_enable_cooling"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x200
@@ -1690,6 +1851,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 DHW Pump Supports Pipe Disinfect"
     id: "${devicename}_parameter_setting_1_dhw_pump_supports_pipe_disinfect"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x400
@@ -1698,6 +1860,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Reserved BIT 11"
     id: "${devicename}_parameter_setting_1_reserved_bit_11"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0xd2
     bitmask: 0x800
@@ -1706,6 +1869,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 DHW Pump Supported"
     id: "${devicename}_parameter_setting_1_dhw_pump_supported"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x1000
@@ -1714,6 +1878,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Supports Disinfection"
     id: "${devicename}_parameter_setting_1_supports_disinfection"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x2000
@@ -1722,6 +1887,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Supports Water Tank Electric Heater TBH"
     id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x4000
@@ -1730,6 +1896,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 1 Enable Water Heating"
     id: "${devicename}_parameter_setting_1_enable_water_heating"
+    icon: mdi:eye
     register_type: holding
     address: 0xd2
     bitmask: 0x8000
@@ -1740,6 +1907,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 IBH AHS Installation Position"
     id: "${devicename}_parameter_setting_2_ibh_ahs_installation_position"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x1
@@ -1748,6 +1916,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Tbt Sensor Enable"
     id: "${devicename}_parameter_setting_2_tbt_sensor_enable"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x2
@@ -1756,6 +1925,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Ta Sensor Position"
     id: "${devicename}_parameter_setting_2_ta_sensor_position"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x4
@@ -1764,6 +1934,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Double Zone Setting Is Valid"
     id: "${devicename}_parameter_setting_2_double_zone_setting_is_valid"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x8
@@ -1772,6 +1943,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Setting The High Low Temperature Of Heating Mode T1S"
     id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_heating_mode_t1s"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x10
@@ -1780,6 +1952,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Setting The High Low Temperature Of Cooling Mode T1S"
     id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x20
@@ -1789,6 +1962,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Tw2 Enabled"
     id: "${devicename}_parameter_setting_2_tw2_enabled"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x40
@@ -1797,6 +1971,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Smart Grid"
     id: "${devicename}_parameter_setting_2_smart_grid"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x80
@@ -1805,6 +1980,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Port Definition"
     id: "${devicename}_parameter_setting_2_port_definition"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x100
@@ -1813,6 +1989,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Solar Energy Kit Enable"
     id: "${devicename}_parameter_setting_2_solar_energy_kit_enable"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x200
@@ -1821,6 +1998,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Solar Energy Input Port"
     id: "${devicename}_parameter_setting_2_solar_energy_input_port"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x400
@@ -1829,6 +2007,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Piping Length Selection"
     id: "${devicename}_parameter_setting_2_piping_length_selection"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x800
@@ -1837,6 +2016,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Tbt2 Sensor Is Valid"
     id: "${devicename}_parameter_setting_2_tbt2_sensor_is_valid"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x1000
@@ -1845,6 +2025,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Enable Temperature Collection Kit"
     id: "${devicename}_parameter_setting_2_enable_temperature_collection_kit"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x2000
@@ -1853,6 +2034,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 M1M2 Is Used For AHS Control"
     id: "${devicename}_parameter_setting_2_m1m2_is_used_for_ahs_control"
+    icon: mdi:eye
     register_type: holding
     address: 0xd3
     bitmask: 0x4000
@@ -1861,6 +2043,7 @@ binary_sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Setting 2 Reserved BIT 15"
     id: "${devicename}_parameter_setting_2_reserved_bit_15"
+    icon: mdi:head-question-outline
     register_type: holding
     address: 0xd3
     bitmask: 0x8000
@@ -1868,6 +2051,7 @@ binary_sensor:
   - platform: template
     name: "Heat pump running"
     id: "${devicename}_heat_pump_running"
+    icon: mdi:power
     lambda: |-
       int fan_speed = id(${devicename}_fan_speed).state;
       int compressor_frequency = id(${devicename}_compressor_operating_frequency).state;
@@ -1884,6 +2068,8 @@ binary_sensor:
 switch:
   - platform: factory_reset
     name: Restart with Factory Default Settings
+    id: "${devicename}_restart_with_factory_default_settings"
+    icon: mdi:restart-alert
   # Register: 0 -> Bit 0
   # When Room Temperature Control is enabled, the temperature sensor in the remote controller
   # will be used to define when the heatpump should be turned (powered) on or off
@@ -1891,6 +2077,7 @@ switch:
     modbus_controller_id: "${devicename}"
     name: "Room Temperature Control"
     id: "${devicename}_room_temperature_control"
+    icon: mdi:eye
     register_type: holding
     address: 0x0
     bitmask: 0x1
@@ -1904,6 +2091,7 @@ switch:
     modbus_controller_id: "${devicename}"
     name: "Water Flow Temperature Control Zone 1"
     id: "${devicename}_water_flow_temperature_control_zone_1"
+    icon: mdi:eye
     register_type: holding
     address: 0x0
     bitmask: 0x2
@@ -1912,6 +2100,7 @@ switch:
     modbus_controller_id: "${devicename}"
     name: "Power DHW T5S"
     id: "${devicename}_power_dhw_t5s"
+    icon: mdi:eye
     register_type: holding
     entity_category: config
     address: 0x0
@@ -1926,6 +2115,7 @@ switch:
     modbus_controller_id: "${devicename}"
     name: "Water Flow Temperature Control Zone 2"
     id: "${devicename}_water_flow_temperature_control_zone_2"
+    icon: mdi:eye
     register_type: holding
     address: 0x0
     bitmask: 0x8
@@ -1934,6 +2124,7 @@ switch:
     modbus_controller_id: "${devicename}"
     name: "Weather Compensation Zone 1"
     id: "${devicename}_weather_compensation_zone_1"
+    icon: mdi:eye
     register_type: holding
     entity_category: config
     address: 0x5
@@ -1943,6 +2134,7 @@ switch:
     modbus_controller_id: "${devicename}"
     name: "Weather Compensation Zone 2"
     id: "${devicename}_weather_compensation_zone_2"
+    icon: mdi:eye
     register_type: holding
     entity_category: config
     address: 0x5
@@ -1979,6 +2171,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Set Water Temperature T1S Zone 1"
     id: "${devicename}_set_water_temperature_t1s_zone_1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x2
     value_type: U_WORD
@@ -2022,6 +2215,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Set Water Temperature T1S Zone 2"
     id: "${devicename}_set_water_temperature_t1s_zone_2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x2
     value_type: U_WORD
@@ -2058,6 +2252,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Set DHW Tank Temperature T5s"
     id: "${devicename}_set_dhw_tank_temperature_t5s"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x4
     value_type: U_WORD
@@ -2072,6 +2267,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Weather Compensation Curve Zone 1"
     id: "${devicename}_weather_compensation_curve_zone_1"
+    icon: mdi:eye
     register_type: holding
     address: 0x6
     value_type: U_WORD
@@ -2113,6 +2309,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Weather Compensation Curve Zone 2"
     id: "${devicename}_weather_compensation_curve_zone_2"
+    icon: mdi:eye
     register_type: holding
     address: 0x6
     value_type: U_WORD
@@ -2147,6 +2344,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "DHW Pump Return Running Time"
     id: "${devicename}_dhw_pump_return_running_time"
+    icon: mdi:clock-check-outline
     register_type: holding
     address: 0xd1
     value_type: U_WORD
@@ -2159,6 +2357,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "dT5_On"
     id: "${devicename}_dt5_on"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xd4
     value_type: U_WORD
@@ -2171,6 +2370,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "dT1S5"
     id: "${devicename}_dt1s5"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xd5
     value_type: U_WORD
@@ -2183,6 +2383,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T Interval DHW"
     id: "${devicename}_t_interval_dhw"
+    icon: mdi:clock-check-outline
     register_type: holding
     address: 0xd6
     value_type: U_WORD
@@ -2195,6 +2396,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4 DHW max"
     id: "${devicename}_t4_dhw_max"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xd7
     value_type: U_WORD
@@ -2207,6 +2409,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4 DHW min"
     id: "${devicename}_t4dhwmin"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xd8
     value_type: S_WORD
@@ -2219,6 +2422,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "t TBH Delay"
     id: "${devicename}_t_tbh_delay"
+    icon: mdi:camera-timer
     register_type: holding
     address: 0xd9
     value_type: U_WORD
@@ -2233,6 +2437,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "dT5 TBH Off"
     id: "${devicename}_dt5_tbh_off"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xda
     value_type: U_WORD
@@ -2245,6 +2450,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4 TBH On"
     id: "${devicename}_t4_tbh_on"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xdb
     value_type: S_WORD
@@ -2257,6 +2463,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Temperature For Disinfection Operation"
     id: "${devicename}_t5s_di"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xdc
     value_type: U_WORD
@@ -2269,6 +2476,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Maximum Disinfection Duration"
     id: "${devicename}_t_di_max"
+    icon: mdi:clock
     register_type: holding
     address: 0xdd
     value_type: U_WORD
@@ -2281,6 +2489,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Disinfection High Temperature Duration"
     id: "${devicename}_t_di_hightemp"
+    icon: mdi:clock
     register_type: holding
     address: 0xde
     value_type: U_WORD
@@ -2293,6 +2502,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Time Interval Of Compressor Startup In Cooling mode"
     id: "${devicename}_t_interval_c"
+    icon: mdi:clock
     register_type: holding
     address: 0xdf
     value_type: U_WORD
@@ -2305,6 +2515,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "dT1SC"
     id: "${devicename}_dt1sc"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe0
     value_type: U_WORD
@@ -2317,6 +2528,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "dTSC"
     id: "${devicename}_dtsc"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe1
     value_type: U_WORD
@@ -2329,6 +2541,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4cmax"
     id: "${devicename}_t4cmax"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe2
     value_type: U_WORD
@@ -2341,6 +2554,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4cmin"
     id: "${devicename}_t4cmin"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe3
     value_type: S_WORD
@@ -2353,6 +2567,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Time Interval Of Compressor Startup In Heating mode"
     id: "${devicename}_t_interval_h"
+    icon: mdi:clock
     register_type: holding
     address: 0xe4
     value_type: U_WORD
@@ -2365,6 +2580,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "dT1SH"
     id: "${devicename}_dt1sh"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe5
     value_type: U_WORD
@@ -2377,6 +2593,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "dTSH"
     id: "${devicename}_dtsh"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe6
     value_type: U_WORD
@@ -2389,6 +2606,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4hmax"
     id: "${devicename}_t4hmax"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe7
     value_type: U_WORD
@@ -2401,6 +2619,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4hmin"
     id: "${devicename}_t4hmin"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe8
     value_type: S_WORD
@@ -2413,6 +2632,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Ambient Temperature For Enabling Hydraulic Module Auxiliary Electric Heating IBH"
     id: "${devicename}_t4_ibh_on"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xe9
     value_type: S_WORD
@@ -2425,6 +2645,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
     id: "${devicename}_dt1_ibh_on"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xea
     value_type: U_WORD
@@ -2437,6 +2658,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
     id: "${devicename}_t_ibh_delay"
+    icon: mdi:camera-timer
     register_type: holding
     address: 0xeb
     value_type: U_WORD
@@ -2449,6 +2671,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Ambient Temperature Trigger For AHS"
     id: "${devicename}_t4_ahs_on"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xed
     value_type: S_WORD
@@ -2461,6 +2684,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Trigger Temperature Difference Between T1S And Current Heat for AHS"
     id: "${devicename}_dt1_ahs_on"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xee
     value_type: U_WORD
@@ -2473,6 +2697,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Delay Time for Enabling AHS"
     id: "${devicename}_t_ahs_delay"
+    icon: mdi:camera-timer
     register_type: holding
     address: 0xf0
     value_type: U_WORD
@@ -2485,6 +2710,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Water Heating Max Duration"
     id: "${devicename}_t_dhwhp_max"
+    icon: mdi:clock-check-outline
     register_type: holding
     address: 0xf1
     value_type: U_WORD
@@ -2497,6 +2723,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T DHWHP Restrict"
     id: "${devicename}_t_dhwhp_restrict"
+    icon: mdi:clock-check-outline
     register_type: holding
     address: 0xf2
     value_type: U_WORD
@@ -2509,6 +2736,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4autocmin"
     id: "${devicename}_t4autocmin"
+    icon: mdi:thermometer
     register_type: holding
     address: 0xf3
     value_type: U_WORD
@@ -2521,6 +2749,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4autohmax"
     id: "${devicename}_t4autohmax"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xf4
     value_type: U_WORD
@@ -2533,6 +2762,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Heating Or Cooling Temperature When Holiday Mode Is Active"
     id: "${devicename}_t1s_h_a_h"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xf5
     value_type: U_WORD
@@ -2545,6 +2775,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Domestic Hot Water Temperature When Holiday Mode is Active"
     id: "${devicename}_t5s_h_a_dhw"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xf6
     value_type: U_WORD
@@ -2557,6 +2788,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "PER START Ratio"
     id: "${devicename}_per_start_ratio"
+    icon: mdi:eye
     register_type: holding
     address: 0xf7
     value_type: U_WORD
@@ -2569,9 +2801,11 @@ number:
     modbus_controller_id: "${devicename}"
     name: "TIME ADJUST"
     id: "${devicename}_time_adjust"
+    icon: mdi:clock
     register_type: holding
     address: 0xf8
     value_type: U_WORD
+    unit_of_measurement: min
     entity_category: config
     min_value: 1
     max_value: 60
@@ -2580,9 +2814,11 @@ number:
     modbus_controller_id: "${devicename}"
     name: "DTbt2"
     id: "${devicename}_dtbt2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0xf9
     value_type: U_WORD
+    unit_of_measurement: "°C"
     entity_category: config
     min_value: 0
     max_value: 50
@@ -2591,6 +2827,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "IBH1 Power"
     id: "${devicename}_ibh1_power"
+    icon: mdi:alpha-w
     register_type: holding
     address: 0xfa
     value_type: U_WORD
@@ -2604,6 +2841,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "IBH2 Power"
     id: "${devicename}_ibh2_power"
+    icon: mdi:alpha-w
     register_type: holding
     address: 0xfb
     value_type: U_WORD
@@ -2617,6 +2855,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "TBH Power"
     id: "${devicename}_tbh_power"
+    icon: mdi:alpha-w
     register_type: holding
     address: 0xfc
     value_type: U_WORD
@@ -2630,6 +2869,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Temperature Rise Day Number"
     id: "${devicename}_t_dryup"
+    icon: mdi:calendar-week
     register_type: holding
     address: 0xff
     value_type: U_WORD
@@ -2641,6 +2881,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Drying Day Number"
     id: "${devicename}_t_highpeak"
+    icon: mdi:calendar-week
     register_type: holding
     address: 0x100
     value_type: U_WORD
@@ -2652,6 +2893,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Temperature Drop Day Number"
     id: "${devicename}_t_dryd"
+    icon: mdi:calendar-week
     register_type: holding
     address: 0x101
     value_type: U_WORD
@@ -2663,6 +2905,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Highest Drying Temperature"
     id: "${devicename}_t_drypeak"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x102
     value_type: S_WORD
@@ -2675,6 +2918,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Running Time Of Floor Heating For The First Time"
     id: "${devicename}_t_firstfh"
+    icon: mdi:clock-check-outline
     register_type: holding
     address: 0x103
     value_type: U_WORD
@@ -2687,6 +2931,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T1S Of Floor Heating For The First Time"
     id: "${devicename}_t1s_firstfh"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x104
     value_type: U_WORD
@@ -2699,6 +2944,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T1SetC1"
     id: "${devicename}_t1setc1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x105
     value_type: U_WORD
@@ -2711,6 +2957,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T1SetC2"
     id: "${devicename}_t1setc2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x106
     value_type: U_WORD
@@ -2723,6 +2970,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4C1"
     id: "${devicename}_t4c1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x107
     value_type: S_WORD
@@ -2735,6 +2983,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4C2"
     id: "${devicename}_t4c2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x108
     value_type: S_WORD
@@ -2747,6 +2996,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T1SetH1"
     id: "${devicename}_t1seth1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x109
     value_type: U_WORD
@@ -2759,6 +3009,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T1SetH2"
     id: "${devicename}_t1seth2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x10a
     value_type: U_WORD
@@ -2771,6 +3022,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4H1"
     id: "${devicename}_t4h1"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x10b
     value_type: S_WORD
@@ -2783,6 +3035,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "T4H2"
     id: "${devicename}_t4h2"
+    icon: mdi:temperature-celsius
     register_type: holding
     address: 0x10c
     value_type: S_WORD
@@ -2795,6 +3048,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "t_T4 FRESH_H"
     id: "${devicename}_t_t4_fresh_h"
+    icon: mdi:clock-check-outline
     register_type: holding
     address: 0x10e
     value_type: U_WORD
@@ -2844,6 +3098,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "t_T4 FRESH_C"
     id: "${devicename}_t_t4_fresh_c"
+    icon: mdi:clock-check-outline
     register_type: holding
     address: 0x10e
     value_type: U_WORD
@@ -2888,6 +3143,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Built-in Circulating Pump Delay"
     id: "${devicename}_t_delay_pump"
+    icon: mdi:camera-timer
     register_type: holding
     address: 0x10f
     value_type: U_WORD
@@ -2901,11 +3157,15 @@ number:
 text_sensor:
   - platform: version
     name: "ESPHome Version"
+    id: "${devicename}_esphome_version"
+    icon: mdi:information
     hide_timestamp: true
   # Active State
   - platform: template
     name: "Active State"
     id: "${devicename}_active_state"
+    icon: mdi:power
+    entity_category: "diagnostic"
     lambda: |-
       if (id(${devicename}_load_output_run).state) {
         // The heat pump is on
@@ -2931,6 +3191,7 @@ text_sensor:
   - platform: template
     name: "Current Fault Error Code"
     id: "${devicename}_current_fault_error_code"
+    icon: "mdi:alert-circle"
     lambda: |-
       int current_fault = id(${devicename}_current_fault).state;
 
@@ -3000,6 +3261,7 @@ text_sensor:
   - platform: template
     name: "Current Fault Error Code Description"
     id: "${devicename}_current_fault_error_code_description"
+    icon: "mdi:alert-circle"
     lambda: |-
       int current_fault = id(${devicename}_current_fault).state;
 
@@ -3069,6 +3331,7 @@ text_sensor:
   - platform: template
     name: "Fault 1 Error Code"
     id: "${devicename}_fault_1_error_code"
+    icon: "mdi:alert-circle"
     lambda: |-
       int fault_one = id(${devicename}_fault_1).state;
 
@@ -3136,6 +3399,7 @@ text_sensor:
   - platform: template
     name: "Fault 2 Error Code"
     id: "${devicename}_fault_2_error_code"
+    icon: "mdi:alert-circle"
     lambda: |-
       int fault_two = id(${devicename}_fault_2).state;
 
@@ -3203,6 +3467,7 @@ text_sensor:
   - platform: template
     name: "Fault 3 Error Code"
     id: "${devicename}_fault_3_error_code"
+    icon: "mdi:alert-circle"
     lambda: |-
       int fault_three = id(${devicename}_fault_3).state;
 

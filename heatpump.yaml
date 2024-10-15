@@ -3,37 +3,21 @@ substitutions:
   description: Heatpump Controller
 
 globals:
-  - id: unmasked_value_register_0
-    type: uint16_t
-    restore_value: True
-    initial_value: '0'
-  - id: unmasked_value_register_5
-    type: uint16_t
-    restore_value: True
-    initial_value: '0'
-  - id: unmasked_value_register_210
-    type: uint16_t
-    restore_value: True
-    initial_value: '0'
-  - id: unmasked_value_register_211
-    type: uint16_t
-    restore_value: True
-    initial_value: '0'    
   - id: unmasked_value_water_temperature_t1s
-    type: uint16_t
-    restore_value: True
-    initial_value: '0'    
+    type: int
+    restore_value: no
+    initial_value: '0'
   - id: unmasked_curve_selection
-    type: uint16_t
-    restore_value: True
-    initial_value: '0'    
+    type: int
+    restore_value: no
+    initial_value: '0'
   - id: unmasked_value_register_270
-    type: uint16_t          #this is modbus so better is use uint16_t than int
-    restore_value: True
-    initial_value: '0'    
+    type: int
+    restore_value: no
+    initial_value: '0'
   - id: unmasked_value_register_272
-    type: uint16_t
-    restore_value: True
+    type: int
+    restore_value: no
     initial_value: '0'
 
 esphome:
@@ -143,7 +127,10 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      //ESP_LOGI("","zone2_c_emission is %d, zone1_c_emission is %d, zone2_h_emission is %d, zone1_h_emission is %d", zone2_c_emission, zone1_c_emission, zone2_h_emission, zone1_h_emission);
+      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
+      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
+      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
+      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
 
       // Map/dictionary with the possible values
       std::map<int, std::string> emission_options;
@@ -161,7 +148,8 @@ select:
       new_value &= 0xFFF0;     // Clear the first 4 bits
       new_value |= value_byte; // Set the first 4 bits with the new value
 
-      //ESP_LOGI("write zone2_c_emission", "Set option to %s, Original value: %d New value: 0x%x", x.c_str(), id(unmasked_value_register_272), new_value);
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
+      // ESP_LOGI("main", "New value: %d", new_value);
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
@@ -190,7 +178,10 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      //ESP_LOGI("","zone2_c_emission is %d, zone1_c_emission is %d, zone2_h_emission is %d, zone1_h_emission is %d", zone2_c_emission, zone1_c_emission, zone2_h_emission, zone1_h_emission);
+      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
+      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
+      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
+      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
 
       // Map/dictionary with the possible values
       std::map<int, std::string> emission_options;
@@ -208,7 +199,8 @@ select:
       new_value &= 0xFF0F;             // Clear the second pair of 4 bits
       new_value |= (value_byte << 4);  // Set the second pair of 4 bits with the new value
 
-      //ESP_LOGI("write zone2_c_emission", "Set option to %s, Original value: %d New value: 0x%x", x.c_str(), id(unmasked_value_register_272), new_value);
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
+      // ESP_LOGI("main", "New value: %d", new_value);
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
@@ -237,7 +229,10 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      //ESP_LOGI("","zone2_c_emission is %d, zone1_c_emission is %d, zone2_h_emission is %d, zone1_h_emission is %d", zone2_c_emission, zone1_c_emission, zone2_h_emission, zone1_h_emission);
+      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
+      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
+      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
+      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
 
       // Map/dictionary with the possible values
       std::map<int, std::string> emission_options;
@@ -285,7 +280,10 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      //ESP_LOGI("","zone2_c_emission is %d, zone1_c_emission is %d, zone2_h_emission is %d, zone1_h_emission is %d", zone2_c_emission, zone1_c_emission, zone2_h_emission, zone1_h_emission);
+      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
+      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
+      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
+      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
 
       // Map/dictionary with the possible values
       std::map<int, std::string> emission_options;
@@ -303,7 +301,8 @@ select:
       new_value &= 0x0FFF;              // Clear the fourth pair of 4 bits
       new_value |= (value_byte << 12);  // Set the fourth pair of 4 bits with the new value
 
-      //ESP_LOGI("write zone2_c_emission", "Set option to %s, Original value: %d New value: 0x%x", x.c_str(), id(unmasked_value_register_272), new_value);
+      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
+      // ESP_LOGI("main", "New value: %d", new_value);
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
@@ -312,64 +311,7 @@ select:
 
 sensor:
   - platform: uptime
-    id: uptime_sec
-    name: Uptime
-    unit_of_measurement: s
-    icon: mdi:clock-start
-    entity_category: "diagnostic"
-    on_value: 
-      then:
-        - text_sensor.template.publish:
-            id: uptime_human
-            state: !lambda |-
-              int seconds = x;
-              int days = seconds / (24 * 3600);
-              seconds = seconds % (24 * 3600);
-              int hours = seconds / 3600;
-              seconds = seconds % 3600;
-              int minutes = seconds /  60;
-              seconds = seconds % 60;
-              std::string result;
-              if ( days > 3650 ) {
-                result = "Starting up";
-              } else if ( days ) {
-                result = (std::to_string(days) +"d " + std::to_string(hours) +"h " + std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
-              } else if ( hours ) {
-                result = (std::to_string(hours) +"h " + std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
-              } else if ( minutes ) {
-                result = (std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
-              } else {
-                result = (std::to_string(seconds) +"s");
-              }
-              return result;
-  - platform: wifi_signal
-    name: WiFi Signal
-    update_interval: 60s
-    entity_category: "diagnostic"
-    icon: mdi:wifi
-############# YORK #############
-  - platform: template
-    id: "${devicename}_cop"
-    name: "COP"
-    icon: mdi:copyleft
-    accuracy_decimals: 2
-    lambda: |-
-      if (id(${devicename}_electricity_consumption).state != 0) {
-        return id(${devicename}_power_output).state / id(${devicename}_electricity_consumption).state;
-      } else return {};
-  # Register: 0 -> Config is present as select, but now we need get value from heatpump and save it as global var
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Register 0 switches"
-    id: "${devicename}_register_0_switches"
-    internal: True
-    register_type: holding
-    address: 0x0
-    value_type: U_WORD
-    lambda: |-
-      // Update the global var unmasked_value_register_0
-      id(unmasked_value_register_0) = x;
-      return x;
+    name: "Uptime"
   # Register: 1 -> Is present in this config as a 'select'
   # Register: 2 -> Is present in this config as a 'number'
   # Register: 3
@@ -381,7 +323,6 @@ sensor:
     address: 0x3
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     filters:
       - multiply: 0.5
   # Register: 4
@@ -393,75 +334,35 @@ sensor:
     address: 0x4
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
-  # Register: 5 -> Config is present as select, but now we need get value from heatpump and save it as global var
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Register 5 switches"
-    id: "${devicename}register_5_switches"
-    internal: True
-    register_type: holding
-    address: 0x5
-    value_type: U_WORD
-    lambda: |-
-      // Update the global var unmasked_value_register_5
-      id(unmasked_value_register_5) = x;
-      return x;
   # Register: 6 -> Is present in this config as a 'number'
-  # Register: 7 -> Is present in this config as a 'switch' for configuration
+  # Register: 7
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Forced Water Tank Heater On/Off helper"
-    id: "${devicename}_forced_water_tank_heater_on_off_helper"
-    icon: mdi:fire-alert
+    name: "Forced Water Tank Heating"
+    id: "${devicename}_forced_water_tank_heating"
+    register_type: holding
     address: 0x7
-    register_type: holding
-    internal: True
-    on_value: 
-      then:
-        lambda: |-
-          ESP_LOGI("FUNC7","value of x: %f", x);
-          if (x == 1) {
-            id(${devicename}_forced_water_tank_heater_on_off).publish_state(true);
-          } else id(${devicename}_forced_water_tank_heater_on_off).publish_state(false);
-      
-
-  # Register: 8 -> Is present in this config as a 'switch' for configuration
+    value_type: U_WORD
+  # Register: 8
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Forced Tank Backup Heater helper"
-    id: "${devicename}_forced_tbh_helper"
-    icon: mdi:fire-alert
-    address: 0x8
+    name: "Forced Tank Backup Heater"
+    id: "${devicename}_forced_tbh"
     register_type: holding
-    internal: True
-    on_value: 
-      then:
-        lambda: |-
-          ESP_LOGI("FUNC8","value of x: %f", x);
-          if (x == 1) {
-            id(${devicename}_forced_tbh).publish_state(true);
-          } else id(${devicename}_forced_tbh).publish_state(false);
-  # Register: 9 -> Is present in this config as a 'switch' for configuration
+    address: 0x8
+    value_type: U_WORD
+  # Register: 9
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Forced Hydraulic Module Rear Electric Heater 1"
-    id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1_helper"
-    icon: mdi:fire-alert
-    address: 0x9
+    id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1"
     register_type: holding
-    internal: True
-    on_value: 
-      then:
-        lambda: |-
-          ESP_LOGI("FUNC9","value of x: %f", x);
-          if (x == 1) {
-            id(${devicename}_forced_water_tank_heater_on_off).publish_state(true);
-          } else id(${devicename}_forced_water_tank_heater_on_off).publish_state(false);
+    address: 0x9
+    value_type: U_WORD
   # Register: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "t_SG_MAX or Reserved"
+    name: "t_SG_MAX"
     id: "${devicename}_t_sg_max"
     register_type: holding
     address: 0xa
@@ -503,12 +404,7 @@ sensor:
     register_type: holding
     address: 0x67
     value_type: U_WORD
-    icon: mdi:valve
-    unit_of_measurement: "%"
-    filters: 
-    - calibrate_linear:  #York have movement 0-480
-      - 0 -> 0.0
-      - 480 -> 100.0
+    unit_of_measurement: "Pa"
   # Register: 104
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -518,7 +414,6 @@ sensor:
     address: 0x68
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 105
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -528,7 +423,6 @@ sensor:
     address: 0x69
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 106
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -538,7 +432,6 @@ sensor:
     address: 0x6a
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 107
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -547,7 +440,6 @@ sensor:
     register_type: holding
     address: 0x6B
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     value_type: S_WORD
   # Register: 108
   - platform: modbus_controller
@@ -558,7 +450,6 @@ sensor:
     address: 0x6c
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 109
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -568,7 +459,6 @@ sensor:
     address: 0x6d
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 110
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -578,7 +468,6 @@ sensor:
     address: 0x6e
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 111
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -588,7 +477,6 @@ sensor:
     address: 0x6f
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 112
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -598,7 +486,6 @@ sensor:
     address: 0x70
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 113
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -608,7 +495,6 @@ sensor:
     address: 0x71
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 114
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -618,7 +504,6 @@ sensor:
     address: 0x72
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 115
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -638,7 +523,6 @@ sensor:
     address: 0x74
     value_type: U_WORD
     unit_of_measurement: kPA
-    icon: mdi:car-brake-worn-linings
   # Register: 117
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -648,7 +532,6 @@ sensor:
     address: 0x75
     value_type: U_WORD
     unit_of_measurement: kPA
-    icon: mdi:car-brake-low-pressure
   # Register: 118
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -658,7 +541,6 @@ sensor:
     address: 0x76
     value_type: U_WORD
     unit_of_measurement: A
-    icon: mdi:alpha-a
   # Register: 119
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -668,15 +550,12 @@ sensor:
     address: 0x77
     value_type: U_WORD
     unit_of_measurement: V
-    icon: mdi:alpha-v
   # Register: 120
   # Midea: Tbt1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Hydraulic Module Current 1 or tbt1"
+    name: "Hydraulic Module Current 1"
     id: "${devicename}_hydraulic_module_current_1"
-    unit_of_measurement: "°C"
-    icon: mdi:thermometer
     register_type: holding
     address: 0x78
     value_type: U_WORD
@@ -684,14 +563,11 @@ sensor:
   # Midea: Tbt2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Hydraulic Module Current 2 or tbt2"
+    name: "Hydraulic Module Current 2"
     id: "${devicename}_hydraulic_module_current_2"
-    unit_of_measurement: "°C"
-    icon: mdi:thermometer
     register_type: holding
     address: 0x79
     value_type: U_WORD
-    
   # Register: 122
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -701,7 +577,6 @@ sensor:
     address: 0x7a
     value_type: U_WORD
     unit_of_measurement: hr
-    icon: mdi:av-timer
   # Register: 123
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -710,8 +585,6 @@ sensor:
     register_type: holding
     address: 0x7b
     value_type: U_WORD
-    icon: mdi:lightning-bolt-circle
-    unit_of_measurement: "kWh"
   # Register: 124
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -721,7 +594,6 @@ sensor:
     entity_category: diagnostic
     address: 0x7c
     value_type: U_WORD
-    icon: mdi:alert-circle
   # Register: 125
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -731,7 +603,6 @@ sensor:
     entity_category: diagnostic
     address: 0x7d
     value_type: U_WORD
-    icon: mdi:alert-circle
   # Register: 126
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -741,7 +612,6 @@ sensor:
     entity_category: diagnostic
     address: 0x7e
     value_type: U_WORD
-    icon: mdi:alert-circle
   # Register: 127
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -751,7 +621,6 @@ sensor:
     entity_category: diagnostic
     address: 0x7f
     value_type: U_WORD
-    icon: mdi:alert-circle
   # Register: 130
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -760,7 +629,6 @@ sensor:
     register_type: holding
     address: 0x82
     value_type: U_WORD
-    icon: mdi:information
   # Register: 131
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -769,7 +637,6 @@ sensor:
     register_type: holding
     address: 0x83
     value_type: U_WORD
-    icon: mdi:information
   # Register: 132
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -779,7 +646,6 @@ sensor:
     address: 0x84
     value_type: U_WORD
     unit_of_measurement: Hz
-    icon: mdi:sine-wave
   # Register: 133
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -789,7 +655,6 @@ sensor:
     address: 0x85
     value_type: U_WORD
     unit_of_measurement: A
-    icon: mdi:alpha-a
   # Register: 134
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -799,7 +664,6 @@ sensor:
     address: 0x86
     value_type: U_WORD
     unit_of_measurement: V
-    icon: mdi:alpha-v
     filters:
       - multiply: 10
   # Register: 135
@@ -810,7 +674,6 @@ sensor:
     register_type: holding
     address: 0x87
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     value_type: S_WORD
   # Register: 136
   - platform: modbus_controller
@@ -821,7 +684,6 @@ sensor:
     address: 0x88
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 137
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -831,7 +693,6 @@ sensor:
     address: 0x89
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 138
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -852,7 +713,6 @@ sensor:
     register_type: holding
     address: 0x8b
     value_type: U_WORD
-    icon: mdi:eye
   # Register: 140
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -862,7 +722,6 @@ sensor:
     address: 0x8c
     value_type: U_WORD
     unit_of_measurement: kW
-    icon: mdi:lightning-bolt
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
@@ -874,8 +733,6 @@ sensor:
     register_type: holding
     address: 0x8d
     value_type: U_WORD
-    unit_of_measurement: "°C"
-    icon: mdi:thermometer
   # Register: 143 and 144
   # U_DWORD combines this register with the next one
   - platform: modbus_controller
@@ -888,7 +745,6 @@ sensor:
     state_class: total_increasing
     address: 0x8f
     value_type: U_DWORD
-    icon: mdi:lightning-bolt-outline
   # Register: 145 and 146
   # U_DWORD combines this register with the next one
   - platform: modbus_controller
@@ -901,11 +757,36 @@ sensor:
     state_class: total_increasing
     address: 0x91
     value_type: U_DWORD
-    icon: mdi:lightning-bolt-outline
 
   # The following register address 200-208 can only use 03H (Read register) function code.
   # Register address 209 and after can use 03H, 06H (write single register), 10H (write multiple register).
-  # Register: 200 ->moved to text_sensor
+  # Register: 200 (High byte)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Home Appliance Type"
+    id: "${devicename}_home_appliance_type"
+    register_type: holding
+    address: 0xc8
+    value_type: U_WORD
+    bitmask: 0x00FF
+  # Register: 200 (Low byte, first 4 bits)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Home Appliance Sub Type"
+    id: "${devicename}_home_appliance_sub_type"
+    register_type: holding
+    address: 0xc8
+    value_type: U_WORD
+    bitmask: 0xF000
+  # Register: 200 (Low byte, second 4 bits)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Home Appliance Product Code"
+    id: "${devicename}_home_appliance_product_code"
+    register_type: holding
+    address: 0xc8
+    value_type: U_WORD
+    bitmask: 0x0F00
   # Register: 201 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -915,7 +796,6 @@ sensor:
     address: 0xc9
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0x00FF
   # Register: 201 (High), default: 25, TODO: verify default
   - platform: modbus_controller
@@ -926,7 +806,6 @@ sensor:
     address: 0xc9
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0xFF00
   # Register: 202 (Low), default: 5, TODO: verify default
   - platform: modbus_controller
@@ -937,7 +816,6 @@ sensor:
     address: 0xca
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0x00FF
   # Register: 202 (High), default: 5, TODO: verify default
   - platform: modbus_controller
@@ -948,7 +826,6 @@ sensor:
     address: 0xca
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0xFF00
   # Register: 203 (Low), default: 55, TODO: verify default
   - platform: modbus_controller
@@ -959,7 +836,6 @@ sensor:
     address: 0xcb
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0x00FF
   # Register: 203 (High), default: 55, TODO: verify default
   - platform: modbus_controller
@@ -970,7 +846,6 @@ sensor:
     address: 0xcb
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0xFF00
   # Register: 204 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
@@ -981,7 +856,6 @@ sensor:
     address: 0xcc
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0x00FF
   # Register: 204 (High), default: 25, TODO: verify default
   - platform: modbus_controller
@@ -992,7 +866,6 @@ sensor:
     address: 0xcc
     value_type: S_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     bitmask: 0xFF00
   # Register: 205
   - platform: modbus_controller
@@ -1003,7 +876,6 @@ sensor:
     address: 0xcd
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     filters:
       - multiply: 0.5
   # Register: 206
@@ -1015,7 +887,6 @@ sensor:
     address: 0xce
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     filters:
       - multiply: 0.5
   # Register: 207
@@ -1027,7 +898,6 @@ sensor:
     address: 0xcf
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 208
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1037,34 +907,7 @@ sensor:
     address: 0xd0
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
   # Register: 209 -> Is present in this config as a 'number'
-  # Register: 210 -> Config is present as select, but now we need get value from heatpump and save it as global var
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Settings 1"
-    id: "${devicename}_parameter_settings_1"
-    internal: True
-    register_type: holding
-    address: 210
-    value_type: U_WORD
-    lambda: |-
-      // Update the global var unmasked_value_register_210
-      id(unmasked_value_register_210) = x;
-      return x;
-  # Register: 211 -> Config is present as select, but now we need get value from heatpump and save it as global var
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Settings 2"
-    id: "${devicename}_parameter_settings_2"
-    internal: True
-    register_type: holding
-    address: 211
-    value_type: U_WORD
-    lambda: |-
-      // Update the global var unmasked_value_register_211
-      id(unmasked_value_register_211) = x;
-      return x;
   # Register: 212 -> Is present in this config as a 'number'
   # Register: 213 -> Is present in this config as a 'number'
   # Register: 214 -> Is present in this config as a 'number'
@@ -1104,22 +947,22 @@ sensor:
   # Register: 250 -> Is present in this config as a 'number'
   # Register: 251 -> Is present in this config as a 'number'
   # Register: 252 -> Is present in this config as a 'number'
-  # Register: 253 -reserved is not for use
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Comfort Parameter Reserved 3"
-  #   id: "${devicename}_comfort_parameter_3"
-  #   register_type: holding
-  #   address: 0xfd
-  #   value_type: U_WORD
-  # Register: 254 -reserved is not for use
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Comfort Parameter Reserved 4"
-  #   id: "${devicename}_comfort_parameter_4"
-  #   register_type: holding
-  #   address: 0xfe
-  #   value_type: U_WORD
+  # Register: 253
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Comfort Parameter Reserved 3"
+    id: "${devicename}_comfort_parameter_3"
+    register_type: holding
+    address: 0xfd
+    value_type: U_WORD
+  # Register: 254
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Comfort Parameter Reserved 4"
+    id: "${devicename}_comfort_parameter_4"
+    register_type: holding
+    address: 0xfe
+    value_type: U_WORD
   # Register: 255 -> Is present in this config as a 'number'
   # Register: 256 -> Is present in this config as a 'number'
   # Register: 257 -> Is present in this config as a 'number'
@@ -1128,7 +971,7 @@ sensor:
   # Register: 260 -> Is present in this config as a 'number'
   # Register: 261 -> Is present in this config as a 'number'
   # Register: 262 -> Is present in this config as a 'number'
-  # Register: 263 -> Is present in this config as a 'number' 0
+  # Register: 263 -> Is present in this config as a 'number'
   # Register: 264 -> Is present in this config as a 'number'
   # Register: 265 -> Is present in this config as a 'number'
   # Register: 266 -> Is present in this config as a 'number'
@@ -1143,8 +986,6 @@ sensor:
   - platform: template
     name: "T1S DHW"
     id: "${devicename}_t1s_dhw"
-    unit_of_measurement: "°C"
-    icon: mdi:thermometer
     lambda: |-
       int dt1s5 = id(${devicename}_dt1s5).state;
       int t5 = id(${devicename}_water_tank_temperature_t5).state;
@@ -1157,172 +998,228 @@ binary_sensor:
   # Bit: 1 -> Is present in this config as a 'switch'
   # Bit: 2 -> Is present in this config as a 'switch'
   # Bit: 3 -> Is present in this config as a 'switch'
-  # Bit: 4  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 4"
-  #   id: "${devicename}_power_reserved_bit_4"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x10
-  # Bit: 5  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 5"
-  #   id: "${devicename}_power_reserved_bit_5"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x20
-  # Bit: 6  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 6"
-  #   id: "${devicename}_power_reserved_bit_6"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x40
-  # Bit: 7  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 7"
-  #   id: "${devicename}_power_reserved_bit_7"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x80
-  # Bit: 8  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 8"
-  #   id: "${devicename}_power_reserved_bit_8"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x100
-  # Bit: 9  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 9"
-  #   id: "${devicename}_power_reserved_bit_9"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x200
-  # Bit: 10  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 10"
-  #   id: "${devicename}_power_reserved_bit_10"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x400
-  # Bit: 11  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 11"
-  #   id: "${devicename}_power_reserved_bit_11"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x800
-  # Bit: 12  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 12"
-  #   id: "${devicename}_power_reserved_bit_12"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x1000
-  # Bit: 13  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 13"
-  #   id: "${devicename}_power_reserved_bit_13"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x2000
-  # Bit: 14  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 14"
-  #   id: "${devicename}_power_reserved_bit_14"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x4000
-  # Bit: 15  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Power Reserved BIT 15"
-  #   id: "${devicename}_power_reserved_bit_15"
-  #   register_type: holding
-  #   address: 0x0
-  #   bitmask: 0x8000
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 4"
+    id: "${devicename}_power_reserved_bit_4"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 5"
+    id: "${devicename}_power_reserved_bit_5"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 6"
+    id: "${devicename}_power_reserved_bit_6"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 7"
+    id: "${devicename}_power_reserved_bit_7"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 8"
+    id: "${devicename}_power_reserved_bit_8"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 9"
+    id: "${devicename}_power_reserved_bit_9"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 10"
+    id: "${devicename}_power_reserved_bit_10"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 11"
+    id: "${devicename}_power_reserved_bit_11"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x800
+  # Bit: 12
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 12"
+    id: "${devicename}_power_reserved_bit_12"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x1000
+  # Bit: 13
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 13"
+    id: "${devicename}_power_reserved_bit_13"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x2000
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 14"
+    id: "${devicename}_power_reserved_bit_14"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Power Reserved BIT 15"
+    id: "${devicename}_power_reserved_bit_15"
+    register_type: holding
+    address: 0x0
+    bitmask: 0x8000
 
-  # Register: 5 -> moved to switch without these marked as reserved_bit
-  # Bit: 0  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Function Setting Reserved BIT 0"
-  #   id: "${devicename}_function_setting_reserved_bit_0"
-  #   register_type: holding
-  #   address: 0x5
-  #   bitmask: 0x1
-  # Bit: 1  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Function Setting Reserved BIT 1"
-  #   id: "${devicename}_function_setting_reserved_bit_1"
-  #   register_type: holding
-  #   address: 0x5
-  #   bitmask: 0x2
-  # Bit: 2  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Function Setting Reserved BIT 2"
-  #   id: "${devicename}_function_setting_reserved_bit_2"
-  #   register_type: holding
-  #   address: 0x5
-  #   bitmask: 0x4
+  # Register: 5
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Reserved BIT 0"
+    id: "${devicename}_function_setting_reserved_bit_0"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x1
+  # Bit: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Reserved BIT 1"
+    id: "${devicename}_function_setting_reserved_bit_1"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x2
+  # Bit: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Reserved BIT 2"
+    id: "${devicename}_function_setting_reserved_bit_2"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x4
   # Bit: 3
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Function Setting Reserved BIT 3"
-  #   id: "${devicename}_function_setting_reserved_bit_3"
-  #   register_type: holding
-  #   address: 0x5
-  #   bitmask: 0x8
-  # Bit: 4  #for future use maybe
-  # Bit: 5 -> Is present in this config as a 'switch'
-  # Bit: 6 -> Is present in this config as a 'switch'
-  # Bit: 7 -> Is present in this config as a 'switch'
-  # Bit: 8 -> Is present in this config as a 'switch'
-  # Bit: 9 -> Is present in this config as a 'switch'
-  # Bit: 10 -> Is present in this config as a 'switch'
-  # Bit: 11 -> Is present in this config as a 'switch'
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Reserved BIT 3"
+    id: "${devicename}_function_setting_reserved_bit_3"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x8
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Disinfect"
+    id: "${devicename}_function_setting_disinfect"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Holiday Away"
+    id: "${devicename}_function_setting_holiday_away"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Silent Mode"
+    id: "${devicename}_function_setting_silent_mode"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Silent Mode Level"
+    id: "${devicename}_function_setting_silent_mode_level"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Holiday Home"
+    id: "${devicename}_function_setting_holiday_home"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Reserved BIT 9"
+    id: "${devicename}_function_setting_reserved_bit_9"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting ECO Mode"
+    id: "${devicename}_function_setting_eco_mode"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting DHW Pumps Running Constant Temperature Water Recycling"
+    id: "${devicename}_function_setting_dhw_pumps_running_constant_temperature_water_recycling"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x800
   # Bit: 12 -> Is present in this config as a 'switch'
   # Bit: 13 -> Is present in this config as a 'switch'
-  # Bit: 14  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Function Setting Reserved BIT 14"
-  #   id: "${devicename}_function_setting_reserved_bit_14"
-  #   register_type: holding
-  #   address: 0x5
-  #   bitmask: 0x4000
-  # Bit: 15  #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Function Setting Reserved BIT 15"
-  #   id: "${devicename}_function_setting_reserved_bit_15"
-  #   register_type: holding
-  #   address: 0x5
-  #   bitmask: 0x8000
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Reserved BIT 14"
+    id: "${devicename}_function_setting_reserved_bit_14"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Function Setting Reserved BIT 15"
+    id: "${devicename}_function_setting_reserved_bit_15"
+    register_type: holding
+    address: 0x5
+    bitmask: 0x8000
 
   # Register: 128
-  # Bit: 0   #for future use maybe
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Status BIT 1 Reserved BIT 0"
-  #   id: "${devicename}_status_bit_1_reserved_bit_0"
-  #   register_type: holding
-  #   address: 0x80
-  #   bitmask: 0x1
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Status BIT 1 Reserved BIT 0"
+    id: "${devicename}_status_bit_1_reserved_bit_0"
+    register_type: holding
+    address: 0x80
+    bitmask: 0x1
   # Bit: 1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1331,7 +1228,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x2
-    icon: mdi:eye
   # Bit: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1340,7 +1236,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x4
-    icon: mdi:eye
   # Bit: 3
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1349,7 +1244,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x8
-    icon: mdi:eye
   # Bit: 4
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1358,7 +1252,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x10
-    icon: mdi:eye
   # Bit: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1367,7 +1260,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x20
-    icon: mdi:eye
   # Bit: 6
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1376,7 +1268,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x40
-    icon: mdi:eye
   # Bit: 7
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1385,7 +1276,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x80
-    icon: mdi:eye
   # Bit: 8
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1394,7 +1284,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x100
-    icon: mdi:eye
   # Bit: 9
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1403,7 +1292,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x200
-    icon: mdi:eye
   # Bit: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1412,7 +1300,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x400
-    icon: mdi:eye
   # Bit: 11
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1421,7 +1308,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x800
-    icon: mdi:eye
   # Bit: 12
   - platform: modbus_controller
     name: "Status BIT 1 Reserved BIT 12"
@@ -1430,7 +1316,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x1000
-    icon: mdi:eye
   # Bit: 13
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1439,7 +1324,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x2000
-    icon: mdi:eye
   # Bit: 14
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1448,7 +1332,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x4000
-    icon: mdi:eye
   # Bit: 15
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1457,7 +1340,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x8000
-    icon: mdi:eye
 
   # Register: 129
   # Bit: 0
@@ -1468,7 +1350,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x1
-    icon: mdi:eye
   # Bit: 1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1477,7 +1358,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x2
-    icon: mdi:eye
   # Bit: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1486,7 +1366,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x4
-    icon: mdi:eye
   # Bit: 3
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1495,16 +1374,14 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x8
-    icon: mdi:pump
   # Bit: 4
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output SV1 -DHW"
+    name: "Load Output SV 1"
     id: "${devicename}_load_output_sv1"
     register_type: holding
     address: 0x81
     bitmask: 0x10
-    icon: mdi:eye
   # Bit: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1513,7 +1390,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x20
-    icon: mdi:eye
   # Bit: 6
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1522,7 +1398,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x40
-    icon: mdi:pump
   # Bit: 7
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1531,7 +1406,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x80
-    icon: mdi:pump
   # Bit: 8
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1540,7 +1414,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x100
-    icon: mdi:pump
   # Bit: 9
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1549,7 +1422,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x200
-    icon: mdi:eye
   # Bit: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1558,7 +1430,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x400
-    icon: mdi:eye
   # Bit: 11
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1567,7 +1438,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x800
-    icon: mdi:eye
   # Bit: 12
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1577,7 +1447,6 @@ binary_sensor:
     entity_category: diagnostic
     address: 0x81
     bitmask: 0x1000
-    icon: mdi:eye
   # Bit: 13
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1586,7 +1455,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x2000
-    icon: mdi:eye
   # Bit: 14
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1595,7 +1463,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x4000
-    icon: mdi:eye
   # Bit: 15
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1604,7 +1471,6 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x8000
-    icon: mdi:eye
   # Bit: 0
 
   # Register: 142
@@ -1616,197 +1482,400 @@ binary_sensor:
     register_type: holding
     address: 0x8e
     bitmask: 0x1
-    icon: mdi:eye
-  # Bit: 1  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 1 Online Status"
-  #   id: "${devicename}_slave_unit_1_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x2
-  #   icon: mdi:eye
-  # Bit: 2  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 2 Online Status"
-  #   id: "${devicename}_slave_unit_2_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x4
-  #   icon: mdi:eye
-  # Bit: 3  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 3 Online Status"
-  #   id: "${devicename}_slave_unit_3_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x8
-  #   icon: mdi:eye
-  # Bit: 4  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 4 Online Status"
-  #   id: "${devicename}_slave_unit_4_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x10
-  #   icon: mdi:eye
-  # Bit: 5  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 5 Online Status"
-  #   id: "${devicename}_slave_unit_5_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x20
-  #   icon: mdi:eye
-  # Bit: 6  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 6 Online Status"
-  #   id: "${devicename}_slave_unit_6_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x40
-  #   icon: mdi:eye
-  # Bit: 7  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 7 Online Status"
-  #   id: "${devicename}_slave_unit_7_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x80
-  #   icon: mdi:eye
-  # Bit: 8  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 8 Online Status"
-  #   id: "${devicename}_slave_unit_8_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x100
-  #   icon: mdi:eye
-  # Bit: 9  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 9 Online Status"
-  #   id: "${devicename}_slave_unit_9_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x200
-  #   icon: mdi:eye
-  # Bit: 10  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 10 Online Status"
-  #   id: "${devicename}_slave_unit_10_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x400
-  #   icon: mdi:eye
-  # Bit: 11  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 11 Online Status"
-  #   id: "${devicename}_slave_unit_11_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x800
-  #   icon: mdi:eye
-  # Bit: 12  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 12 Online Status"
-  #   id: "${devicename}_slave_unit_12_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x1000
-  #   icon: mdi:eye
-  # Bit: 13  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 13 Online Status"
-  #   id: "${devicename}_slave_unit_13_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x2000
-  #   icon: mdi:eye
-  # Bit: 14  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 14 Online Status"
-  #   id: "${devicename}_slave_unit_14_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x4000
-  #   icon: mdi:eye
-  # Bit: 15  -> registered for future use multiblock modules
-  # - platform: modbus_controller
-  #   modbus_controller_id: "${devicename}"
-  #   name: "Slave Unit 15 Online Status"
-  #   id: "${devicename}_slave_unit_15_online_status"
-  #   register_type: holding
-  #   address: 0x8e
-  #   bitmask: 0x8000
-  #   icon: mdi:eye
+  # Bit: 1
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 1 Online Status"
+    id: "${devicename}_slave_unit_1_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x2
+  # Bit: 2
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 2 Online Status"
+    id: "${devicename}_slave_unit_2_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x4
+  # Bit: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 3 Online Status"
+    id: "${devicename}_slave_unit_3_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x8
+  # Bit: 4
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 4 Online Status"
+    id: "${devicename}_slave_unit_4_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x10
+  # Bit: 5
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 5 Online Status"
+    id: "${devicename}_slave_unit_5_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x20
+  # Bit: 6
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 6 Online Status"
+    id: "${devicename}_slave_unit_6_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x40
+  # Bit: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 7 Online Status"
+    id: "${devicename}_slave_unit_7_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x80
+  # Bit: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 8 Online Status"
+    id: "${devicename}_slave_unit_8_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x100
+  # Bit: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 9 Online Status"
+    id: "${devicename}_slave_unit_9_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x200
+  # Bit: 10
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 10 Online Status"
+    id: "${devicename}_slave_unit_10_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x400
+  # Bit: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 11 Online Status"
+    id: "${devicename}_slave_unit_11_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x800
+  # Bit: 12
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 12 Online Status"
+    id: "${devicename}_slave_unit_12_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x1000
+  # Bit: 13
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 13 Online Status"
+    id: "${devicename}_slave_unit_13_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x2000
+  # Bit: 14
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 14 Online Status"
+    id: "${devicename}_slave_unit_14_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x4000
+  # Bit: 15
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Slave Unit 15 Online Status"
+    id: "${devicename}_slave_unit_15_online_status"
+    register_type: holding
+    address: 0x8e
+    bitmask: 0x8000
 
-  # Register: 210, default: true, TODO: verify default  -> moved to switch
-  # Bit: 0 -> moved to switch
-  # Bit: 1, default: false, TODO: verify default -> moved to switch
-  # Bit: 2, default: false, TODO: verify default -> moved to switch
-  # Bit: 3, default: true, TODO: verify default -> moved to switch
-  # Bit: 4, default: false, TODO: verify default -> moved to switch
-  # Bit: 5, default: false, TODO: verify default -> moved to switch
-  # Midea: PUMPI silent mode, 1; valid, 0: invalid -> moved to switch
-  # Bit: 6, default: false, TODO: verify default -> moved to switch
-  # Bit: 7, default: true, TODO: verify default -> moved to switch
-  # Bit: 8, default: false, TODO: verify default -> moved to switch
-  # Bit: 9, default: true, TODO: verify default -> moved to switch
-  # Bit: 10, default: false, TODO: verify default -> moved to switch
-  # Bit: 11, default: false, TODO: verify default -> moved to switch
-  # Bit: 12, default: false, TODO: verify default -> moved to switch
-  # Bit: 13, default: true, TODO: verify default -> moved to switch
-  # Bit: 14, default: true, TODO: verify default -> moved to switch
-  # Bit: 15, default: true, TODO: verify default -> moved to switch
+  # Register: 210, default: true, TODO: verify default
+  # Bit: 0
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Heating And Cooling First Or Water First"
+    id: "${devicename}_parameter_setting_1_heating_and_cooling_first_or_water_first"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x1
+  # Bit: 1, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Dual Room Thermostat Supported"
+    id: "${devicename}_parameter_setting_1_dual_room_thermostat_supported"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x2
+  # Bit: 2, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Room Thermostat"
+    id: "${devicename}_parameter_setting_1_room_thermostat"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x4
+  # Bit: 3, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Supports Room Thermostat"
+    id: "${devicename}_parameter_setting_1_supports_room_thermostat"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x8
+  # Bit: 4, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Supports Room Temperature Sensor Ta"
+    id: "${devicename}_parameter_setting_1_supports_room_temperature_sensor_ta"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x10
+  # Bit: 5, default: false, TODO: verify default
+  # Midea: PUMPI silent mode, 1; valid, 0: invalid
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Supports T1 Sensor"
+    id: "${devicename}_parameter_setting_1_supports_t1_sensor"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x20
+  # Bit: 6, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 T1S Heating High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x40
+  # Bit: 7, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Enable Heating"
+    id: "${devicename}_parameter_setting_1_enable_heating"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x80
+  # Bit: 8, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 T1s Cooling High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x100
+  # Bit: 9, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Enable Cooling"
+    id: "${devicename}_parameter_setting_1_enable_cooling"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x200
+  # Bit: 10, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 DHW Pump Supports Pipe Disinfect"
+    id: "${devicename}_parameter_setting_1_dhw_pump_supports_pipe_disinfect"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x400
+  # Bit: 11, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Reserved BIT 11"
+    id: "${devicename}_parameter_setting_1_reserved_bit_11"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x800
+  # Bit: 12, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 DHW Pump Supported"
+    id: "${devicename}_parameter_setting_1_dhw_pump_supported"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x1000
+  # Bit: 13, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Supports Disinfection"
+    id: "${devicename}_parameter_setting_1_supports_disinfection"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x2000
+  # Bit: 14, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Supports Water Tank Electric Heater TBH"
+    id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x4000
+  # Bit: 15, default: true, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 1 Enable Water Heating"
+    id: "${devicename}_parameter_setting_1_enable_water_heating"
+    register_type: holding
+    address: 0xd2
+    bitmask: 0x8000
 
-  # Register: 211  -> moved to switch
-  # Bit: 0, default: false, TODO: verify default  -> moved to switch
-  # Bit: 1, default: false, TODO: verify default  -> moved to switch
-  # Bit: 2, default: false, TODO: verify default -> moved to switch
-  # Bit: 3, default: false, TODO: verify default -> moved to switch
-  # Bit: 4, default: false, TODO: verify default -> moved to switch
-  # Bit: 5, default: false, TODO: verify default -> moved to switch
-  # Bit: 6, default: false, TODO: verify default -> moved to switch
-  # Midea: T1B sensor enable -> moved to switch
-  # Bit: 7, default: false, TODO: verify default -> moved to switch
-  # Bit: 8, default: false, TODO: verify default -> moved to switch
-  # Bit: 9, default: false, TODO: verify default -> moved to switch
-  # Bit: 10, default: false, TODO: verify default -> moved to switch
-  # Bit: 11, default: false, TODO: verify default -> moved to switch
-  # Bit: 12, default: false, TODO: verify default -> moved to switch
-  # Bit: 13, default: false, TODO: verify default -> moved to switch
-  # Bit: 14, default: false, TODO: verify default -> moved to switch
-  # Bit: 15, default: false, TODO: verify default -> moved to switch
+  # Register: 211
+  # Bit: 0, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 IBH AHS Installation Position"
+    id: "${devicename}_parameter_setting_2_ibh_ahs_installation_position"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x1
+  # Bit: 1, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Tbt Sensor Enable"
+    id: "${devicename}_parameter_setting_2_tbt_sensor_enable"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x2
+  # Bit: 2, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Ta Sensor Position"
+    id: "${devicename}_parameter_setting_2_ta_sensor_position"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x4
+  # Bit: 3, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Double Zone Setting Is Valid"
+    id: "${devicename}_parameter_setting_2_double_zone_setting_is_valid"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x8
+  # Bit: 4, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Setting The High Low Temperature Of Heating Mode T1S"
+    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_heating_mode_t1s"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x10
+  # Bit: 5, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Setting The High Low Temperature Of Cooling Mode T1S"
+    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x20
+  # Bit: 6, default: false, TODO: verify default
+  # Midea: T1B sensor enable
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Tw2 Enabled"
+    id: "${devicename}_parameter_setting_2_tw2_enabled"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x40
+  # Bit: 7, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Smart Grid"
+    id: "${devicename}_parameter_setting_2_smart_grid"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x80
+  # Bit: 8, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Port Definition"
+    id: "${devicename}_parameter_setting_2_port_definition"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x100
+  # Bit: 9, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Solar Energy Kit Enable"
+    id: "${devicename}_parameter_setting_2_solar_energy_kit_enable"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x200
+  # Bit: 10, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Solar Energy Input Port"
+    id: "${devicename}_parameter_setting_2_solar_energy_input_port"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x400
+  # Bit: 11, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Piping Length Selection"
+    id: "${devicename}_parameter_setting_2_piping_length_selection"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x800
+  # Bit: 12, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Tbt2 Sensor Is Valid"
+    id: "${devicename}_parameter_setting_2_tbt2_sensor_is_valid"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x1000
+  # Bit: 13, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Enable Temperature Collection Kit"
+    id: "${devicename}_parameter_setting_2_enable_temperature_collection_kit"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x2000
+  # Bit: 14, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 M1M2 Is Used For AHS Control"
+    id: "${devicename}_parameter_setting_2_m1m2_is_used_for_ahs_control"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x4000
+  # Bit: 15, default: false, TODO: verify default
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Setting 2 Reserved BIT 15"
+    id: "${devicename}_parameter_setting_2_reserved_bit_15"
+    register_type: holding
+    address: 0xd3
+    bitmask: 0x8000
   # Template binary sensor which shows if the heat pump is running
   - platform: template
     name: "Heat pump running"
     id: "${devicename}_heat_pump_running"
-    entity_category: "diagnostic"
-    device_class: plug
-    icon: mdi:power    
     lambda: |-
       int fan_speed = id(${devicename}_fan_speed).state;
       int compressor_frequency = id(${devicename}_compressor_operating_frequency).state;
-      bool external_water_pump_on = false; //id(${devicename}_load_output_external_water_pump_p_o).state;   //disabled
-      bool internal_water_pump_I_on = id(${devicename}_load_output_water_pump_pump_i).state;
-      //rather water_pump_i is better to check -external pump almost always run when Heatpump is idle, but most often nobody have it
+      bool external_water_pump_on = id(${devicename}_load_output_external_water_pump_p_o).state;
 
-      // If fan_speed is above 0, compressor_frequency is above 0 or external_water_pump_on is true or rather internal pump_i is true,
+      // If fan_speed is above 0, compressor_frequency is above 0 or external_water_pump_on is true,
       // then the outside unit of the heat pump system is running
-      if (fan_speed > 0 || compressor_frequency > 0 || external_water_pump_on || internal_water_pump_I_on) {
+      if (fan_speed > 0 || compressor_frequency > 0 || external_water_pump_on) {
           return true;
       } else {
           return false;
@@ -1814,1593 +1883,95 @@ binary_sensor:
 
 switch:
   - platform: factory_reset
-    name: Restart with Controller Factory Default Settings -not Heat Pump
+    name: Restart with Factory Default Settings
   # Register: 0 -> Bit 0
   # When Room Temperature Control is enabled, the temperature sensor in the remote controller
   # will be used to define when the heatpump should be turned (powered) on or off
-  - platform: template
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
     name: "Room Temperature Control"
     id: "${devicename}_room_temperature_control"
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : true
-    lambda: "return (id(unmasked_value_register_0) & 0x1) == 0x1;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x1;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x1;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+    register_type: holding
+    address: 0x0
+    bitmask: 0x1
   # Register: 0 -> Bit 1
   # When Water Flow Temperature Control is enabled for thise zone, the target outlet water temperature
   # will be used to define when the heatpump should be turned (powered) on or off
   #
   # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
   # the room thermostat will decide when this will be on or off.
-  - platform: template
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
     name: "Water Flow Temperature Control Zone 1"
     id: "${devicename}_water_flow_temperature_control_zone_1"
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : true
-    lambda: "return (id(unmasked_value_register_0) & 0x2) == 0x2;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x2;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to on water_flow_temperature_control_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x2;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to off water_flow_temperature_control_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+    register_type: holding
+    address: 0x0
+    bitmask: 0x2
   # Register: 0 -> Bit 2
-  - platform: template
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
     name: "Power DHW T5S"
     id: "${devicename}_power_dhw_t5s"
-    icon: mdi:eye
+    register_type: holding
     entity_category: config
-    restore_mode: DISABLED
-    optimistic : true
-    lambda:  "return (id(unmasked_value_register_0) & 0x4) == 0x4;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x4;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to on power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x4;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to off power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+    address: 0x0
+    bitmask: 0x4
   # Register: 0 -> Bit 3
   # When Water Flow Temperature Control is enabled for thise zone, the target outlet water temperature
   # will be used to define when the heatpump should be turned (powered) on or off
   #
   # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
   # the room thermostat will decide when this will be on or off.
-  - platform: template
-    name: "Water Flow Temperature Control Zone 2" #this is for cooling with Fan Coil Unit!
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Water Flow Temperature Control Zone 2"
     id: "${devicename}_water_flow_temperature_control_zone_2"
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : true
-    lambda: "return (id(unmasked_value_register_0) & 0x8) == 0x8;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x8;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x8;
-          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          
-          if ((new_value) != id(unmasked_value_register_0)) {
-            ESP_LOGI("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
-            id(unmasked_value_register_0) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Register: 5 -> Bit: 4
-  - platform: template
-    name: "F.S. Disinfect"
-    id: "${devicename}_f_s_disinfect"
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x10) == 0x10;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x10;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on f_s_disinfect 0x%x -> 0x%xs", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x10;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off f_s_disinfect 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Register: 5 -> Bit: 5
-  - platform: template
-    name: "F.S. Holiday Away"
-    id: "${devicename}_f_s_holiday_away"
-    disabled_by_default: true
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x20) == 0x20;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x20;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on f_s_holiday_away 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x20;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off f_s_holiday_away 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Register: 5 -> Bit: 6
-  - platform: template
-    name: "F.S. Silent Mode"
-    id: "${devicename}_f_s_silent_mode"
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x40) == 0x40;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on f_s_silent_mode 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off f_s_silent_mode 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Register: 5 -> Bit: 7
-  - platform: template
-    name: "F.S. Silent Mode Level 1 or 2"
-    id: "${devicename}_f_s_silent_mode_level"
-    icon: mdi:eye
-    #address: 5
-    #bitmask: 0x80
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x80) == 0x80;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on f_s_silent_mode_level 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off f_s_silent_mode_level 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Register: 5 -> Bit: 8
-  - platform: template
-    name: "F.S. Holiday Home"
-    id: "${devicename}_f_s_holiday_home"
-    disabled_by_default: true
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x100) == 0x100;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on f_s_holiday_home 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off f_s_holiday_home 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  #Register: 5 -> Bit 9 at binary sensor
-  # Register: 5 -> Bit: 10
-  - platform: template
-    name: "F.S. ECO Mode"
-    id: "${devicename}_f_s_eco_mode"
-    disabled_by_default: true
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x400) == 0x400;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x400;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on f_s_eco_mode 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x400;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off f_s_eco_mode 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Register: 5 -> Bit: 11
-  - platform: template
-    name: "F.S. DHW Pumps Running Constant Temperature Water Recycling"
-    id: "${devicename}_f_s_dhw_pumps_running_constant_temperature_water_recycling"
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x800) == 0x800;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x800;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on f_s_dhw_pumps_running_constant_temperature_water_recycling 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x800;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off f_s_dhw_pumps_running_constant_temperature_water_recycling 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+    register_type: holding
+    address: 0x0
+    bitmask: 0x8
   # Register: 5 -> Bit 12
-  - platform: template
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
     name: "Weather Compensation Zone 1"
     id: "${devicename}_weather_compensation_zone_1"
-    icon: mdi:eye
+    register_type: holding
     entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x1000) == 0x1000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x1000;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on weather_compensation_zone_1 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x1000;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off weather_compensation_zone_1 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+    address: 0x5
+    bitmask: 0x1000
   # Register: 5 -> Bit 13
-  - platform: template
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
     name: "Weather Compensation Zone 2"
     id: "${devicename}_weather_compensation_zone_2"
-    disabled_by_default: true
-    icon: mdi:eye
+    register_type: holding
     entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_5) & 0x2000) == 0x2000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x2000;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to on weather_compensation_zone_2 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x2000;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            ESP_LOGI("unmasked_value_register_5", "Set option to off weather_compensation_zone_2 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Register: 7
-  - platform: template
-    name: "Forced Water Tank Heater On/Off"
-    id: "${devicename}_forced_water_tank_heater_on_off"
-    icon: mdi:fire-alert
-    #address: 0x7
-    #register_type: holding
-    entity_category: config
-    optimistic: True
-    on_turn_on: 
-      then:
-        - lambda: |-
-            uint16_t value = 1;
-            ESP_LOGI("main", "Set forced water tank Heater ON");
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x7, value);
-            ${devicename}->queue_command(set_payload_command);
-    on_turn_off:
-      then:
-        - lambda: |-
-            uint16_t value = 2;
-            ESP_LOGI("main", "Set forced water tank Heater OFF");
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x7, value);
-            ${devicename}->queue_command(set_payload_command);
-  # Register: 8
-  - platform: template
-    name: "Forced Tank Buffer Heater"
-    id: "${devicename}_forced_tbh"
-    icon: mdi:fire-alert
-    entity_category: config
-    optimistic: True
-    on_turn_on: 
-      then:
-        - lambda: |-
-            uint16_t value = 1;
-            ESP_LOGI("main", "Set Forced Tank Buffer Heater ON");
-            //disble forced -restricted that TBH and IBH1/IBH2 cant run together
-            // id(${devicename}_forced_tbh).publish_state(false);
-            id(${devicename}_forced_hydraulic_module_rear_electric_heater_1).publish_state(false);
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x8, value);
-            ${devicename}->queue_command(set_payload_command);
-    on_turn_off:
-      then:
-        - lambda: |-
-            uint16_t value = 2;
-            ESP_LOGI("main", "Set Forced Tank Buffer Heater OFF");
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x8, value);
-            ${devicename}->queue_command(set_payload_command);  
-  # # Register: 9
-  - platform: template
-    name: "Forced Hydraulic Module Rear Electric Heater 1"
-    id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1"
-    icon: mdi:fire-alert
-    entity_category: config
-    optimistic: True
-    on_turn_on: 
-      then:
-        - lambda: |-
-            uint16_t value = 1;
-            ESP_LOGI("main", "Forced Hydraulic Module Rear Electric Heater 1");
-            //disble forced -restricted that TBH and IBH1/IBH2 cant run together
-            id(${devicename}_forced_tbh).publish_state(false);
-            //id(${devicename}_forced_hydraulic_module_rear_electric_heater_1).publish_state(false);
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x9, value);
-            ${devicename}->queue_command(set_payload_command);
-    on_turn_off:
-      then:
-        - lambda: |-
-            uint16_t value = 2;
-            ESP_LOGI("main", "Forced Hydraulic Module Rear Electric Heater 1");
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x9, value);
-            ${devicename}->queue_command(set_payload_command); 
+    address: 0x5
+    bitmask: 0x2000
 
-# Register: 210, default: true, TODO: verify default
-  # Bit: 0
-  - platform: template
-    name: "PS1 Heating And Cooling First Or Water First"
-    id: "${devicename}_p_s_1_heating_and_cooling_first_or_water_first"
-    icon: mdi:eye
+  # Register: 7
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Forced Water Tank Heating On/Off"
+    id: "${devicename}_forced_water_tank_heating_on_off"
+    icon: mdi:fire-alert
+    address: 0x7
+    register_type: holding
     entity_category: config
-    restore_mode: DISABLED
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x1) == 0x1;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x1;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_heating_and_cooling_first_or_water_first 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x1;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_heating_and_cooling_first_or_water_first 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 1, default: false, TODO: verify default
-  - platform: template
-    name: "PS1 Dual Room Thermostat Supported"
-    id: "${devicename}_p_s_1_dual_room_thermostat_supported"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x2) == 0x2;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x2;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_dual_room_thermostat_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x2;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_dual_room_thermostat_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 2, default: false, TODO: verify default
-  - platform: template
-    name: "PS1 Room Thermostat"
-    id: "${devicename}_p_s_1_room_thermostat"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x4) == 0x4;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x4;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x4;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 3, default: true, TODO: verify default
-  - platform: template
-    name: "PS1 Supports Room Thermostat"
-    id: "${devicename}_p_s_1_supports_room_thermostat"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x8) == 0x8;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x8;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_supports_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x8;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_supports_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 4, default: false, TODO: verify default
-  - platform: template
-    name: "PS1 Supports Room Temperature Sensor Ta"
-    id: "${devicename}_p_s_1_supports_room_temperature_sensor_ta"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x10) == 0x10;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x10;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_supports_room_temperature_sensor_ta 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x10;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_supports_room_temperature_sensor_ta 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 5, default: false, TODO: verify default
-  # Midea: PUMPI silent mode, 1; valid, 0: invalid
-  - platform: template
-    name: "PS1 Silent Mode PUMP I,"
-    id: "${devicename}_p_s_1_silent_mode_pump_i"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x20) == 0x20;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x20;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            //ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_silent_mode_pump_i 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x20;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_silent_mode_pump_i 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 6, default: false, TODO: verify default
-  - platform: template
-    name: "PS1 T1S Heating High Low Temperature Settings RO?"
-    id: "${devicename}_p_s_1_t1s_heating_high_low_temperature_settings"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    #entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_t1s_heating_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_t1s_heating_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 7, default: true, TODO: verify default
-  - platform: template
-    name: "PS1 Enable Heating"
-    id: "${devicename}_p_s_1_enable_heating"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x80) == 0x80;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 8, default: false, TODO: verify default
-  - platform: template
-    name: "PS1 T1s Cooling High Low Temperature Settings RO?"
-    id: "${devicename}_p_s_1_t1s_cooling_high_low_temperature_settings"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_t1s_cooling_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_t1s_cooling_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 9, default: true, TODO: verify default
-  - platform: template
-    name: "PS1 Enable Cooling"
-    id: "${devicename}_p_s_1_enable_cooling"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x200) == 0x200;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x200;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_cooling 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x200;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_cooling 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 10, default: false, TODO: verify default
-  - platform: template
-    name: "PS1 DHW Pump Supports Pipe Disinfect"
-    id: "${devicename}_p_s_1_dhw_pump_supports_pipe_disinfect"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x400) == 0x400;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x400;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_dhw_pump_supports_pipe_disinfect 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x400;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_dhw_pump_supports_pipe_disinfect 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  #bit11 is in binary_sensor
-  # Bit: 12, default: false, TODO: verify default
-  - platform: template
-    name: "PS1 DHW Pump Supported"
-    id: "${devicename}_p_s_1_dhw_pump_supported"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x1000) == 0x1000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x1000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_dhw_pump_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x1000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_dhw_pump_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 13, default: true, TODO: verify default
-  - platform: template
-    name: "PS1 Supports Disinfection"
-    id: "${devicename}_p_s_1_supports_disinfection"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x2000) == 0x2000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x2000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x2000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 14, default: true, TODO: verify default
-  - platform: template
-    name: "PS1 Supports Water Tank Electric Heater TBH RO?"
-    id: "${devicename}_p_s_1_supports_water_tank_electric_heater_tbh"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 15, default: true, TODO: verify default
-  - platform: template
-    name: "PS1 Enable Water Heating"
-    id: "${devicename}_p_s_1_enable_water_heating"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_210) & 0x8000) == 0x8000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x8000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x8000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Register: 211
-  # Bit: 0, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 IBH AHS Installation Position"
-    #0: pipe
-    id: "${devicename}_p_s_2_ibh_ahs_installation_position"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x1) == 0x1;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x1;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x1;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 1, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Tbt Sensor Enable"
-    id: "${devicename}_p_s_2_tbt_sensor_enable"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x2) == 0x2;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x2;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x2;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 2, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Ta Sensor Position"
-    id: "${devicename}_p_s_2_ta_sensor_position"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x4) == 0x4;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x4;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x4;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Bit: 3, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Double Zone Setting Is Valid"
-    id: "${devicename}_p_s_2_double_zone_setting_is_valid"
-    disabled_by_default: true
-    icon: mdi:eye
-    #bitmask: 0x8
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x8) == 0x8;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x8;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x8;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Bit: 4, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Setting The High Low Temperature Of Heating Mode T1S"
-    id: "${devicename}_p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x10) == 0x10;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x10;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x10;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Bit: 5, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Setting The High Low Temperature Of Cooling Mode T1S"
-    id: "${devicename}_p_s_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x20) == 0x20;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x20;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_setting_the_high_low_temperature_of_cooling_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x20;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_setting_the_high_low_temperature_of_cooling_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }  
-  # Bit: 6, default: false, TODO: verify default
-  # Midea: T1B sensor enable -buffer sensor
-  - platform: template
-    name: "PS2 Tw2 T1B Enabled"
-    id: "${devicename}_p_s_2_tw2_enabled"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x40) == 0x40;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_tw2_enabled 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_tw2_enabled 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 7, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Smart Grid"
-    id: "${devicename}_p_s_2_smart_grid"
-    disabled_by_default: true
-    icon: mdi:eye
-    #bitmask: 0x80
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x80) == 0x80;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }    
-  # Bit: 8, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Port 0-OnOff_1-DHW heater"
-    id: "${devicename}_p_s_2_port_definition"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x100) == 0x100;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 9, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Solar Energy Kit Enable"
-    id: "${devicename}_p_s_2_solar_energy_kit_enable"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x200) == 0x200;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x200;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_solar_energy_kit_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x200;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_solar_energy_kit_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 10, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Solar Energy Input Port"
-    #Solar energy input port 1: CN18 0: CN11
-    id: "${devicename}_p_s_2_solar_energy_input_port"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x400) == 0x400;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x400;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x400;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 11, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Piping Length Selection"
-    id: "${devicename}_p_s_2_piping_length_selection"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x800) == 0x800;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x800;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_piping_length_selection 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x800;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_piping_length_selection 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          } 
-  # Bit: 12, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Tbt2 Sensor Is Valid"
-    id: "${devicename}_p_s_2_tbt2_sensor_is_valid"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x1000) == 0x1000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x1000;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_tbt2_sensor_is_valid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x1000;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_tbt2_sensor_is_valid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 13, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 Enable Temperature Collection Kit"
-    id: "${devicename}_p_s_2_enable_temperature_collection_kit"
-    disabled_by_default: true
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x2000) == 0x2000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x2000;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_enable_temperature_collection_kit 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x2000;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_enable_temperature_collection_kit 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  # Bit: 14, default: false, TODO: verify default
-  - platform: template
-    name: "PS2 M1M2 Is Used For AHS Control"
-    id: "${devicename}_p_s_2_m1m2_is_used_for_ahs_control"
-    disabled_by_default: true
-    icon: mdi:eye
-    #bitmask: 0x4000
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic : True
-    lambda: "return (id(unmasked_value_register_211) & 0x4000) == 0x4000;"
-    on_turn_on:
-      #- logger.log: "Switch Turned On!"
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_m1m2_is_used_for_ahs_control 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;         //Clear and set
-          
-          if ((new_value) != id(unmasked_value_register_211)) {
-            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_m1m2_is_used_for_ahs_control 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
-            id(unmasked_value_register_211) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  #BIT15 is in binary_sensor as reserved
+    write_lambda: |-
+      uint16_t value = 0;
+
+      if (x == 1) {
+        ESP_LOGI("main", "Set forced water tank heating ON");
+        value = 1;
+      } else {
+        ESP_LOGI("main", "Set forced water tank heating OFF");
+        value = 2;
+      }
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x7, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
 
 number:
   # Register: 2 (Zone 1, Low)
@@ -4329,28 +2900,8 @@ number:
 
 text_sensor:
   - platform: version
-    name: ESPHome Version
+    name: "ESPHome Version"
     hide_timestamp: true
-    entity_category: "diagnostic"
-    icon: mdi:information-variant-circle-outline
-  - platform: template
-    name: Uptime HR
-    id: uptime_human
-    icon: mdi:clock-start
-    entity_category: "diagnostic"
-  - platform: wifi_info
-    ip_address:
-      name: IP
-      entity_category: "diagnostic"
-      icon: mdi:ip-network
-    ssid:
-      name: SSID
-      entity_category: "diagnostic"
-      icon: mdi:wifi
-    bssid:
-      name: BSSID
-      entity_category: "diagnostic"
-      icon: mdi:wifi-alert
   # Active State
   - platform: template
     name: "Active State"
@@ -4715,69 +3266,3 @@ text_sensor:
         - 141 -> L7
         - 142 -> L8
         - 143 -> L9
-
-# Register: 200 (High byte) ->moved to text_sensor
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Type"
-    id: "${devicename}_home_appliance_type"
-    register_type: holding
-    address: 0xc8
-    response_size: 2
-    raw_encode: HEXBYTES
-    #value_type: U_WORD
-    lambda: |-
-         int idx = item->offset;
-         std::string z = "";
-         uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         ESP_LOGI("main", "The current version is 0x%x", rawdata);
-         if ((rawdata >> 8) == 7) {
-           z = "Air to water heat pump";
-         } else {
-           z = std::to_string(data[idx]);
-         }
-         return {z};
-  # Register: 200 (Low byte, first 4 bits)
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Sub Type"
-    id: "${devicename}_home_appliance_sub_type"
-    icon: "mdi:information-box-outline"
-    register_type: holding
-    address: 200
-    response_size: 2
-    raw_encode: HEXBYTES    
-   # bitmask: 0xF000
-    lambda: |-
-         int idx = item->offset;
-         std::string z = "";
-         uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         ESP_LOGI("main", "The current version is 0x%x", rawdata);
-         if (((rawdata & 0x0F) ) == 2) {
-           z = "R32";
-         } else {
-           z = std::to_string(rawdata & 0x0F) ;
-         }
-         return {z};
-  # Register: 200 (Low byte, second 4 bits)
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Product Code"
-    id: "${devicename}_home_appliance_product_code"
-    icon: "mdi:information-box-outline"
-    register_type: holding
-    response_size: 2
-    raw_encode: HEXBYTES    
-    address: 200
-    #bitmask: 0x0F00
-    lambda: |-
-         int idx = item->offset;
-         std::string z = "";
-         uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         ESP_LOGI("main", "The current version is 0x%x rawdata ", rawdata);
-         if (((rawdata & 0x00F0) >> 4) == 4) {
-           z = "4";
-         } else {
-           z = std::to_string((rawdata & 0x00F0) >> 4);
-         }
-         return {z};

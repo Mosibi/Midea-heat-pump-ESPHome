@@ -22,39 +22,45 @@ substitutions:
   # led_light_fast_on:  "200ms"
   # led_light_fast_off":  "200ms"
   ##And update modbus_tx_pin, modbus_rx_pin and flow_control_pin in uart: modbus: and modbus_controller: sections
+  # restore_time_heat_dhw_after_turn_off: '(3.5 * 60 * 60)'   -added as number
+  # restore_time_heat_zone1_after_turn_off: '(3.5 * 60 * 60)'   -added as number
+  # restore_time_heat_zone2_after_turn_off: '(3.5 * 60 * 60)'   -added as number
+  pump_i_antifrize_check_last_run_interval: '(60*60)'  #interval to check if this time was pump_i not run to secure from antifreeze
+  external_pump_for_antifrize_run_relay1: '(5 * 60)'         #time to run external pump for antifrize pipes after pump_i stopped for defined time pump_i_antifrize_check_last_run_interval
+  external_pump_for_antifrize_run_relay2: '(5 * 60)'
 
 globals:
   - id: unmasked_value_register_0
     type: uint16_t
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'
   - id: unmasked_value_register_5
     type: uint16_t
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'
   - id: unmasked_value_register_210
     type: uint16_t
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'
   - id: unmasked_value_register_211
     type: uint16_t
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'    
   - id: unmasked_value_water_temperature_t1s
     type: uint16_t
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'    
   - id: unmasked_curve_selection
     type: uint16_t
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'    
   - id: unmasked_value_register_270
     type: uint16_t          #this is modbus so better is use uint16_t than int
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'    
   - id: unmasked_value_register_272
     type: uint16_t
-    restore_value: true
+    # restore_value: true
     # initial_value: '0'
   - id: manually_disabled_dhw_heating_timestamp
     type: int32_t
@@ -145,7 +151,7 @@ esp32:
     
 
 preferences:
-  flash_write_interval: 55min
+  flash_write_interval: 1min
   
 
 
@@ -404,7 +410,7 @@ interval:
               ESP_LOGI("time","PUMP_I last run now:%li, pump_ts %i, duration: %i, outside temp %f", id(esptime).now().timestamp, id(timestamp_water_pump_timestamp_last_run), duration_pump_i_lastrun, ext_t4_temp);
               if (id(timestamp_water_pump_timestamp_last_run) > 0) {
                 duration_pump_i_lastrun = id(esptime).now().timestamp - id(timestamp_water_pump_timestamp_last_run);
-                if (duration_pump_i_lastrun > ((int32_t)id(${devicename}_pump_i_antifrize_check_last_run_interval).state * 60) and !pump_i_status and ext_t4_temp < float(id(${devicename}_temp_secure_antifreeze).state) ) {
+                if (duration_pump_i_lastrun > ((int32_t)${pump_i_antifrize_check_last_run_interval}) and !pump_i_status and ext_t4_temp < float(id(${devicename}_temp_secure_antifreeze).state) ) {
                   //start external relay if pump_i not active in last hour with external temp under declared val
                   ESP_LOGE("time start relay pump","PROCEDURE START RELAY PUMP");
                   id(${devicename}_relay1_external_pump).turn_on();  //#################
@@ -413,12 +419,12 @@ interval:
               }
               //check how long external switch was on -if more than 5 minutes -turn off
               int32_t duration_relay1_active = id(esptime).now().timestamp - (int32_t)id(relay1_start);
-              if (duration_relay1_active > (id(${devicename}_output_external_pump_for_antifreeze_relay1).state * 60) and id(relay1_start) > 0) {
+              if (duration_relay1_active > ${external_pump_for_antifrize_run_relay1} and id(relay1_start) > 0) {
                 ESP_LOGI("timestamp relay","Relay1 Stops %um", duration_relay1_active);
                 id(${devicename}_relay1_external_pump).turn_off();   //#########################
               }
               int32_t duration_relay2_active = id(esptime).now().timestamp - (int32_t)id(relay2_start);
-              if (duration_relay2_active > (id(${devicename}_external_relay_timer).state * 60) and id(relay2_start) > 0) {
+              if (duration_relay2_active > ${external_pump_for_antifrize_run_relay2} and id(relay2_start) > 0) {
                 ESP_LOGI("timestamp relay","Relay2 Stops %u", duration_relay2_active);
                 id(${devicename}_relay2_external_pump).turn_off();   //#################
               }
@@ -844,7 +850,7 @@ sensor:
               } else if ( days ) {
                 result = (std::to_string(days) +"d " + std::to_string(hours) +"h " + std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
               } else if ( hours ) {
-                result = (std::to_string(hours) +"h " + std::to_string(minutes) +"m "+ std::to_string(seconds) + "s");
+                result = (std::to_string(hours) +"h " + std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
               } else if ( minutes ) {
                 result = (std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
               } else {
@@ -5396,56 +5402,8 @@ number:
     on_value: 
       then:
         lambda: 'ESP_LOGI("SM Minimal DHW Temp Allow to drop","Actual value: %f °C", x);'        
-  - platform: template
-    name: "SM Antifreeze protect between PUMP_I run"
-    #pump_i_antifrize_check_last_run_interval: '(60*60)'  #interval to check if this time was pump_i not run to secure from antifreeze
-    id: "${devicename}_pump_i_antifrize_check_last_run_interval"
-    min_value: 1
-    max_value: 120
-    step: 1
-    icon: mdi:clock
-    unit_of_measurement: "min"
-    entity_category: "config"
-    optimistic: true
-    restore_value: true
-    initial_value: 60
-    on_value: 
-      then:
-        lambda: 'ESP_LOGI("SM Antifreeze protect between PUMP_I run","Actual value: %f min", x);'       
 
-  - platform: template
-    name: "SM Output External pump for antifreeze"
-    #  output_external_pump_for_antifreeze_relay1: '(5 * 60)'         #time to run external pump for antifrize pipes after pump_i stopped for defined time pump_i_antifrize_check_last_run_interval
-    id: "${devicename}_output_external_pump_for_antifreeze_relay1"
-    min_value: 1
-    max_value: 15
-    step: 1
-    icon: mdi:clock
-    unit_of_measurement: "min"
-    entity_category: "config"
-    optimistic: true
-    restore_value: true
-    initial_value: 5
-    on_value: 
-      then:
-        lambda: 'ESP_LOGI("SM Output External pump for antifreeze","Actual value: %f min", x);'       
-  - platform: template
-    name: "SM Output External pump -spare"
-    #  external_relay_timer: '(5 * 60)'         #time to run external pump for antifrize pipes after pump_i stopped for defined time pump_i_antifrize_check_last_run_interval
-    id: "${devicename}_external_relay_timer"
-    min_value: 1
-    max_value: 15
-    step: 1
-    icon: mdi:clock
-    unit_of_measurement: "min"
-    entity_category: "config"
-    optimistic: true
-    restore_value: true
-    initial_value: 5
-    on_value: 
-      then:
-        lambda: 'ESP_LOGI("SM Output External pump for antifreeze -spare","Actual value: %f min", x);'                        
-  
+
 ################################################################################################################################
 text_sensor:
   - platform: version

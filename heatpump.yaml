@@ -2107,7 +2107,7 @@ switch:
           new_value &= ~checked_bit;         // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
-            # ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2119,7 +2119,7 @@ switch:
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;         // Clear and set
           if ((new_value) != id(unmasked_value_register_0)) {
-            # ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2147,7 +2147,7 @@ switch:
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
             // Write new value to heatpump if changed
-            # ESP_LOGD("unmasked_value_register_0", "Set option to on power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2159,7 +2159,7 @@ switch:
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;         // Clear and set
           if ((new_value) != id(unmasked_value_register_0)) {
-            # ESP_LOGD("unmasked_value_register_0", "Set option to off power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2182,7 +2182,7 @@ switch:
           new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
-            # ESP_LOGD("unmasked_value_register_0", "Set option to on power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2195,7 +2195,7 @@ switch:
           new_value &= ~checked_bit;         // Clear and set
           
           if ((new_value) != id(unmasked_value_register_0)) {
-            # ESP_LOGD("unmasked_value_register_0", "Set option to off power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2222,7 +2222,7 @@ switch:
           new_value &= ~checked_bit;         // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
-            # ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2235,7 +2235,7 @@ switch:
           new_value &= ~checked_bit;         // Clear and set
           
           if ((new_value) != id(unmasked_value_register_0)) {
-            # ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);

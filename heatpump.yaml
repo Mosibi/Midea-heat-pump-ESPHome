@@ -32,47 +32,47 @@ substitutions:
 globals:
   - id: unmasked_value_register_0
     type: uint16_t
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: unmasked_value_register_5
     type: uint16_t
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: unmasked_value_register_210
     type: uint16_t
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: unmasked_value_register_211
     type: uint16_t
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'    
   - id: unmasked_value_water_temperature_t1s
     type: uint16_t
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'    
   - id: unmasked_curve_selection
     type: uint16_t
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'    
   - id: unmasked_value_register_270
     type: uint16_t          #this is modbus so better is use uint16_t than int
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'    
   - id: unmasked_value_register_272
     type: uint16_t
-    # restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: manually_disabled_dhw_heating_timestamp
     type: int32_t
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: manually_disabled_zone1_heating_timestamp
     type: int32_t
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: manually_disabled_zone2_heating_timestamp
     type: int32_t
-    restore_value: true    
+    restore_value: True    
     # initial_value: '0'
   - id: timestamp_water_pump_timestamp_last_run
     type: int32_t
@@ -85,80 +85,74 @@ globals:
     # initial_value: '0'
   - id: tempereture_avg_last_24h
     type: float
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: relay1_start
     type: int32_t
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: relay2_start
     type: int32_t
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: external_temp_sensor_avg_rooms_temp_saved
     type: float
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: Restore_enable_DHW
     type: bool
-    initial_value: 'true'
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: Restore_enable_Zone1
     type: bool
-    restore_value: true
+    restore_value: True
     # initial_value: '0'
   - id: Restore_enable_Zone2
     type: bool
-    restore_value: true
+    restore_value: True
     # initial_value: "0"    
   - id: Restore_time_dhw
     type: uint16_t
-    restore_value: true    
+    restore_value: True    
     # initial_value: '210'
   - id: Restore_time_zone1
     type: uint16_t
-    restore_value: true    
+    restore_value: True    
     # initial_value: "210"
   - id: Restore_time_zone2
     type: uint16_t
-    restore_value: true    
+    restore_value: True    
     # initial_value: "210"    
 
 esphome:
-  name: "${devicename}"
+  name: "${devicename}_"
   comment: "${device_description}"
   friendly_name: "${description}"
   project:
     name: !secret "Project_info"
-    version: 4.0.3
+    version: 4.0.2
   on_boot:
     ## configure controller settings at setup
-    priority: 500
-    then:
-      - lambda: id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(id(tempereture_avg_last_hour));
-      - lambda: id(${devicename}_outdoor_ambient_temperature_daily).publish_state(id(tempereture_avg_last_24h));
-      - lambda: 'id(${devicename}_enable_recoverytime_enable_dhw).publish_state(true);' #Restore_enable_DHW));
-      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone1).publish_state(true);' #id(Restore_enable_Zone1));
-      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone2).publish_state(false);' #id(Restore_enable_Zone2));
+    - lambda: id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(id(tempereture_avg_last_hour));
+    - lambda: id(${devicename}_outdoor_ambient_temperature_daily).publish_state(id(tempereture_avg_last_24h));
+    - lambda: id(${devicename}_enable_recoverytime_enable_dhw).publish_state(id(Restore_enable_DHW));
+    - lambda: id(${devicename}_enable_recoverytime_enable_zone1).publish_state(id(Restore_enable_Zone1));
+    - lambda: id(${devicename}_enable_recoverytime_enable_zone2).publish_state(id(Restore_enable_Zone2));
     #this allow change ota password for next upload
     #id(my_ota).set_auth_password(!secret "heatpump_controller_ota_password");
 esp32:
   board: wemos_d1_mini32 #esp32dev
   framework:
-    type: esp-idf  #arduino
-    # restore_from_flash: true  #for Eesp8266
-    
+    type: esp-idf
+    #restore_from_flash: true  #for Eesp8266
 
 preferences:
   flash_write_interval: 1min
-  
-
 
 # Enable logging
 logger:
   level: INFO
-  # level: NONE, WARN, INFO, DEBUG
+  # level: NONE, DEBUG, WARN, INFO
   # hardware_uart: UART1
   baud_rate: 0 #disables HW logger to avoid conflicts with modbus communication
  
@@ -186,11 +180,11 @@ api:
 ################################################################################################################################
 web_server:
   port: 80
-  log: true
+  log: True
   auth:
     username: !secret web_server_username
     password: !secret web_server_password
-  include_internal: true
+  include_internal: True
   version: 3
   local: true
 ################################################################################################################################
@@ -203,7 +197,7 @@ wifi:
   ssid: !secret "wifi_ssid"
   password: !secret "wifi_password"
   use_address: 10.48.18.61
-  enable_on_boot: true
+  enable_on_boot: True
   power_save_mode: none
   on_connect: 
     then: 
@@ -258,7 +252,7 @@ light:
   - platform: binary
     id: "wifi_led"
     output: "blue_led"
-    internal: true
+    internal: True
     icon: mdi:led-on
     entity_category: "diagnostic"
     effects:
@@ -588,12 +582,11 @@ select:
   # Register: 269, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Power Input Limitation to"
+    name: "Power Input Limitation Type"
     id: "${devicename}_power_input_limitation_type"
     address: 0x10d
     value_type: U_WORD
     optimistic: true
-    icon: mdi:state-machine
     optionsmap:
       "None": 0
       "1": 1
@@ -612,7 +605,6 @@ select:
     address: 0x110
     value_type: U_WORD
     optimistic: true
-    icon: mdi:heat-wave
     optionsmap:
       "Fan Coil Unit": 0
       "Radiator": 1
@@ -663,7 +655,6 @@ select:
     address: 0x110
     value_type: U_WORD
     optimistic: true
-    icon: mdi:heat-wave
     optionsmap:
       "Fan Coil Unit": 0
       "Radiator": 1
@@ -716,7 +707,6 @@ select:
     address: 0x110
     value_type: U_WORD
     optimistic: true
-    icon: mdi:heat-wave
     optionsmap:
       "Fan Coil Unit": 0
       "Radiator": 1
@@ -768,7 +758,6 @@ select:
     address: 0x110
     value_type: U_WORD
     optimistic: true
-    icon: mdi:heat-wave
     optionsmap:
       "Fan Coil Unit": 0
       "Radiator": 1
@@ -817,9 +806,7 @@ sensor:
     name: "External Temp Sensor of avg Rooms temp"
     id: "${devicename}_external_temp_sensor_avg_rooms_temp"
     entity_id: sensor.wanas_m7_temp_pomieszcz_2
-    internal: true
-    unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
+    internal: True
     on_value: 
       then:
         lambda: |-
@@ -865,7 +852,7 @@ sensor:
     icon: mdi:wifi
   ###########APPEND SENSORS #################
   - platform: template
-    name: "SM Last time PUMP_I Run"
+    name: "Last time PUMP_I Run"
     id: ${devicename}_water_pump_i_runtime
     entity_category: "diagnostic"
     unit_of_measurement: s
@@ -873,34 +860,34 @@ sensor:
     update_interval: 15s
     lambda: "if (id(timestamp_water_pump_timestamp_last_run)==0) return 0; else return id(esptime).now().timestamp - id(timestamp_water_pump_timestamp_last_run);"
   - platform: template
-    name: "SM Recovery Heating DHW time in"
+    name: "Recovery Heating DHW time in"
     id: ${devicename}_recovery_heating_dhw_time_in
     entity_category: "diagnostic"
     unit_of_measurement: s
     icon: mdi:clock
     update_interval: 15s
-    internal: true
+    internal: True
     lambda: "if (id(manually_disabled_dhw_heating_timestamp)==0 or !id(Restore_enable_DHW)) {return 0;} else {return (id(${devicename}_restore_time_heat_dhw_after_turn_off).state * 60) - id(esptime).now().timestamp - id(manually_disabled_dhw_heating_timestamp);}"
   - platform: template
-    name: "SM Recovery Heating/Cooling Zone1 time in"
+    name: "Recovery Heating/Cooling Zone1 time in"
     id: ${devicename}_recovery_heating_cooling_zone1_time_in
     entity_category: "diagnostic"
     unit_of_measurement: s
     icon: mdi:clock
     update_interval: 15s
-    internal: true
+    internal: True
     lambda: "if (id(manually_disabled_zone1_heating_timestamp)==0 or !id(Restore_enable_Zone1)) return 0; else return (id(${devicename}_restore_time_heat_zone1_after_turn_off).state * 60) - id(esptime).now().timestamp - id(manually_disabled_zone1_heating_timestamp);"
   - platform: template
-    name: "SM Recovery Heating/Cooling Zone2 time in"
+    name: "Recovery Heating/Cooling Zone2 time in"
     id: ${devicename}_recovery_heating_cooling_zone2_time_in
     entity_category: "diagnostic"
     unit_of_measurement: s
     icon: mdi:clock
     update_interval: 15s
-    internal: true
+    internal: True
     lambda: "if (id(manually_disabled_zone2_heating_timestamp)==0 or !id(Restore_enable_Zone2)) return 0; else return (id(${devicename}_restore_time_heat_zone2_after_turn_off).state * 60) - id(esptime).now().timestamp - id(manually_disabled_zone2_heating_timestamp);"
   - platform: template
-    name: "SM Averange Hourly outside temp"
+    name: "Averange Hourly outside temp"
     id: "${devicename}_outdoor_ambient_temperature_hourly"
     icon: mdi:temperature-celsius
     unit_of_measurement: "°C"
@@ -915,7 +902,7 @@ sensor:
         - lambda: "id(tempereture_avg_last_hour) = x;"
     # web_server_sorting_weight: 190
   - platform: template
-    name: "SM Averange Daily outside temp"
+    name: "Averange Daily outside temp"
     id: "${devicename}_outdoor_ambient_temperature_daily"
     icon: mdi:temperature-celsius
     unit_of_measurement: "°C"
@@ -932,17 +919,17 @@ sensor:
       then:
         - lambda: "id(tempereture_avg_last_24h) = x;"
   - platform: template
-    name: "SM Calculated Curve"
+    name: "Calculated Curve"
     id: ${devicename}_calculated_curve
     unit_of_measurement: °C
     icon: mdi:temperature-celsius
   - platform: template
-    name: "SM Calculated Curve2"
+    name: "Calculated Curve2"
     id: ${devicename}_calculated_curve2
     unit_of_measurement: °C
     icon: mdi:temperature-celsius
   - platform: template
-    name: "SM Calculated Curve3"
+    name: "Calculated Curve3"
     id: ${devicename}_calculated_curve3
     unit_of_measurement: °C
     icon: mdi:temperature-celsius
@@ -961,11 +948,10 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Register 0 switches"
     id: "${devicename}_register_0_switches"
-    internal: true
+    internal: True
     register_type: holding
     address: 0x0
     value_type: U_WORD
-    icon: mdi:eye
     lambda: |-
       // Update the global var unmasked_value_register_0
       id(unmasked_value_register_0) = x;
@@ -999,11 +985,10 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Register 5 switches"
     id: "${devicename}_register_5_switches"
-    internal: true
+    internal: True
     register_type: holding
     address: 0x5
     value_type: U_WORD
-    icon: mdi:eye
     lambda: |-
       // Update the global var unmasked_value_register_5
       id(unmasked_value_register_5) = x;
@@ -1017,7 +1002,7 @@ sensor:
     icon: mdi:fire-alert
     address: 0x7
     register_type: holding
-    internal: true
+    internal: True
     lambda: |-
       ESP_LOGI("FUNC7","value of x: %f", x);
       if (x == 1) {
@@ -1036,7 +1021,7 @@ sensor:
     icon: mdi:fire-alert
     address: 0x8
     register_type: holding
-    internal: true
+    internal: True
     lambda: |-
       ESP_LOGI("FUNC8","value of x: %f", x);
       if (x == 1) {
@@ -1055,7 +1040,7 @@ sensor:
     icon: mdi:fire-alert
     address: 0x9
     register_type: holding
-    internal: true
+    internal: True
     lambda: |-
       ESP_LOGI("FUNC9","value of x: %f", x);
       if (x == 1) {
@@ -1075,7 +1060,6 @@ sensor:
     address: 0xa
     value_type: U_WORD
     unit_of_measurement: hr
-    icon: mdi:clock
 
   # Register: 100
   - platform: modbus_controller
@@ -1086,7 +1070,6 @@ sensor:
     address: 0x64
     value_type: U_WORD
     unit_of_measurement: Hz
-    icon: mdi:sine-wave
   # Register: 101 -->moved text_sensor
   # Register: 102
   - platform: modbus_controller
@@ -1663,11 +1646,10 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Settings 1"
     id: "${devicename}_parameter_settings_1"
-    internal: true
+    internal: True
     register_type: holding
     address: 210
     value_type: U_WORD
-    icon: mdi:state-machine
     lambda: |-
       // Update the global var unmasked_value_register_210
       id(unmasked_value_register_210) = x;
@@ -1677,11 +1659,10 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Settings 2"
     id: "${devicename}_parameter_settings_2"
-    internal: true
+    internal: True
     register_type: holding
     address: 211
     value_type: U_WORD
-    icon: mdi:state-machine
     lambda: |-
       // Update the global var unmasked_value_register_211
       id(unmasked_value_register_211) = x;
@@ -1778,8 +1759,7 @@ binary_sensor:
     name: "MARM20 Pump Working Disable HeatPump from Heating and DHW"
     entity_id: input_boolean.scene_daytime
     id: "marm20_m28_outs_20_pump_is_running"
-    internal: true
-    icon: mdi:eye
+    internal: True
     on_state:
       then:
         #if state from HA other source pump is running means heating so diable heatpump
@@ -2476,7 +2456,6 @@ switch:
     name: "Relay 1 External Pump"
     id: "${devicename}_relay1_external_pump"
     pin: GPIO12
-    icon: mdi:toggle-switch-off-outline
     on_turn_on: 
       then:
         lambda: |-
@@ -2500,7 +2479,6 @@ switch:
     name: "Relay 2 External Pump"
     id: "${devicename}_relay2_external_pump"
     pin: GPIO13
-    icon: mdi:toggle-switch-off-outline
     on_turn_on: 
       then:
         lambda: |-
@@ -2683,7 +2661,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x10) == 0x10;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2718,7 +2696,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x20) == 0x20;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2752,7 +2730,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x40) == 0x40;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2788,7 +2766,7 @@ switch:
     #bitmask: 0x80
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x80) == 0x80;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2823,7 +2801,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x100) == 0x100;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2859,7 +2837,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x400) == 0x400;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2893,7 +2871,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x800) == 0x800;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2927,7 +2905,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x1000) == 0x1000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2962,7 +2940,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_5) & 0x2000) == 0x2000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -2997,7 +2975,7 @@ switch:
     #address: 0x7
     #register_type: holding
     entity_category: config
-    #optimistic: true
+    #optimistic: True
     turn_on_action: 
       then:
         - lambda: |-
@@ -3020,7 +2998,7 @@ switch:
     id: "${devicename}_forced_tbh"
     icon: mdi:fire-alert
     entity_category: config
-    #optimistic: true
+    #optimistic: True
     turn_on_action: 
       then:
         - lambda: |-
@@ -3045,7 +3023,7 @@ switch:
     id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1"
     icon: mdi:fire-alert
     entity_category: config
-    optimistic: true
+    optimistic: True
     on_turn_on: 
       then:
         - lambda: |-
@@ -3073,7 +3051,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x1) == 0x1;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3108,7 +3086,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x2) == 0x2;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3143,7 +3121,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x4) == 0x4;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3178,7 +3156,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x8) == 0x8;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3213,7 +3191,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x10) == 0x10;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3248,7 +3226,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x20) == 0x20;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3282,7 +3260,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     #entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3316,7 +3294,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x80) == 0x80;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3350,7 +3328,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3384,7 +3362,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x200) == 0x200;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3419,7 +3397,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x400) == 0x400;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3455,7 +3433,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x1000) == 0x1000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3490,7 +3468,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x2000) == 0x2000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3525,7 +3503,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3559,7 +3537,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_210) & 0x8000) == 0x8000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3596,7 +3574,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x1) == 0x1;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3630,7 +3608,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x2) == 0x2;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3665,7 +3643,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x4) == 0x4;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3701,7 +3679,7 @@ switch:
     #bitmask: 0x8
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x8) == 0x8;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3735,7 +3713,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x10) == 0x10;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3769,7 +3747,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x20) == 0x20;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3804,7 +3782,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x40) == 0x40;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3840,7 +3818,7 @@ switch:
     #bitmask: 0x80
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x80) == 0x80;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3875,7 +3853,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x100) == 0x100;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3910,7 +3888,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x200) == 0x200;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3946,7 +3924,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x400) == 0x400;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -3981,7 +3959,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x800) == 0x800;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -4016,7 +3994,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x1000) == 0x1000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -4051,7 +4029,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x2000) == 0x2000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -4087,7 +4065,7 @@ switch:
     #bitmask: 0x4000
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic : True
     lambda: "return (id(unmasked_value_register_211) & 0x4000) == 0x4000;"
     on_turn_on:
       #- logger.log: "Switch Turned On!"
@@ -4119,9 +4097,9 @@ switch:
 
 
   - platform: template
-    name: "SM Enable RecoverTime enable DHW"
+    name: "Enable RecoverTime enable DHW"
     id: "${devicename}_enable_recoverytime_enable_dhw"
-    #optimistic: true
+    #optimistic: True
     entity_category: "config"
     icon: mdi:switch
     #update global with value to save
@@ -4132,9 +4110,9 @@ switch:
       then:
         lambda: 'id(Restore_enable_DHW) = false; ESP_LOGI("Enable RecoverTime enable DHW"," is OFF state: %d", id(Restore_enable_DHW)); id(${devicename}_enable_recoverytime_enable_dhw).publish_state(id(Restore_enable_DHW));'
   - platform: template
-    name: "SM Enable RecoverTime enable Zone1"
+    name: "Enable RecoverTime enable Zone1"
     id: "${devicename}_enable_recoverytime_enable_zone1"
-    #optimistic: true
+    #optimistic: True
     entity_category: "config"
     icon: mdi:switch
     #update global with value to save
@@ -4145,9 +4123,9 @@ switch:
       then:
         lambda: 'id(Restore_enable_Zone1) = false; ESP_LOGI("Enable RecoverTime enable Zone1"," is OFF state: %d", id(Restore_enable_Zone1)); id(${devicename}_enable_recoverytime_enable_zone1).publish_state(id(Restore_enable_Zone1));'
   - platform: template
-    name: "SM Enable RecoverTime enable Zone2"
+    name: "Enable RecoverTime enable Zone2"
     id: "${devicename}_enable_recoverytime_enable_zone2"
-    #optimistic: true
+    #optimistic: True
     entity_category: "config"
     icon: mdi:switch
     #update global with value to save
@@ -4168,7 +4146,6 @@ number:
     address: 0x2
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     entity_category: config
     min_value: 5
     max_value: 65
@@ -4237,7 +4214,6 @@ number:
     address: 0x2
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     entity_category: config
     min_value: 5
     max_value: 65
@@ -4304,7 +4280,6 @@ number:
     address: 0x4
     value_type: U_WORD
     unit_of_measurement: "°C"
-    icon: mdi:temperature-celsius
     entity_category: config
     min_value: 20
     max_value: 65
@@ -4319,7 +4294,6 @@ number:
     address: 0x6
     value_type: U_WORD
     entity_category: config
-    icon: mdi:eye
     min_value: 1
     max_value: 9
     mode: slider
@@ -4359,7 +4333,6 @@ number:
     address: 0x6
     value_type: U_WORD
     entity_category: config
-    icon: mdi:eye
     min_value: 1
     max_value: 9
     mode: slider
@@ -4507,7 +4480,6 @@ number:
     address: 0xd1
     value_type: U_WORD
     unit_of_measurement: min
-    icon: mdi:clock-check-outline
     entity_category: config
     min_value: 5
     max_value: 120
@@ -4546,7 +4518,6 @@ number:
     address: 0xd6
     value_type: U_WORD
     unit_of_measurement: min
-    icon: mdi:clock-check-outline
     entity_category: config
     min_value: 5
     max_value: 30
@@ -4878,7 +4849,6 @@ number:
     address: 0xf1
     value_type: U_WORD
     unit_of_measurement: min
-    icon: mdi:clock-check-outline
     entity_category: config
     min_value: 10
     max_value: 600
@@ -4891,7 +4861,6 @@ number:
     address: 0xf2
     value_type: U_WORD
     unit_of_measurement: min
-    icon: mdi:clock-check-outline
     entity_category: config
     min_value: 10
     max_value: 600
@@ -4958,7 +4927,6 @@ number:
     address: 0xf7
     value_type: U_WORD
     entity_category: config
-    icon: mdi:eye
     min_value: 10
     max_value: 100
     step: 10
@@ -5093,7 +5061,6 @@ number:
     address: 0x103
     value_type: U_WORD
     unit_of_measurement: hr
-    icon: mdi:clock-check-outline
     entity_category: config
     min_value: 48
     max_value: 96
@@ -5224,7 +5191,6 @@ number:
     address: 0x10e
     value_type: U_WORD
     unit_of_measurement: hr
-    icon: mdi:clock-check-outline
     entity_category: config
     min_value: 0.5
     max_value: 6.0
@@ -5273,7 +5239,6 @@ number:
     address: 0x10e
     value_type: U_WORD
     unit_of_measurement: hr
-    icon: mdi:clock-check-outline
     entity_category: config
     min_value: 0.5
     max_value: 6.0
@@ -5326,22 +5291,22 @@ number:
     min_value: 2.0
     max_value: 20.0
     step: 0.5
-  ######################################## OUTSIDE IMPLEMENTATIONS ############################################      
+
   - platform: template
-    name: "SM Restore DHW Heat after time"
+    name: "Restore DHW Heat after time"
     id: "${devicename}_restore_time_heat_dhw_after_turn_off"
     min_value: 0
     max_value: 1440
     step: 5
     unit_of_measurement: min
-    icon: mdi:clock-check-outline
     entity_category: "config"
     optimistic: true
-    restore_value: true
+    # restore_value: true
     initial_value: 210
     on_value: 
       then:
         lambda: 'ESP_LOGI("Restore DHW Heat after time","Restore DHW Heat after time: %f min", x);'
+  ######################################## OUTSIDE IMPLEMENTATIONS ############################################      
   - platform: template
     name: "SM Restore Zone1 Heat/Cool after time"
     id: "${devicename}_restore_time_heat_zone1_after_turn_off"
@@ -5349,10 +5314,9 @@ number:
     max_value: 1440
     step: 5
     unit_of_measurement: min
-    icon: mdi:clock-check-outline
     entity_category: "config"
     optimistic: true
-    restore_value: true
+    # restore_value: true
     initial_value: 210
     on_value: 
       then:
@@ -5364,10 +5328,9 @@ number:
     max_value: 1440
     step: 5
     unit_of_measurement: min
-    icon: mdi:clock-check-outline
     entity_category: "config"
     optimistic: true
-    restore_value: true
+    # restore_value: true
     initial_value: 210
     on_value: 
       then:
@@ -5382,7 +5345,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: "config"
     optimistic: true
-    restore_value: true
+    # restore_value: true
     initial_value: 3
     on_value: 
       then:
@@ -5397,7 +5360,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: "config"
     optimistic: true
-    restore_value: true
+    # restore_value: true
     initial_value: 32
     on_value: 
       then:
@@ -5829,7 +5792,6 @@ text_sensor:
     address: 0xc8
     response_size: 2
     raw_encode: HEXBYTES
-    icon: mdi:state-machine
     #value_type: U_WORD
     lambda: |-
          int idx = item->offset;
@@ -5888,7 +5850,7 @@ text_sensor:
          return {z};
   #########ADDED TIME PUMPS##############
   - platform: template
-    name: "SM Recovery Heating DHW time at"
+    name: "Recovery Heating DHW time at"
     id: ${devicename}_recovery_heating_dhw_time_at
     entity_category: "diagnostic"
     icon: mdi:clock
@@ -5900,11 +5862,11 @@ text_sensor:
         time_t time_at = dur;
         strftime(time_str, sizeof(time_str), "%H:%M", localtime(&time_at));  //%Y-%m-%d 
       } else sprintf(time_str, "N/D");
-      ESP_LOGI("text_sensor", "recovery_heating_dhw_time_at: %s Enable Recovery mode: %s", time_str, id(${devicename}_enable_recoverytime_enable_dhw).state?"Yes":"No");
+      ESP_LOGI("text_sensor", "recovery_heating_dhw_time_at: %s", time_str);
       return {time_str};
     # web_server_sorting_weight: -190   
   - platform: template
-    name: "SM Recovery Heating/Cooling Zone1 time at"
+    name: "Recovery Heating/Cooling Zone1 time at"
     id: ${devicename}_recovery_heating_cooling_zone1_time_at
     entity_category: "diagnostic"
     icon: mdi:clock
@@ -5916,11 +5878,11 @@ text_sensor:
         time_t time_at = dur;
         strftime(time_str, sizeof(time_str), "%H:%M", localtime(&time_at));  //%Y-%m-%d 
       } else sprintf(time_str, "N/D");
-      ESP_LOGI("text_sensor", "recovery_heating_cooling_zone1_time_at: %s Enable Recovery mode: %s", time_str, id(${devicename}_enable_recoverytime_enable_zone1).state?"Yes":"No");
+      ESP_LOGI("text_sensor", "recovery_heating_cooling_zone1_time_at: %s", time_str);
       return {time_str};
     # web_server_sorting_weight: -190   
   - platform: template
-    name: "SM Recovery Heating/Cooling Zone2 time at"
+    name: "Recovery Heating/Cooling Zone2 time at"
     id: ${devicename}_recovery_heating_cooling_zone2_time_at
     entity_category: "diagnostic"
     icon: mdi:clock
@@ -5932,10 +5894,10 @@ text_sensor:
         time_t time_at = dur;
         strftime(time_str, sizeof(time_str), "%H:%M", localtime(&time_at));  //%Y-%m-%d 
       } else sprintf(time_str, "N/D");
-      ESP_LOGI("text_sensor", "recovery_heating_cooling_zone2_time_at: %s Enable Recovery mode: %s", time_str, id(${devicename}_enable_recoverytime_enable_zone2).state?"Yes":"No");
+      ESP_LOGI("text_sensor", "recovery_heating_cooling_zone2_time_at: %s", time_str);
       return {time_str};    
   - platform: template
-    name: "SM Last time PUMP_I Run At"
+    name: "Last time PUMP_I Run At"
     id: ${devicename}_water_pump_i_runtime_at
     entity_category: "diagnostic"
     icon: mdi:clock

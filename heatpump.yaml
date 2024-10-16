@@ -3,20 +3,24 @@ substitutions:
   description: Heatpump Controller
 
 globals:
+  - id: unmasked_value_register_0
+    type: uint16_t
+    restore_value: true
+    # initial_value: '0'
   - id: unmasked_value_water_temperature_t1s
-    type: int
+    type: uint16_t
     restore_value: no
     initial_value: '0'
   - id: unmasked_curve_selection
-    type: int
+    type: uint16_t
     restore_value: no
     initial_value: '0'
   - id: unmasked_value_register_270
-    type: int
+    type: uint16_t
     restore_value: no
     initial_value: '0'
   - id: unmasked_value_register_272
-    type: int
+    type: uint16_t
     restore_value: no
     initial_value: '0'
 
@@ -319,6 +323,20 @@ sensor:
     name: Uptime
     id: "${devicename}_uptime"
     icon: mdi:timelapse
+  # Register: 0 -> Config is present as select, but now we need get value from heatpump and save it as global var
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Register 0 switches"
+    id: "${devicename}_register_0_switches"
+    internal: true
+    register_type: holding
+    address: 0x0
+    value_type: U_WORD
+    icon: mdi:eye
+    lambda: |-
+      // Update the global var unmasked_value_register_0
+      id(unmasked_value_register_0) = x;
+      return x;    
   # Register: 1 -> Is present in this config as a 'select'
   # Register: 2 -> Is present in this config as a 'number'
   # Register: 3
@@ -1070,12 +1088,12 @@ sensor:
       return t1s_dhw;
 
 binary_sensor:
-  # Register: 0
+  # Register: 0 ->Is read as sensor from modbus to be fully switch functioning
   # Bit: 0 -> Is present in this config as a 'switch'
   # Bit: 1 -> Is present in this config as a 'switch'
   # Bit: 2 -> Is present in this config as a 'switch'
   # Bit: 3 -> Is present in this config as a 'switch'
-  # Bit: 4
+  # Bit: 4 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 4"
@@ -1084,7 +1102,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x10
-  # Bit: 5
+  # Bit: 5 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 5"
@@ -1093,7 +1111,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x20
-  # Bit: 6
+  # Bit: 6 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 6"
@@ -1102,7 +1120,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x40
-  # Bit: 7
+  # Bit: 7 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 7"
@@ -1111,7 +1129,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x80
-  # Bit: 8
+  # Bit: 8 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 8"
@@ -1120,7 +1138,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x100
-  # Bit: 9
+  # Bit: 9 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 9"
@@ -1129,7 +1147,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x200
-  # Bit: 10
+  # Bit: 10 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 10"
@@ -1138,7 +1156,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x400
-  # Bit: 11
+  # Bit: 11 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 11"
@@ -1147,7 +1165,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x800
-  # Bit: 12
+  # Bit: 12 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 12"
@@ -1156,7 +1174,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x1000
-  # Bit: 13
+  # Bit: 13 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 13"
@@ -1165,7 +1183,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x2000
-  # Bit: 14
+  # Bit: 14 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 14"
@@ -1174,7 +1192,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x4000
-  # Bit: 15
+  # Bit: 15 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 15"
@@ -2073,52 +2091,155 @@ switch:
   # Register: 0 -> Bit 0
   # When Room Temperature Control is enabled, the temperature sensor in the remote controller
   # will be used to define when the heatpump should be turned (powered) on or off
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
+  - platform: template
     name: "Room Temperature Control"
     id: "${devicename}_room_temperature_control"
     icon: mdi:eye
-    register_type: holding
-    address: 0x0
-    bitmask: 0x1
+    entity_category: config
+    restore_mode: DISABLED
+    optimistic : true
+    lambda: "return (id(unmasked_value_register_0) & 0x1) == 0x1;"
+    on_turn_on:
+      # - logger.log: "Switch Turned On!"
+      - lambda: |-
+          uint16_t checked_bit = 0x1;
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      # - logger.log: "Switch Turned Off!"    
+      - lambda: |-
+          uint16_t checked_bit = 0x1;
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
   # Register: 0 -> Bit 1
   # When Water Flow Temperature Control is enabled for thise zone, the target outlet water temperature
   # will be used to define when the heatpump should be turned (powered) on or off
   #
   # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
   # the room thermostat will decide when this will be on or off.
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
+  - platform: template
     name: "Water Flow Temperature Control Zone 1"
     id: "${devicename}_water_flow_temperature_control_zone_1"
     icon: mdi:eye
-    register_type: holding
-    address: 0x0
-    bitmask: 0x2
-  # Register: 0 -> Bit 2
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
+    entity_category: config
+    restore_mode: DISABLED
+    optimistic : true
+    lambda: "return (id(unmasked_value_register_0) & 0x2) == 0x2; // Return bit 0x2 status"
+    on_turn_on:
+      # - logger.log: "Switch Turned On!"
+      - lambda: |-
+          uint16_t checked_bit = 0x2;                          // Affected bit number
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // Write new value to heatpump if changed
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      # - logger.log: "Switch Turned Off!"    
+      - lambda: |-
+          uint16_t checked_bit = 0x2;
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 0 -> Bit 2 DHW
+  - platform: template
     name: "Power DHW T5S"
     id: "${devicename}_power_dhw_t5s"
     icon: mdi:eye
-    register_type: holding
     entity_category: config
-    address: 0x0
-    bitmask: 0x4
+    restore_mode: DISABLED
+    optimistic : true
+    lambda:  |-
+        return (id(unmasked_value_register_0) & 0x4) == 0x4;
+    on_turn_on:
+      # - logger.log: "Switch Turned On!"
+      - lambda: |-
+          uint16_t checked_bit = 0x4;
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      # - logger.log: "Switch Turned Off!"    
+      - lambda: |-
+          uint16_t checked_bit = 0x4;
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
   # Register: 0 -> Bit 3
   # When Water Flow Temperature Control is enabled for thise zone, the target outlet water temperature
   # will be used to define when the heatpump should be turned (powered) on or off
   #
   # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
   # the room thermostat will decide when this will be on or off.
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
+  - platform: template
     name: "Water Flow Temperature Control Zone 2"
     id: "${devicename}_water_flow_temperature_control_zone_2"
     icon: mdi:eye
-    register_type: holding
-    address: 0x0
-    bitmask: 0x8
+    entity_category: config
+    restore_mode: DISABLED
+    optimistic : true
+    lambda: "return (id(unmasked_value_register_0) & 0x8) == 0x8;"
+    on_turn_on:
+      # - logger.log: "Switch Turned On!"
+      - lambda: |-
+          uint16_t checked_bit = 0x8;
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      # - logger.log: "Switch Turned Off!"    
+      - lambda: |-
+          uint16_t checked_bit = 0x8;
+          uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
+          new_value &= ~checked_bit;                           // Clear and set
+          
+          if ((new_value) != id(unmasked_value_register_0)) {
+            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            id(unmasked_value_register_0) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
   # Register: 5 -> Bit 12
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

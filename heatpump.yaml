@@ -2214,7 +2214,7 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 5 -> Bit: 5 Holiday -> as Binary Sensor -it is possible to read but not to save
+  # Register: 5 -> Bit: 5 Is present in this config as a 'binary_sensor'
   # Register: 5 -> Bit: 6
   - platform: template
     name: "Function Setting Silent Mode"
@@ -2249,11 +2249,9 @@ switch:
           }
   # Register: 5 -> Bit: 7
   - platform: template
-    name: "Function Setting Silent Mode Level" #silent or very silent
+    name: "Function Setting Silent Mode Level"
     id: "${devicename}_function_setting_silent_mode_level"
     icon: mdi:eye
-    #address: 5
-    #bitmask: 0x80
     entity_category: config
     restore_mode: DISABLED
     optimistic : true
@@ -2285,7 +2283,6 @@ switch:
   - platform: template
     name: "Function Setting Holiday Home"
     id: "${devicename}_function_setting_holiday_home"
-    disabled_by_default: true
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
@@ -2314,12 +2311,11 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 5 -> Bit 9 at binary sensor not used
+  # Register: 5 -> Bit: 9 Is present in this config as a 'binary_sensor'
   # Register: 5 -> Bit: 10
   - platform: template
     name: "Function Setting ECO Mode"
     id: "${devicename}_function_setting_eco_mode"
-    disabled_by_default: true
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED

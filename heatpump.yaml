@@ -1093,7 +1093,7 @@ binary_sensor:
   # Bit: 1 -> Is present in this config as a 'switch'
   # Bit: 2 -> Is present in this config as a 'switch'
   # Bit: 3 -> Is present in this config as a 'switch'
-  # Bit: 4 -> not used
+  # Bit: 4 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 4"
@@ -1102,7 +1102,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x10
-  # Bit: 5 -> not used
+  # Bit: 5 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 5"
@@ -1111,7 +1111,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x20
-  # Bit: 6 -> not used
+  # Bit: 6 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 6"
@@ -1120,7 +1120,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x40
-  # Bit: 7 -> not used
+  # Bit: 7 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 7"
@@ -1129,7 +1129,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x80
-  # Bit: 8 -> not used
+  # Bit: 8 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 8"
@@ -1138,7 +1138,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x100
-  # Bit: 9 -> not used
+  # Bit: 9 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 9"
@@ -1147,7 +1147,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x200
-  # Bit: 10 -> not used
+  # Bit: 10 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 10"
@@ -1156,7 +1156,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x400
-  # Bit: 11 -> not used
+  # Bit: 11 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 11"
@@ -1165,7 +1165,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x800
-  # Bit: 12 -> not used
+  # Bit: 12 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 12"
@@ -1174,7 +1174,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x1000
-  # Bit: 13 -> not used
+  # Bit: 13 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 13"
@@ -1183,7 +1183,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x2000
-  # Bit: 14 -> not used
+  # Bit: 14 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 14"
@@ -1192,7 +1192,7 @@ binary_sensor:
     register_type: holding
     address: 0x0
     bitmask: 0x4000
-  # Bit: 15 -> not used
+  # Bit: 15 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Reserved BIT 15"

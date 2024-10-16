@@ -340,7 +340,7 @@ sensor:
     lambda: |-
       // Update the global var unmasked_value_register_0
       id(unmasked_value_register_0) = x;
-      return x;    
+      return x;
   # Register: 1 -> Is present in this config as a 'select'
   # Register: 2 -> Is present in this config as a 'number'
   # Register: 3
@@ -2046,7 +2046,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
             // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
@@ -2059,7 +2059,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_0)) {
             // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
@@ -2099,7 +2099,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_0)) {
             // ESP_LOGD("unmasked_value_register_0", "Set option to off power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
@@ -2134,7 +2134,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x4;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           
           if ((new_value) != id(unmasked_value_register_0)) {
             // ESP_LOGD("unmasked_value_register_0", "Set option to off power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
@@ -2161,7 +2161,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
             // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
@@ -2174,7 +2174,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           
           if ((new_value) != id(unmasked_value_register_0)) {
             // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
@@ -2242,7 +2242,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x40;
           uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_5)) {
             // ESP_LOGD("unmasked_value_register_5", "Set option to off f_s_silent_mode 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
             id(unmasked_value_register_5) = new_value;
@@ -2309,7 +2309,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x100;
           uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;         // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_5)) {
             // ESP_LOGD("unmasked_value_register_5", "Set option to off f_s_holiday_home 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
             id(unmasked_value_register_5) = new_value;
@@ -3480,7 +3480,7 @@ text_sensor:
           return {"Defrosting"};
         } else if (id(${devicename}_load_output_sv1).state) {
           return {"DHW"};
-        } else if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state 
+        } else if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state
           || id(${devicename}_water_flow_temperature_control_zone_1).state) {
           return {"Heating"};
         } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state

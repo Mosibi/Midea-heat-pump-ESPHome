@@ -10,7 +10,6 @@ globals:
   - id: unmasked_value_register_5
     type: uint16_t
     restore_value: true
-    # initial_value: '0'    
   - id: unmasked_value_water_temperature_t1s
     type: uint16_t
     restore_value: no
@@ -1251,7 +1250,6 @@ binary_sensor:
     name: "Function Setting Holiday Away"
     id: "${devicename}_function_setting_holiday_away"
     icon: mdi:eye
-    #disabled_by_default: true
     lambda: "return (id(unmasked_value_register_5) & 0x20) == 0x20; // Return status bit5"
   # Bit: 6 -> Is present in this config as a 'switch'
   # Bit: 7 -> Is present in this config as a 'switch'

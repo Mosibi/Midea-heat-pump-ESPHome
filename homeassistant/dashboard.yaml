@@ -13,7 +13,7 @@
         action: more-info
     - type: entities
       entities:
-        - entity: switch.heatpump_forced_water_tank_heating_onoff
+        - entity: switch.heatpump_forced_water_tank_heating_on_off
           name: Water tank heating
         - entity: switch.heatpump_power_dhw_t5s
           name: Water tank automatic heating

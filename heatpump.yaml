@@ -1731,8 +1731,7 @@ binary_sensor:
     address: 0x8e
     bitmask: 0x8000
 
-  # Register: 210, default: true, TODO: verify default  -> moved to switch
-  # Bit: 11, default: false, TODO: verify default
+  # Register: 210, Bit: 11, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Reserved BIT 11"
     id: "${devicename}_parameter_setting_1_reserved_bit_11"

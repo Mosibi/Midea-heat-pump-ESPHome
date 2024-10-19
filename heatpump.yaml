@@ -23,6 +23,10 @@ globals:
     type: uint16_t
     restore_value: no
     initial_value: '0'    
+  - id: unmasked_value_register_211
+    type: uint16_t
+    restore_value: no
+    initial_value: '0'
   - id: unmasked_value_register_270
     type: uint16_t
     restore_value: no
@@ -36,6 +40,9 @@ esphome:
   name: "${devicename}"
   comment: "${description}"
   friendly_name: "${description}"
+  project:
+    name: "${devicename}.${description}"
+    version: 4.1.4
 
 esp32:
   board: esp32dev
@@ -382,7 +389,7 @@ sensor:
     lambda: |-
       // Update the global var unmasked_value_register_5
       id(unmasked_value_register_5) = x;
-      return x;
+      return x;    
   # Register: 6 -> Is present in this config as a 'number'
   # Register: 7
   - platform: modbus_controller
@@ -1034,6 +1041,20 @@ sensor:
     lambda: |-
       // Update the global var unmasked_value_register_210
       id(unmasked_value_register_210) = x;
+      return x;
+  # Register: 211 -> Config is present as select, but now we need get value from heatpump and save it as global var
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Parameter Settings 2"
+    id: "${devicename}_parameter_settings_2"
+    icon: mdi:state-machine
+    internal: true
+    register_type: holding
+    address: 211
+    value_type: U_WORD
+    lambda: |-
+      // Update the global var unmasked_value_register_211
+      id(unmasked_value_register_211) = x;
       return x;
   # Register: 212 -> Is present in this config as a 'number'
   # Register: 213 -> Is present in this config as a 'number'
@@ -1731,159 +1752,20 @@ binary_sensor:
     address: 0x8e
     bitmask: 0x8000
 
-  # Register: 210, Bit: 11, default: false, TODO: verify default
+  # Register: 210,  Bit: 11, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Reserved BIT 11"
     id: "${devicename}_parameter_setting_1_reserved_bit_11"
     icon: mdi:head-question-outline
     lambda: "return (id(unmasked_value_register_210) & 0x800) == 0x800; // Return status bit11"
 
-  # Register: 211
-  # Bit: 0, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 IBH AHS Installation Position"
-    id: "${devicename}_parameter_setting_2_ibh_ahs_installation_position"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x1
-  # Bit: 1, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Tbt Sensor Enable"
-    id: "${devicename}_parameter_setting_2_tbt_sensor_enable"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x2
-  # Bit: 2, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Ta Sensor Position"
-    id: "${devicename}_parameter_setting_2_ta_sensor_position"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x4
-  # Bit: 3, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Double Zone Setting Is Valid"
-    id: "${devicename}_parameter_setting_2_double_zone_setting_is_valid"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x8
-  # Bit: 4, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Setting The High Low Temperature Of Heating Mode T1S"
-    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_heating_mode_t1s"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x10
-  # Bit: 5, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Setting The High Low Temperature Of Cooling Mode T1S"
-    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x20
-  # Bit: 6, default: false, TODO: verify default
-  # Midea: T1B sensor enable
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Tw2 Enabled"
-    id: "${devicename}_parameter_setting_2_tw2_enabled"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x40
-  # Bit: 7, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Smart Grid"
-    id: "${devicename}_parameter_setting_2_smart_grid"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x80
-  # Bit: 8, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Port Definition"
-    id: "${devicename}_parameter_setting_2_port_definition"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x100
-  # Bit: 9, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Solar Energy Kit Enable"
-    id: "${devicename}_parameter_setting_2_solar_energy_kit_enable"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x200
-  # Bit: 10, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Solar Energy Input Port"
-    id: "${devicename}_parameter_setting_2_solar_energy_input_port"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x400
-  # Bit: 11, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Piping Length Selection"
-    id: "${devicename}_parameter_setting_2_piping_length_selection"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x800
-  # Bit: 12, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Tbt2 Sensor Is Valid"
-    id: "${devicename}_parameter_setting_2_tbt2_sensor_is_valid"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x1000
-  # Bit: 13, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 Enable Temperature Collection Kit"
-    id: "${devicename}_parameter_setting_2_enable_temperature_collection_kit"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x2000
-  # Bit: 14, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Parameter Setting 2 M1M2 Is Used For AHS Control"
-    id: "${devicename}_parameter_setting_2_m1m2_is_used_for_ahs_control"
-    icon: mdi:eye
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x4000
-  # Bit: 15, default: false, TODO: verify default
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
+  # Register: 211, Bit: 15, default: false, TODO: verify default
+  - platform: template
     name: "Parameter Setting 2 Reserved BIT 15"
     id: "${devicename}_parameter_setting_2_reserved_bit_15"
     icon: mdi:head-question-outline
-    register_type: holding
-    address: 0xd3
-    bitmask: 0x8000
+    lambda: "return (id(unmasked_value_register_211) & 0x8000) == 0x8000; // Return status bit15"
+    
   # Template binary sensor which shows if the heat pump is running
   - platform: template
     name: "Heat pump running"
@@ -2810,7 +2692,7 @@ switch:
           new_value &= ~checked_bit;                             // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
+            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2821,11 +2703,499 @@ switch:
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
           new_value &= ~checked_bit;                             // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
-            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
+            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
+
+  # Register: 211, Bit: 0, default: false, TODO: verify default 0=pipe
+  - platform: template
+    name: "Parameter Setting 2 IBH AHS Installation Position"
+    id: "${devicename}_parameter_setting_2_ibh_ahs_installation_position"
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x1) == 0x1;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x1;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x1;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 1, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Tbt Sensor Enable"
+    id: "${devicename}_parameter_setting_2_tbt_sensor_enable"
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x2) == 0x2;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x2;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x2;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 2, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Ta Sensor Position"
+    id: "${devicename}_parameter_setting_2_ta_sensor_position"
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x4) == 0x4;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x4;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x4;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 3, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Double Zone Setting Is Valid"
+    id: "${devicename}_parameter_setting_2_double_zone_setting_is_valid"
+    icon: mdi:eye
+    #bitmask: 0x8
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x8) == 0x8;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x8;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x8;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 4, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Setting The High Low Temperature Of Heating Mode T1S"
+    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_heating_mode_t1s"
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x10) == 0x10;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x10;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x10;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 5, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Setting The High Low Temperature Of Cooling Mode T1S"
+    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x20) == 0x20;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x20;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x20;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 6, default: false, TODO: verify default
+  # Midea: T1B sensor enable -buffer sensor
+  - platform: template
+    name: "Parameter Setting 2 Tw2 Enabled"
+    id: "${devicename}_parameter_setting_2_tw2_enabled"
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x40) == 0x40;"
+    on_turn_on:
+      #- logger.log: "Switch Turned On!"
+      - lambda: |-
+          uint16_t checked_bit = 0x40;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      #- logger.log: "Switch Turned Off!"    
+      - lambda: |-
+          uint16_t checked_bit = 0x40;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 7, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Smart Grid"
+    id: "${devicename}_parameter_setting_2_smart_grid"
+    icon: mdi:eye
+    #bitmask: 0x80
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x80) == 0x80;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x80;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x80;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 8, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Port Definition"
+    id: "${devicename}_parameter_setting_2_port_definition"
+    disabled_by_default: true
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x100) == 0x100;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x100;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x100;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 9, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Solar Energy Kit Enable"
+    id: "${devicename}_parameter_setting_2_solar_energy_kit_enable"
+    disabled_by_default: true
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x200) == 0x200;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x200;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_solar_energy_kit_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x200;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_solar_energy_kit_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 10, default: false, TODO: verify default, Solar energy input port 1: CN18 0: CN11
+  - platform: template
+    name: "Parameter Setting 2 Solar Energy Input Port"
+    id: "${devicename}_parameter_setting_2_solar_energy_input_port"
+    disabled_by_default: true
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x400) == 0x400;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x400;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x400;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 11, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Piping Length Selection"
+    id: "${devicename}_parameter_setting_2_piping_length_selection"
+    disabled_by_default: true
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x800) == 0x800;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x800;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_piping_length_selection 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x800;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_piping_length_selection 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 12, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Tbt2 Sensor Is Valid"
+    id: "${devicename}_parameter_setting_2_tbt2_sensor_is_valid"
+    disabled_by_default: true
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x1000) == 0x1000;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x1000;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_tbt2_sensor_is_valid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x1000;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_tbt2_sensor_is_valid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 13, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 Enable Temperature Collection Kit"
+    id: "${devicename}_parameter_setting_2_enable_temperature_collection_kit"
+    disabled_by_default: true
+    icon: mdi:eye
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x2000) == 0x2000;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x2000;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_enable_temperature_collection_kit 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      #- logger.log: "Switch Turned Off!"    
+      - lambda: |-
+          uint16_t checked_bit = 0x2000;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_enable_temperature_collection_kit 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, Bit: 14, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 2 M1M2 Is Used For AHS Control"
+    id: "${devicename}_parameter_setting_2_m1m2_is_used_for_ahs_control"
+    disabled_by_default: true
+    icon: mdi:eye
+    #bitmask: 0x4000
+    restore_mode: DISABLED
+    entity_category: config
+    optimistic: true
+    lambda: "return (id(unmasked_value_register_211) & 0x4000) == 0x4000;"
+    on_turn_on:
+      - lambda: |-
+          uint16_t checked_bit = 0x4000;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          new_value += checked_bit;
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_m1m2_is_used_for_ahs_control 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+    on_turn_off:
+      - lambda: |-
+          uint16_t checked_bit = 0x4000;
+          uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
+          new_value &= ~checked_bit;                             // Clear and set
+          if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_m1m2_is_used_for_ahs_control 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            id(unmasked_value_register_211) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+  # Register: 211, BIT15 is in 'binary_sensor' as reserved
 
 number:
   # Register: 2 (Zone 1, Low)

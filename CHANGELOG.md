@@ -6,11 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [4.1.4] - 2024-10-18
-Update Register: 211 to be fully configurable except reserved values
-Add to esp_home project name and version for easly recognition in compiled code
+- Update Register: 211 to be fully configurable except reserved values
+- Add to esp_home project name
 
 ## [4.1.3] - 2024-10-18
-Update Register: 210 to be fully configurable except reserved values
+- Update Register: 210 to be fully configurable except reserved values
 
 ## [4.1.2] - 2024-10-16
 

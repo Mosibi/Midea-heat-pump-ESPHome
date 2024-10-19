@@ -2543,7 +2543,7 @@ switch:
     id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
     icon: mdi:eye
     restore_mode: DISABLED
-    #entity_category: config
+    entity_category: config
     optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40;"
     on_turn_on:

@@ -1026,11 +1026,11 @@ sensor:
     modbus_controller_id: "${devicename}"
     name: "Parameter Settings 1"
     id: "${devicename}_parameter_settings_1"
+    icon: mdi:state-machine
     internal: true
     register_type: holding
     address: 210
     value_type: U_WORD
-    icon: mdi:state-machine
     lambda: |-
       // Update the global var unmasked_value_register_210
       id(unmasked_value_register_210) = x;

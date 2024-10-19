@@ -389,7 +389,7 @@ sensor:
     lambda: |-
       // Update the global var unmasked_value_register_5
       id(unmasked_value_register_5) = x;
-      return x;    
+      return x;
   # Register: 6 -> Is present in this config as a 'number'
   # Register: 7
   - platform: modbus_controller

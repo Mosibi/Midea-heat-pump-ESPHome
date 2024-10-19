@@ -5,11 +5,12 @@ substitutions:
 globals:
   - id: unmasked_value_register_0
     type: uint16_t
-    restore_value: true
-    # initial_value: '0'
+    restore_value: no
+    initial_value: '0'
   - id: unmasked_value_register_5
     type: uint16_t
-    restore_value: true
+    restore_value: no
+    initial_value: '0'
   - id: unmasked_value_water_temperature_t1s
     type: uint16_t
     restore_value: no
@@ -20,7 +21,7 @@ globals:
     initial_value: '0'
   - id: unmasked_value_register_210
     type: uint16_t
-    restore_value: true
+    restore_value: no
     initial_value: '0'    
   - id: unmasked_value_register_270
     type: uint16_t
@@ -1731,27 +1732,12 @@ binary_sensor:
     bitmask: 0x8000
 
   # Register: 210, default: true, TODO: verify default  -> moved to switch
-  # Bit: 0 -> moved to switch
-  # Bit: 1, default: false, TODO: verify default -> moved to switch
-  # Bit: 2, default: false, TODO: verify default -> moved to switch
-  # Bit: 3, default: true, TODO: verify default -> moved to switch
-  # Bit: 4, default: false, TODO: verify default -> moved to switch
-  # Bit: 5, default: false, TODO: verify default -> moved to switch  Midea: PUMPI silent mode, 1; valid, 0: invalid -> moved to switch
-  # Bit: 6, default: false, TODO: verify default -> moved to switch
-  # Bit: 7, default: true, TODO: verify default -> moved to switch
-  # Bit: 8, default: false, TODO: verify default -> moved to switch
-  # Bit: 9, default: true, TODO: verify default -> moved to switch
-  # Bit: 10, default: false, TODO: verify default -> moved to switch
   # Bit: 11, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Reserved BIT 11"
     id: "${devicename}_parameter_setting_1_reserved_bit_11"
     icon: mdi:head-question-outline
     lambda: "return (id(unmasked_value_register_210) & 0x800) == 0x800; // Return status bit11"
-  # Bit: 12, default: false, TODO: verify default -> moved to switch
-  # Bit: 13, default: true, TODO: verify default -> moved to switch
-  # Bit: 14, default: true, TODO: verify default -> moved to switch
-  # Bit: 15, default: true, TODO: verify default -> moved to switch
 
   # Register: 211
   # Bit: 0, default: false, TODO: verify default
@@ -1931,7 +1917,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_0) & 0x1) == 0x1;"
     on_turn_on:
       # - logger.log: "Switch Turned On!"
@@ -1970,7 +1956,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_0) & 0x2) == 0x2; // Return bit 0x2 status"
     on_turn_on:
       # - logger.log: "Switch Turned On!"
@@ -2005,7 +1991,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda:  |-
         return (id(unmasked_value_register_0) & 0x4) == 0x4;
     on_turn_on:
@@ -2045,7 +2031,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_0) & 0x8) == 0x8;"
     on_turn_on:
       # - logger.log: "Switch Turned On!"
@@ -2079,7 +2065,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x10) == 0x10; // Return status bit 4"
     on_turn_on:
       # - logger.log: "Switch Turned On!"
@@ -2114,7 +2100,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x40) == 0x40;"
     on_turn_on:
       - lambda: |-
@@ -2146,7 +2132,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x80) == 0x80;"
     on_turn_on:
       - lambda: |-
@@ -2178,7 +2164,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x100) == 0x100;"
     on_turn_on:
       - lambda: |-
@@ -2211,7 +2197,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x400) == 0x400;"
     on_turn_on:
       - lambda: |-
@@ -2243,7 +2229,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x800) == 0x800;"
     on_turn_on:
       - lambda: |-
@@ -2275,7 +2261,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x1000) == 0x1000;"
     on_turn_on:
       - lambda: |-
@@ -2307,7 +2293,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_5) & 0x2000) == 0x2000;"
     on_turn_on:
       - lambda: |-
@@ -2366,7 +2352,7 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x1) == 0x1;"
     on_turn_on:
       - lambda: |-
@@ -2398,7 +2384,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x2) == 0x2;"
     on_turn_on:
       - lambda: |-
@@ -2430,7 +2416,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x4) == 0x4;"
     on_turn_on:
       - lambda: |-
@@ -2462,7 +2448,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x8) == 0x8;"
     on_turn_on:
       - lambda: |-
@@ -2494,7 +2480,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x10) == 0x10;"
     on_turn_on:
       - lambda: |-
@@ -2527,7 +2513,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x20) == 0x20;"
     on_turn_on:
       - lambda: |-
@@ -2559,7 +2545,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     #entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40;"
     on_turn_on:
       - lambda: |-
@@ -2591,7 +2577,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x80) == 0x80;"
     on_turn_on:
       - lambda: |-
@@ -2623,7 +2609,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100;"
     on_turn_on:
       - lambda: |-
@@ -2655,7 +2641,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x200) == 0x200;"
     on_turn_on:
       - lambda: |-
@@ -2687,7 +2673,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x400) == 0x400;"
     on_turn_on:
       - lambda: |-
@@ -2720,7 +2706,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x1000) == 0x1000;"
     on_turn_on:
       - lambda: |-
@@ -2752,7 +2738,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x2000) == 0x2000;"
     on_turn_on:
       - lambda: |-
@@ -2784,7 +2770,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000;"
     on_turn_on:
       - lambda: |-
@@ -2816,7 +2802,7 @@ switch:
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic : true
+    optimistic: true
     lambda: "return (id(unmasked_value_register_210) & 0x8000) == 0x8000;"
     on_turn_on:
       - lambda: |-

@@ -40,8 +40,6 @@ esphome:
   name: "${devicename}"
   comment: "${description}"
   friendly_name: "${description}"
-  project:
-    name: "${devicename}.${description}"
 
 esp32:
   board: esp32dev
@@ -2809,7 +2807,6 @@ switch:
     name: "Parameter Setting 2 Double Zone Setting Is Valid"
     id: "${devicename}_parameter_setting_2_double_zone_setting_is_valid"
     icon: mdi:eye
-    #bitmask: 0x8
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2910,7 +2907,6 @@ switch:
     optimistic: true
     lambda: "return (id(unmasked_value_register_211) & 0x40) == 0x40;"
     on_turn_on:
-      #- logger.log: "Switch Turned On!"
       - lambda: |-
           uint16_t checked_bit = 0x40;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
@@ -2922,7 +2918,6 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
     on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
       - lambda: |-
           uint16_t checked_bit = 0x40;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
@@ -2937,7 +2932,6 @@ switch:
     name: "Parameter Setting 2 Smart Grid"
     id: "${devicename}_parameter_setting_2_smart_grid"
     icon: mdi:eye
-    #bitmask: 0x80
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2967,7 +2961,6 @@ switch:
   - platform: template
     name: "Parameter Setting 2 Port Definition"
     id: "${devicename}_parameter_setting_2_port_definition"
-    disabled_by_default: true
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -2998,7 +2991,6 @@ switch:
   - platform: template
     name: "Parameter Setting 2 Solar Energy Kit Enable"
     id: "${devicename}_parameter_setting_2_solar_energy_kit_enable"
-    disabled_by_default: true
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -3031,7 +3023,6 @@ switch:
   - platform: template
     name: "Parameter Setting 2 Solar Energy Input Port"
     id: "${devicename}_parameter_setting_2_solar_energy_input_port"
-    disabled_by_default: true
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -3064,7 +3055,6 @@ switch:
   - platform: template
     name: "Parameter Setting 2 Piping Length Selection"
     id: "${devicename}_parameter_setting_2_piping_length_selection"
-    disabled_by_default: true
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -3097,7 +3087,6 @@ switch:
   - platform: template
     name: "Parameter Setting 2 Tbt2 Sensor Is Valid"
     id: "${devicename}_parameter_setting_2_tbt2_sensor_is_valid"
-    disabled_by_default: true
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -3130,7 +3119,6 @@ switch:
   - platform: template
     name: "Parameter Setting 2 Enable Temperature Collection Kit"
     id: "${devicename}_parameter_setting_2_enable_temperature_collection_kit"
-    disabled_by_default: true
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -3149,7 +3137,6 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
     on_turn_off:
-      #- logger.log: "Switch Turned Off!"    
       - lambda: |-
           uint16_t checked_bit = 0x2000;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
@@ -3164,9 +3151,7 @@ switch:
   - platform: template
     name: "Parameter Setting 2 M1M2 Is Used For AHS Control"
     id: "${devicename}_parameter_setting_2_m1m2_is_used_for_ahs_control"
-    disabled_by_default: true
     icon: mdi:eye
-    #bitmask: 0x4000
     restore_mode: DISABLED
     entity_category: config
     optimistic: true

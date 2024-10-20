@@ -42,7 +42,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: TO_BE_CHANGED
+    version: TO_BE_CHANGED_AT_SOME_TIME
 
 esp32:
   board: esp32dev

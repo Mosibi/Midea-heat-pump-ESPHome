@@ -335,6 +335,16 @@ sensor:
     name: Uptime
     id: "${devicename}_uptime"
     icon: mdi:timelapse
+  - platform: template
+    id: "${devicename}_cop"
+    name: "COP"
+    icon: mdi:copyleft
+    accuracy_decimals: 2
+    lambda: |-
+      // Verify that electricity_consumption is <> 0 to avoid division by 0 error
+      if (id(${devicename}_electricity_consumption).state != 0) {
+        return id(${devicename}_power_output).state / id(${devicename}_electricity_consumption).state;
+      } else return {};
   # Register: 0 -> Config is present as select, but now we need get value from heatpump and save it as global var
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -436,15 +446,7 @@ sensor:
     address: 0x64
     value_type: U_WORD
     unit_of_measurement: Hz
-  # Register: 101
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Operating Mode"
-    id: "${devicename}_operating_mode"
-    icon: mdi:state-machine
-    register_type: holding
-    address: 0x65
-    value_type: U_WORD
+  # Register: 101 ->moved text_sensor
   # Register: 102
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -465,6 +467,11 @@ sensor:
     address: 0x67
     value_type: U_WORD
     unit_of_measurement: "%"
+    filters: 
+    - calibrate_linear:
+      # York, MIDEA have movement 0-480
+      - 0 -> 0.0
+      - 480 -> 100.0
   # Register: 104
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -862,36 +869,7 @@ sensor:
 
   # The following register address 200-208 can only use 03H (Read register) function code.
   # Register address 209 and after can use 03H, 06H (write single register), 10H (write multiple register).
-  # Register: 200 (High byte)
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Type"
-    id: "${devicename}_home_appliance_type"
-    icon: mdi:state-machine
-    register_type: holding
-    address: 0xc8
-    value_type: U_WORD
-    bitmask: 0x00FF
-  # Register: 200 (Low byte, first 4 bits)
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Sub Type"
-    id: "${devicename}_home_appliance_sub_type"
-    icon: "mdi:information-box-outline"
-    register_type: holding
-    address: 0xc8
-    value_type: U_WORD
-    bitmask: 0xF000
-  # Register: 200 (Low byte, second 4 bits)
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Product Code"
-    id: "${devicename}_home_appliance_product_code"
-    icon: "mdi:information-box-outline"
-    register_type: holding
-    address: 0xc8
-    value_type: U_WORD
-    bitmask: 0x0F00
+  # Register: 200 ->moved to text_sensor
   # Register: 201 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4547,3 +4525,86 @@ text_sensor:
         - 141 -> L7
         - 142 -> L8
         - 143 -> L9
+  # Register: 101
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Operating Mode"
+    id: "${devicename}_operating_mode"
+    icon: mdi:state-machine
+    register_type: holding
+    address: 0x65
+    response_size: 2
+    lambda: |-
+        int idx = item->offset;
+        uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
+        std::string output = "Unknown: ";
+        output += to_string(rawdata);
+        if (rawdata == 0) output = "OFF";
+        else if (rawdata == 2) output = "Cooling";
+        else if (rawdata == 3) output = "CO Heating";
+        else if (rawdata == 5) output = "DHW Heating";
+        // ESP_LOGD("Register 101","Operating mode %s (%d)", output.c_str(), rawdata);
+        return output;
+  # Register: 200 (High byte)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Home Appliance Type"
+    id: "${devicename}_home_appliance_type"
+    icon: mdi:state-machine
+    register_type: holding
+    address: 0xc8
+    response_size: 2
+    raw_encode: HEXBYTES
+    lambda: |-
+         int idx = item->offset;
+         std::string z = "";
+         uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
+         // ESP_LOGD("Register 200", "The current version is 0x%x", rawdata);
+         if ((rawdata >> 8) == 7) {
+           z = "Air to water heat pump";
+         } else {
+           z = std::to_string(data[idx]);
+         }
+         return {z};
+  # Register: 200 (Low byte, first 4 bits)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Home Appliance Sub Type"
+    id: "${devicename}_home_appliance_sub_type"
+    icon: "mdi:information-box-outline"
+    register_type: holding
+    address: 0xc8
+    response_size: 2
+    raw_encode: HEXBYTES
+    lambda: |-
+         int idx = item->offset;
+         std::string z = "";
+         uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
+         // ESP_LOGD("Register 200", "The current version is 0x%x", rawdata);
+         if (((rawdata & 0x000F) ) == 2) {
+           z = "R32";
+         } else {
+           z = std::to_string(rawdata & 0x0F) ;
+         }
+         return {z};
+  # Register: 200 (Low byte, second 4 bits)
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Home Appliance Product Code"
+    id: "${devicename}_home_appliance_product_code"
+    icon: "mdi:information-box-outline"
+    register_type: holding
+    response_size: 2
+    raw_encode: HEXBYTES
+    address: 0xc8
+    lambda: |-
+         int idx = item->offset;
+         std::string z = "";
+         uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
+         // ESP_LOGD("Register 200", "The current version is 0x%x rawdata ", rawdata);
+         if (((rawdata & 0x00F0) >> 4) == 4) {
+           z = "4";
+         } else {
+           z = std::to_string((rawdata & 0x00F0) >> 4);
+         }
+         return {z};

@@ -40,6 +40,9 @@ esphome:
   name: "${devicename}"
   comment: "${description}"
   friendly_name: "${description}"
+  project:
+    name: "${devicename}.${description}"
+    version: 4.1.2
 
 esp32:
   board: esp32dev

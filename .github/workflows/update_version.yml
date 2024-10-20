@@ -10,7 +10,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
       - name: Update version
         run: |
@@ -24,5 +23,3 @@ jobs:
           git commit -a -m "Updated version in heatpump.yaml"
       - name: Push changes
         uses: ad-m/github-push-action@master
-        with:
-          branch: ${{ github.head_ref }}

@@ -14,8 +14,9 @@ jobs:
           fetch-depth: 0
       - name: Update version
         run: |
-          env
-          ls -lia
+          cat heatpump.yaml |grep -A7 ^esphome
+          bash .github/scripts/set_version.sh
+          cat heatpump.yaml |grep -A7 ^esphome
       # - name: Commit files
       #   run: |
       #     git config --local user.email "github-actions[bot]@users.noreply.github.com"

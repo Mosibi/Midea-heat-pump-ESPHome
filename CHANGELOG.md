@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add COP -efficiency of heat pump
-- Update Register: 103 -convert valve open position to percent representation
+- Update Register: 102 -convert valve open position to percent representation
 - Update Register: 101 is moved to text sensor with status
 - Update Register: 200 is moved to text sensor
 - Update Register: 211 to be fully configurable except reserved values

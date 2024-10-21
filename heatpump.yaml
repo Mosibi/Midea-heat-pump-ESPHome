@@ -336,10 +336,11 @@ sensor:
     id: "${devicename}_uptime"
     icon: mdi:timelapse
   - platform: template
-    id: "${devicename}_cop"
-    name: "COP"
+    name: "Coefficient of Performance"
+    id: "${devicename}_coefficient_of_performance"
     icon: mdi:copyleft
     accuracy_decimals: 2
+    unit_of_measurement: "COP"
     lambda: |-
       // Verify that electricity_consumption is <> 0 to avoid division by 0 error
       if (id(${devicename}_electricity_consumption).state != 0) {
@@ -446,7 +447,7 @@ sensor:
     address: 0x64
     value_type: U_WORD
     unit_of_measurement: Hz
-  # Register: 101 ->moved text_sensor
+  # Register: 101 -> Is present in this config as a 'text_sensor'
   # Register: 102
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -869,7 +870,7 @@ sensor:
 
   # The following register address 200-208 can only use 03H (Read register) function code.
   # Register address 209 and after can use 03H, 06H (write single register), 10H (write multiple register).
-  # Register: 200 ->moved to text_sensor
+  # Register: 200 -> Is present in this config as a 'text_sensor'
   # Register: 201 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4541,7 +4542,7 @@ text_sensor:
         output += to_string(rawdata);
         if (rawdata == 0) output = "OFF";
         else if (rawdata == 2) output = "Cooling";
-        else if (rawdata == 3) output = "CO Heating";
+        else if (rawdata == 3) output = "Heating";
         else if (rawdata == 5) output = "DHW Heating";
         // ESP_LOGD("Register 101","Operating mode %s (%d)", output.c_str(), rawdata);
         return output;
@@ -4559,7 +4560,7 @@ text_sensor:
          int idx = item->offset;
          std::string z = "";
          uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         // ESP_LOGD("Register 200", "The current version is 0x%x", rawdata);
+         // ESP_LOGD("Register 200", "The home appliance type is 0x%x", rawdata);
          if ((rawdata >> 8) == 7) {
            z = "Air to water heat pump";
          } else {
@@ -4580,7 +4581,7 @@ text_sensor:
          int idx = item->offset;
          std::string z = "";
          uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         // ESP_LOGD("Register 200", "The current version is 0x%x", rawdata);
+         // ESP_LOGD("Register 200", "The home appliance sub type is 0x%x", rawdata);
          if (((rawdata & 0x000F) ) == 2) {
            z = "R32";
          } else {
@@ -4601,7 +4602,7 @@ text_sensor:
          int idx = item->offset;
          std::string z = "";
          uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         // ESP_LOGD("Register 200", "The current version is 0x%x rawdata ", rawdata);
+         // ESP_LOGD("Register 200", "The home appliance product code is 0x%x rawdata ", rawdata);
          if (((rawdata & 0x00F0) >> 4) == 4) {
            z = "4";
          } else {

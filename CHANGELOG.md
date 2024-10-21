@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Add COP -Heat pump efficiency factor
+- Update Register: 103 -Convert valve open position to percent representation
+- Update Register: 101 is moved to text sensor with status
+- Update Register: 200 is moved to text sensor with Homapliance decode value code to text names
 - Update Register: 211 to be fully configurable except reserved values
 - Update Register: 210 to be fully configurable except reserved values
 

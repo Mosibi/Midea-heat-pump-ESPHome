@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update Register 2 min max value with verifing depending emmision type settings
+- Update Regioster 3 and 4 min, max value range
 - Add COP -Heat pump efficiency factor
 - Update Register: 103 -Convert valve open position to percent representation
 - Update Register: 101 is moved to text sensor with status

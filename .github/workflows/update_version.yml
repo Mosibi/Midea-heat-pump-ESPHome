@@ -26,10 +26,10 @@ jobs:
 
       - name: Commit Changes
         run: |
-          git config --local user.email "rysiulg@gmail.com"
-          git config --local user.name "rysiulg"
+          git config --local user.email "rysiulg@gmail.com"            #change to your e-mail github
+          git config --local user.name "rysiulg"                       #change to your username github
           git add heatpump.yaml
           git commit -m "Update version to $(python -c 'import yaml; print(yaml.safe_load(open(\"heatpump.yaml\")[\"esphome\"][\"project\"][\"version\"]))')"
-          git push origin HEAD:main  # Change "main" to your default branch if different
+          git push origin HEAD:master  # Change "main" to your default branch if different
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,33 +1,35 @@
----
-name: Update version in heatpump.yaml
+name: Update Heatpump Version
 
 on:
-  pull_request:
-    branches:
-      - master
-    types: [closed]
+  release:
+    types: [published]
 
 jobs:
-  update-version:
-    if: ${{ github.event.pull_request.merged }}
+  update_version:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          fetch-depth: 0
-      - name: Update version
+          python-version: '3.x'
+
+      - name: Install PyYAML
         run: |
-          cat heatpump.yaml |grep -A7 ^esphome
-          bash .github/scripts/set_version.sh
-          cat heatpump.yaml |grep -A7 ^esphome
-      - name: Commit files
+          pip install pyyaml
+
+      - name: Update Version
+        run: python update_version.py
+
+      - name: Commit Changes
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "Updated version in heatpump.yaml"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          git config --local user.email "rysiulg@gmail.com"
+          git config --local user.name "rysiulg"
+          git add heatpump.yaml
+          git commit -m "Update version to $(python -c 'import yaml; print(yaml.safe_load(open(\"heatpump.yaml\")[\"esphome\"][\"project\"][\"version\"]))')"
+          git push origin HEAD:main  # Change "main" to your default branch if different
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

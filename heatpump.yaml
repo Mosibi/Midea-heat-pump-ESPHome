@@ -1731,13 +1731,31 @@ binary_sensor:
     address: 0x8e
     bitmask: 0x8000
 
+  # Register: 210, Bit: 6, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 1 T1S Heating High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
+    icon: mdi:eye
+    lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40; // Return status bit6"
+  # Register: 210, Bit: 8, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 1 T1s Cooling High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
+    icon: mdi:eye
+    lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100; // Return status bit8"
   # Register: 210, Bit: 11, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Reserved BIT 11"
     id: "${devicename}_parameter_setting_1_reserved_bit_11"
     icon: mdi:head-question-outline
     lambda: "return (id(unmasked_value_register_210) & 0x800) == 0x800; // Return status bit11"
-
+  # Register: 210, Bit: 14, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 1 Supports Water Tank Electric Heater TBH"
+    id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
+    icon: mdi:eye
+    lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000; // Return status bit14"
+    
   # Register: 211, Bit: 15, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 2 Reserved BIT 15"
@@ -2398,38 +2416,7 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 6, default: false, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 1 T1S Heating High Low Temperature Settings"
-    id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40;"
-    on_turn_on:
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_t1s_heating_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_t1s_heating_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+  # Register: 210, Bit: 6 is in binary_sensor
   # Register: 210, Bit: 7, default: true, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Enable Heating"
@@ -2462,38 +2449,7 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 8, default: false, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 1 T1s Cooling High Low Temperature Settings"
-    id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100;"
-    on_turn_on:
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_t1s_cooling_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_t1s_cooling_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+  # Register: 210, Bit: 8 is in binary_sensor
   # Register: 210, Bit: 9, default: true, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Enable Cooling"
@@ -2623,38 +2579,7 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 14, default: true, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 1 Supports Water Tank Electric Heater TBH"
-    id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000;"
-    on_turn_on:
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+  # Register: 210, Bit: 14 is in binary_sensor
   # Register: 210, Bit: 15, default: true, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Enable Water Heating"

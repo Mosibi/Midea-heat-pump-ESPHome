@@ -139,42 +139,32 @@ select:
     lambda: |-
       // Update the global var unmasked_value_register_272
       id(unmasked_value_register_272) = x;
-
-      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-
+      // ESP_LOGI("Register 272","unmasked_value_register_272: %d",id(unmasked_value_register_272));
       // Extracting 4-bit values
-      uint8_t zone2_c_emission = (x >> 12) & 0xF;
-      uint8_t zone1_c_emission = (x >> 8) & 0xF;
-      uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
-
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
+      // ESP_LOGI("Register 272","zone1_h_emission is %d"zone2_h_emission);
       // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone1_h_emission];
+      std::string string_result;
+      if (zone1_h_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone1_h_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone1_h_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone1_h_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone1_h_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      ESP_LOGI("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 1
-
       new_value &= 0xFFF0;     // Clear the first 4 bits
       new_value |= value_byte; // Set the first 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGD("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
   # Register: 272 (bits 4-7), default: 2
   - platform: modbus_controller
@@ -193,40 +183,31 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-
       // Extracting 4-bit values
-      uint8_t zone2_c_emission = (x >> 12) & 0xF;
-      uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      uint8_t zone1_h_emission = x & 0xF;
-
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
+      // ESP_LOGI("Register 272","zone2_h_emission is %d", zone2_h_emission);
       // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone2_h_emission];
+      std::string string_result;
+      if (zone2_h_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone2_h_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone2_h_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone2_h_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone2_h_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      ESP_LOGI("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 2
-
       new_value &= 0xFF0F;             // Clear the second pair of 4 bits
       new_value |= (value_byte << 4);  // Set the second pair of 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGI("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
   # Register: 272 (bits 8-11), default: 0
   - platform: modbus_controller
@@ -245,40 +226,31 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-
       // Extracting 4-bit values
-      uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
-      uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      uint8_t zone1_h_emission = x & 0xF;
-
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
+      // ESP_LOGD("Register 272","zone1_c_emission is %d", zone1_c_emission);
       // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone1_c_emission];
+      std::string string_result;
+      if (zone1_c_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone1_c_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone1_c_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone1_c_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone1_c_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      ESP_LOGI("Register 272", "zone1_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 1
-
       new_value &= 0xF0FF;             // Clear the third pair of 4 bits
       new_value |= (value_byte << 8);  // Set the third pair of 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGI("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
   # Register: 272 (bits 12-15), default: 0
   - platform: modbus_controller
@@ -296,41 +268,33 @@ select:
     lambda: |-
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
-      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-
+      // ESP_LOGI("Register 272","unmasked_value_register_272: 0x%x", id(unmasked_value_register_272);
+      id(unmasked_value_register_272) = x;
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
-      uint8_t zone1_c_emission = (x >> 8) & 0xF;
-      uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      uint8_t zone1_h_emission = x & 0xF;
-
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
+      // ESP_LOGI("Register 272","zone2_c_emission is %d", zone2_c_emission);
       // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone2_c_emission];
+      std::string string_result;
+      if (zone2_c_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone2_c_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone2_c_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone2_c_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone2_c_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 2
-
       new_value &= 0x0FFF;              // Clear the fourth pair of 4 bits
       new_value |= (value_byte << 12);  // Set the fourth pair of 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGI("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
 
 sensor:

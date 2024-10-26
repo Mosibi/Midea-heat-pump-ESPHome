@@ -143,7 +143,7 @@ select:
       // ESP_LOGI("Register 272","unmasked_value_register_272: %d",id(unmasked_value_register_272));
       
       // Extracting 4-bit values
-      uint8_t zone1_h_emission = x & 0xF;
+      uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
@@ -190,7 +190,7 @@ select:
       // ESP_LOGD("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
       
       // Extracting 4-bit values
-      uint8_t zone1_h_emission = x & 0xF;
+      uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
@@ -237,7 +237,7 @@ select:
       // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
       
       // Extracting 4-bit values
-      uint8_t zone1_h_emission = x & 0xF;
+      uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
@@ -285,7 +285,7 @@ select:
       id(unmasked_value_register_272) = x;
       
       // Extracting 4-bit values
-      uint8_t zone1_h_emission = x & 0xF;
+      uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;

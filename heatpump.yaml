@@ -141,13 +141,13 @@ select:
       id(unmasked_value_register_272) = x;
       
       // ESP_LOGI("Register 272","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-      
+
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
-      
+
       // ESP_LOGI("Register 272","zone1_h_emission is %d"zone2_h_emission);
       std::string string_result;
       if (zone1_h_emission == 0) {
@@ -188,13 +188,13 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGD("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-      
+
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
-      
+
       // ESP_LOGD("Register 272","zone2_h_emission is %d", zone2_h_emission);
       std::string string_result;
       if (zone2_h_emission == 0) {
@@ -235,13 +235,13 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-      
+
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
-      
+
       // ESP_LOGD("Register 272","zone1_c_emission is %d", zone1_c_emission);
       std::string string_result;
       if (zone1_c_emission == 0) {
@@ -282,14 +282,13 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGI("Register 272","unmasked_value_register_272: 0x%x", id(unmasked_value_register_272);
-      id(unmasked_value_register_272) = x;
-      
+
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
-      
+
       // ESP_LOGI("Register 272","zone2_c_emission is %d", zone2_c_emission);
       std::string string_result;
       if (zone2_c_emission == 0) {

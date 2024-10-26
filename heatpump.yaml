@@ -3133,7 +3133,6 @@ number:
 
       // ESP_LOGI("Register 6Low, set_water_temperature_t1s_zone_1", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
 
-
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
       ${devicename}->queue_command(set_payload_command);
       id(unmasked_value_water_temperature_t1s) = value;

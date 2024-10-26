@@ -3081,7 +3081,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 5
-    max_value: 65
+    max_value: 60
     mode: slider
     lambda: |-
       // Update the global var unmasked_value_water_temperature_t1s
@@ -3106,7 +3106,7 @@ number:
         if (x_tmp < 25 and end_heating_unit == "Underfloor Heating") value_bytes[1] = 25;
         if (x_tmp > 55 and end_heating_unit == "Underfloor Heating") value_bytes[1] = 55;
         if (x_tmp < 35 and end_heating_unit == "Radiator") value_bytes[1] = 35;
-        if (x_tmp > 65 and end_heating_unit == "Radiator") value_bytes[1] = 65;
+        if (x_tmp > 60 and end_heating_unit == "Radiator") value_bytes[1] = 60;
       }
       // ESP_LOGI("Register 2Low","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
 
@@ -3126,7 +3126,7 @@ number:
         if (x < 25 and end_heating_unit == "Underfloor Heating") value_byte = 25;
         if (x > 55 and end_heating_unit == "Underfloor Heating") value_byte = 55;
         if (x < 35 and end_heating_unit == "Radiator") value_byte = 35;
-        if (x > 65 and end_heating_unit == "Radiator") value_byte = 65;
+        if (x > 60 and end_heating_unit == "Radiator") value_byte = 60;
       }
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= value_byte;  // Update the lower byte with the new byte value
@@ -3150,7 +3150,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 5
-    max_value: 65
+    max_value: 60
     mode: slider
     lambda: |-
       // The global var unmasked_value_water_temperature_t1s is already
@@ -3174,7 +3174,7 @@ number:
         if (x_tmp < 25 and end_heating_unit == "Underfloor Heating") value_bytes[0] = 25;
         if (x_tmp < 35 and end_heating_unit == "Radiator") value_bytes[0] = 35;
         if (x_tmp > 55 and end_heating_unit == "Underfloor Heating") value_bytes[0] = 55;
-        if (x_tmp > 65 and end_heating_unit == "Radiator") value_bytes[0] = 65;
+        if (x_tmp > 60 and end_heating_unit == "Radiator") value_bytes[0] = 60;
       }
       // ESP_LOGD("Register 2High","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
       return value_bytes[0];
@@ -3194,7 +3194,7 @@ number:
         if (x < 25 and end_heating_unit == "Underfloor Heating") value_byte = 25;
         if (x > 55 and end_heating_unit == "Underfloor Heating") value_byte = 55;
         if (x < 35 and end_heating_unit == "Radiator") value_byte = 35;
-        if (x > 65 and end_heating_unit == "Radiator") value_byte = 65;
+        if (x > 60 and end_heating_unit == "Radiator") value_byte = 60;
       }
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (value_byte << 8);  // Update the upper byte with the new byte value

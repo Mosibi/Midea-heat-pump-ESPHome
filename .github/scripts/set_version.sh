@@ -47,6 +47,7 @@ if [[ ! -z "${VERSION_FROM_CHANGELOG}" ]] && [[ "${VERSION_FROM_CHANGELOG}" =~ ^
   else
     sed -i -E "s/(^\ {4}version:)(.*$)/\1 ${VERSION_FROM_CHANGELOG}/g" heatpump.yaml || Error "Could not update version in heatpump.yaml"
     Info "Version in heatpump.yaml is successful updated to ${VERSION_FROM_CHANGELOG}"
+    echo "YAML_UPDATED=true" >> $GITHUB_ENV
   fi
 else
   Warning "Version extracted from CHANGELOG.md does not seem to be a version tag: ${VERSION_FROM_CHANGELOG}, version will not be updated"

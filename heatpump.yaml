@@ -157,7 +157,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      ESP_LOGI("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
+      // ESP_LOGD("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 1
       new_value &= 0xFFF0;     // Clear the first 4 bits
@@ -182,10 +182,10 @@ select:
     lambda: |-
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
-      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+      // ESP_LOGD("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
       // Extracting 4-bit values
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      // ESP_LOGI("Register 272","zone2_h_emission is %d", zone2_h_emission);
+      // ESP_LOGD("Register 272","zone2_h_emission is %d", zone2_h_emission);
       // Map/dictionary with the possible values
       std::string string_result;
       if (zone2_h_emission == 0) {
@@ -200,7 +200,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      ESP_LOGI("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
+      // ESP_LOGD("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 2
       new_value &= 0xFF0F;             // Clear the second pair of 4 bits
@@ -243,7 +243,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      ESP_LOGI("Register 272", "zone1_c_emission Set option to %s (%lld)", x.c_str(), value);
+      // ESP_LOGI("Register 272", "zone1_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 1
       new_value &= 0xF0FF;             // Clear the third pair of 4 bits
@@ -287,7 +287,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
+      // ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 2
       new_value &= 0x0FFF;              // Clear the fourth pair of 4 bits
@@ -2174,10 +2174,10 @@ switch:
       uint16_t value = 0;
 
       if (x == 1) {
-        ESP_LOGI("main", "Set forced water tank heating ON");
+        // ESP_LOGI("main", "Set forced water tank heating ON");
         value = 1;
       } else {
-        ESP_LOGI("main", "Set forced water tank heating OFF");
+        // ESP_LOGI("main", "Set forced water tank heating OFF");
         value = 2;
       }
 
@@ -3115,7 +3115,7 @@ number:
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= value_byte;  // Update the lower byte with the new byte value
 
-      ESP_LOGI("Register 6Low, set_water_temperature_t1s_zone_1", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
+      // ESP_LOGI("Register 6Low, set_water_temperature_t1s_zone_1", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
 
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
@@ -3184,7 +3184,7 @@ number:
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (value_byte << 8);  // Update the upper byte with the new byte value
 
-      ESP_LOGI("set_water_temperature_t1s_zone_2", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
+      // ESP_LOGD("set_water_temperature_t1s_zone_2", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
       ${devicename}->queue_command(set_payload_command);
       id(unmasked_value_water_temperature_t1s) = value;

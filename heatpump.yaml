@@ -3088,51 +3088,19 @@ number:
       id(unmasked_value_water_temperature_t1s) = x;
 
       // ESP_LOGI("","unmasked_value_water_temperature_t1s: %d",id(unmasked_value_water_temperature_t1s));
-
       uint8_t value_bytes[2];
       uint16_t value = x;
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
-
-      auto operation_state = id(${devicename}_operational_mode).state;
-      auto end_heating_unit = id(${devicename}_zone_1_end_heating_mode_emission_type).state;
-      auto end_cooling_unit = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
-      uint8_t x_tmp = value_bytes[1];
-      if (operation_state == "Cool") {
-        if (x_tmp < 5 and end_cooling_unit == "Fan Coil Unit") value_bytes[1] = 5;
-        if (x_tmp < 18 and end_cooling_unit != "Fan Coil Unit") value_bytes[1] = 18;
-        if (x_tmp > 25) value_bytes[1] = 25;
-      } else if (operation_state == "Heat") {
-        if (x_tmp < 25 and end_heating_unit == "Underfloor Heating") value_bytes[1] = 25;
-        if (x_tmp > 55 and end_heating_unit == "Underfloor Heating") value_bytes[1] = 55;
-        if (x_tmp < 35 and end_heating_unit == "Radiator") value_bytes[1] = 35;
-        if (x_tmp > 60 and end_heating_unit == "Radiator") value_bytes[1] = 60;
-      }
       // ESP_LOGI("Register 2Low","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
-
       return value_bytes[1];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
       uint8_t value_byte = x;                                    // New byte value with the new temp for zone 1
-      auto operation_state = id(${devicename}_operational_mode).state;
-      auto end_heating_unit = id(${devicename}_zone_1_end_heating_mode_emission_type).state;
-      auto end_cooling_unit = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
-      
-      if (operation_state == "Cool") {
-        if (x < 5 and end_cooling_unit == "Fan Coil Unit") value_byte = 5;
-        if (x < 18 and end_cooling_unit != "Fan Coil Unit") value_byte = 18;
-        if (x > 25) value_byte = 25;
-      } else if (operation_state == "Heat" or operation_state == "Auto") {
-        if (x < 25 and end_heating_unit == "Underfloor Heating") value_byte = 25;
-        if (x > 55 and end_heating_unit == "Underfloor Heating") value_byte = 55;
-        if (x < 35 and end_heating_unit == "Radiator") value_byte = 35;
-        if (x > 60 and end_heating_unit == "Radiator") value_byte = 60;
-      }
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= value_byte;  // Update the lower byte with the new byte value
 
       // ESP_LOGI("Register 6Low, set_water_temperature_t1s_zone_1", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
-
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
       ${devicename}->queue_command(set_payload_command);
       id(unmasked_value_water_temperature_t1s) = value;
@@ -3155,47 +3123,15 @@ number:
     lambda: |-
       // The global var unmasked_value_water_temperature_t1s is already
       // updated in the previous, where the low byte variant is executed
-      // id(unmasked_value_water_temperature_t1s) = x;
-
       uint8_t value_bytes[2];
       uint16_t value = x;
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
-
-      auto operation_state = id(${devicename}_operational_mode).state;
-      auto end_heating_unit = id(${devicename}_zone_2_end_heating_mode_emission_type).state;
-      auto end_cooling_unit = id(${devicename}_zone_2_end_cooling_mode_emission_type).state;
-      uint8_t x_tmp = value_bytes[0];
-      if (operation_state == "Cool") {
-        if (x_tmp < 5 and end_cooling_unit == "Fan Coil Unit") value_bytes[0] = 5;
-        if (x_tmp < 18 and end_cooling_unit != "Fan Coil Unit") value_bytes[0] = 18;
-        if (x_tmp > 25) value_bytes[0] = 25;
-      } else if (operation_state == "Heat") {
-        if (x_tmp < 25 and end_heating_unit == "Underfloor Heating") value_bytes[0] = 25;
-        if (x_tmp < 35 and end_heating_unit == "Radiator") value_bytes[0] = 35;
-        if (x_tmp > 55 and end_heating_unit == "Underfloor Heating") value_bytes[0] = 55;
-        if (x_tmp > 60 and end_heating_unit == "Radiator") value_bytes[0] = 60;
-      }
       // ESP_LOGD("Register 2High","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
       return value_bytes[0];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
       uint8_t value_byte = x;                                    // New byte value with the new temp for zone 2
-
-      // Apply minmax for standard temp
-      auto operation_state = id(${devicename}_operational_mode).state;
-      auto end_heating_unit = id(${devicename}_zone_2_end_heating_mode_emission_type).state;
-      auto end_cooling_unit = id(${devicename}_zone_2_end_cooling_mode_emission_type).state;
-      if (operation_state == "Cool") {
-        if (x < 5 and end_cooling_unit == "Fan Coil Unit") value_byte = 5;
-        if (x < 18 and end_cooling_unit != "Fan Coil Unit") value_byte = 18;
-        if (x >25) value_byte = 25;
-      } else if (operation_state == "Heat") {
-        if (x < 25 and end_heating_unit == "Underfloor Heating") value_byte = 25;
-        if (x > 55 and end_heating_unit == "Underfloor Heating") value_byte = 55;
-        if (x < 35 and end_heating_unit == "Radiator") value_byte = 35;
-        if (x > 60 and end_heating_unit == "Radiator") value_byte = 60;
-      }
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (value_byte << 8);  // Update the upper byte with the new byte value
 

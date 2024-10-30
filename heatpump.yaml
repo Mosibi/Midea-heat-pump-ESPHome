@@ -1,7 +1,30 @@
 substitutions:
   devicename: heatpump
   description: Heatpump Controller
+  device_description: "${description} YORK YKF09CNC 9kW Monoblock via Modbus protocol"
+  modbus_address: "11"                            #modbus address of heatpump
 
+  hour_start_day: '7' #8
+  hour_end_day: '19' #19
+  month_start_summer: '5'
+  month_end_summer: '9'
+  #Add this to secrets to update update key by ota and to enable api in homeassistant
+  #heatpump_controller_ota_password: "OTA_PASSWORD"
+  #heatpump_controller_api_encryption: "API_KEY"
+  # wifi_ssid: "WIFI_SSID"
+  # wifi_password: "WIFI_PASSWORD"
+  # wifi_ap_password: "wifi_captive_accessPoint_password"
+  # web_server_username: "web_panel_username"
+  # web_server_password: "web_panel_password"
+  # #built-in led intervals light on/light off makes blinks
+  # led_light_slow1s_on: "500ms"
+  # led_light_slow1s_off: "1000ms"
+  # led_light_slow_on: "500ms"
+  # led_light_slow_off: "500ms"
+  # led_light_fast_on:  "200ms"
+  # led_light_fast_off":  "200ms"
+  ##And update modbus_tx_pin, modbus_rx_pin and flow_control_pin in uart: modbus: and modbus_controller: sections
+################################################################################################################################
 globals:
   - id: unmasked_value_register_0
     type: uint16_t
@@ -22,7 +45,7 @@ globals:
   - id: unmasked_value_register_210
     type: uint16_t
     restore_value: no
-    initial_value: '0'    
+    initial_value: '0'
   - id: unmasked_value_register_211
     type: uint16_t
     restore_value: no
@@ -35,61 +58,573 @@ globals:
     type: uint16_t
     restore_value: no
     initial_value: '0'
+  - id: manually_disabled_dhw_heating_timestamp
+    type: int32_t
+    restore_value: true
+    # initial_value: '0'
+  - id: manually_disabled_zone1_heating_timestamp
+    type: int32_t
+    restore_value: true
+    # initial_value: '0'
+  - id: manually_disabled_zone2_heating_timestamp
+    type: int32_t
+    restore_value: true
+    # initial_value: '0'
+  - id: timestamp_water_pump_timestamp_last_run
+    type: int32_t
+    restore_value: true
+    # initial_value: '0'
 
+  - id: tempereture_avg_last_hour
+    type: float
+    restore_value: true
+    # initial_value: '0'
+  - id: tempereture_avg_last_24h
+    type: float
+    restore_value: true
+    # initial_value: '0'
+  - id: relay1_start
+    type: int32_t
+    restore_value: true
+    # initial_value: '0'
+  - id: relay2_start
+    type: int32_t
+    restore_value: true
+    initial_value: '0'
+  - id: external_temp_sensor_avg_rooms_temp_saved
+    type: float
+    restore_value: true
+    initial_value: '0'
+  - id: Restore_enable_DHW
+    type: bool
+    initial_value: '1'
+    restore_value: true
+  - id: Restore_enable_Zone1
+    type: bool
+    restore_value: true
+    initial_value: '1'
+  - id: Restore_enable_Zone2
+    type: bool
+    restore_value: true
+    initial_value: "1"
+  - id: Restore_time_dhw
+    type: uint16_t
+    restore_value: true
+    initial_value: '180'
+  - id: Restore_time_zone1
+    type: uint16_t
+    restore_value: True
+    initial_value: "190"
+  - id: Restore_time_zone2
+    type: uint16_t
+    restore_value: true
+    initial_value: "200"
+################################################################################################################################
 esphome:
   name: "${devicename}"
-  comment: "${description}"
+  comment: "${device_description}"
   friendly_name: "${description}"
   project:
-    name: "${devicename}.${description}"
-    version: 4.1.2
-
+    name: !secret "Project_info"
+    version: 4.1.5
+  on_boot:
+    ## configure controller settings at setup
+    priority: 500
+    then:
+      - lambda: 'id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(id(tempereture_avg_last_hour));'
+      - lambda: 'id(${devicename}_outdoor_ambient_temperature_daily).publish_state(id(tempereture_avg_last_24h));'
+      - lambda: 'id(${devicename}_enable_recoverytime_enable_dhw).publish_state(Restore_enable_DHW);' #Restore_enable_DHW));
+      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone1).publish_state(Restore_enable_Zone1);' #id(Restore_enable_Zone1));
+      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone2).publish_state(Restore_enable_Zone2);' #id(Restore_enable_Zone2));
+      - lambda: |-
+                  if (id(Restore_enable_DHW)) id(${devicename}_power_dhw_t5s).turn_on();
+                  if (id(Restore_enable_Zone1)) id(${devicename}_power_heat_cool_control_zone1).turn_on();
+                  if (id(Restore_enable_Zone2)) id(${devicename}_power_heat_cool_control_zone2).turn_on();
+                  ESP_LOGE("BOOT", "JUST BOOTED");
+    #this allow change ota password for next upload
+    #id(my_ota).set_auth_password(!secret "heatpump_controller_ota_password");
+################################################################################################################################
 esp32:
-  board: esp32dev
+  board: wemos_d1_mini32
   framework:
-    type: esp-idf
+    type: esp-idf #arduino
+    # version: recommended
+    # Custom sdkconfig options
+    # sdkconfig_options:
+    #    COMPILER_OPTIMIZATION_SIZE: y
+    # # Advanced tweaking options
+    # advanced:
+    #   ignore_efuse_mac_crc: false
+    # restore_from_flash: true  #for Eesp8266
+################################################################################################################################
+preferences:
+  flash_write_interval: 60min
+  
 
+################################################################################################################################
 # Enable logging
 logger:
   level: INFO
-  baud_rate: 0
+  # level: NONE, WARN, INFO, DEBUG
+  # hardware_uart: UART1
+  #baud_rate: 0 #disables HW logger to avoid conflicts with modbus communication
 
+################################################################################################################################
 # Enable Home Assistant API
 api:
-
+  encryption:
+    key: !secret "heatpump_controller_api_encryption"
+  on_client_connected:
+    - if:
+        condition:
+          lambda: 'return (0 == client_info.find("Home Assistant "));'
+        then:
+          - light.turn_on: 
+              id: wifi_led
+              effect: blink_slow1s
+          
+  on_client_disconnected:
+    - if:
+        condition:
+          lambda: 'return (0 == client_info.find("Home Assistant "));'
+        then:
+          - light.turn_on: 
+              id: wifi_led
+              effect: blink_fast
+################################################################################################################################
 web_server:
   port: 80
-
+  log: true
+  auth:
+    username: !secret web_server_username
+    password: !secret web_server_password
+  include_internal: true
+  version: 3
+  local: true
+################################################################################################################################
 ota:
   platform: esphome
-
+  id: "my_ota"
+  password: !secret "heatpump_controller_ota_password"
+################################################################################################################################
 wifi:
+  ssid: !secret "wifi_ssid"
+  password: !secret "wifi_password"
+  use_address: 10.48.18.61
+  enable_on_boot: true
   power_save_mode: none
+  on_connect: 
+    then: 
+      - light.turn_on:
+          id: wifi_led
+          effect: blink_slow
+
+  on_disconnect:
+    then:
+      light.turn_off: wifi_led
+
   ap:
     ssid: "${devicename}-setup"
-    password: "heatpump"
-
+    password: !secret "wifi_ap_password"
+################################################################################################################################
 captive_portal:
 
+################################################################################################################################
 uart:
   id: mod_bus
-  tx_pin: 17
-  rx_pin: 16
+  tx_pin: GPIO3 #"17"
+  rx_pin: GPIO1 #"16"
   baud_rate: 9600
+  data_bits: 8
+  parity: NONE # NONE, EVEN, ODD.
   stop_bits: 1
-
+################################################################################################################################
 modbus:
-  flow_control_pin: 5
+  #flow_control_pin: 5
   id: heatpump_modbus
-
+  send_wait_time: 500ms
+  #read_wait_time: 200ms
+  role: client
+################################################################################################################################
 modbus_controller:
   - id: "${devicename}"
     ## the Modbus device addr
-    address: 0x1
+    address: ${modbus_address}
     modbus_id: heatpump_modbus
     setup_priority: -10
-    update_interval: 10s
+    update_interval: 30s
+    offline_skip_updates: 0
+################################################################################################################################
+output:
+    #platform: slow_pwm
+  - platform: gpio
+    pin: GPIO2
+    id: blue_led
+    #period: 1500ms
+    inverted: false
+################################################################################################################################
+light:
+  - platform: binary
+    id: "wifi_led"
+    output: "blue_led"
+    internal: true
+    icon: mdi:led-on
+    entity_category: "diagnostic"
+    effects:
+      - strobe:
+          name: "blink_slow1s"
+          colors:
+            - state: true
+              duration: !secret "led_light_slow1s_on" #500ms
+            - state: false
+              duration: !secret "led_light_slow1s_off" #1000ms
+      - strobe:
+          name: "blink_slow"
+          colors:
+            - state: true
+              duration: !secret "led_light_slow_on" #500ms
+            - state: false
+              duration: !secret "led_light_slow_off" #500ms
+      - strobe:
+          name: "blink_fast"
+          colors:
+            - state: true
+              duration: !secret "led_light_fast_on"  #200ms
+            - state: false
+              duration: !secret "led_light_fast_off"  #200ms
+################################################################################################################################
+time:
+  - platform: homeassistant
+    id: esptime
+    on_time_sync:
+      then:
+        - logger.log: "Synchronized System Clock from HomeAssisatnt"
+    # on_time:
 
+
+    #   - hours: /1 #6
+    #     minutes: /15
+    #     seconds: 0
+    #     then:
+    #       - lambda: |-
+    #          //
+################################################################################################################################
+interval:
+  - interval: 1min
+    then:
+      - lambda: |-
+            if (!id(esptime).is_failed()) {
+              //Check at start if dhw or heat/cool zone 1&2 is disabled
+              if (!id(${devicename}_power_dhw_t5s).state and id(manually_disabled_dhw_heating_timestamp) == 0 and id(Restore_enable_DHW)==1) id(manually_disabled_dhw_heating_timestamp) = id(esptime).now().timestamp;
+              if (!id(${devicename}_power_heat_cool_control_zone1).state and id(manually_disabled_zone1_heating_timestamp) == 0 and id(Restore_enable_Zone1)==1) id(manually_disabled_zone1_heating_timestamp) = id(esptime).now().timestamp;;
+              if (!id(${devicename}_power_heat_cool_control_zone2).state and id(manually_disabled_zone2_heating_timestamp) == 0 and id(Restore_enable_Zone2)==1) id(manually_disabled_zone2_heating_timestamp) = id(esptime).now().timestamp;;
+              //check when dhw or zone1 or zone2 heat is disabled -enable if timer to enable elapsed
+              int32_t duration_dhw_timer_elapsed = 0;
+              ESP_LOGI("interval_time_1min","DHW parse: id(manually_disabled_dhw_heating_timestamp) %i", id(manually_disabled_dhw_heating_timestamp));
+              if (id(manually_disabled_dhw_heating_timestamp) > 0 and id(Restore_enable_DHW)) {
+                duration_dhw_timer_elapsed = id(esptime).now().timestamp - id(manually_disabled_dhw_heating_timestamp);
+                if (duration_dhw_timer_elapsed > (id(${devicename}_restore_time_heat_dhw_after_turn_off).state * 60)) {
+                  id(${devicename}_power_dhw_t5s).turn_on();
+                  ESP_LOGI("interval_time_1min", "Enable DHW Heating");
+                }
+              }
+              int32_t duration_zone1_timer_elapsed = 0;
+              if (id(manually_disabled_zone1_heating_timestamp) > 0 and id(Restore_enable_Zone1)==1) {
+                duration_zone1_timer_elapsed = id(esptime).now().timestamp - (int32_t)id(manually_disabled_zone1_heating_timestamp);
+                if (duration_zone1_timer_elapsed > (id(${devicename}_restore_time_heat_zone1_after_turn_off).state * 60)) {
+                  id(${devicename}_power_heat_cool_control_zone1).turn_on();
+                  ESP_LOGI("interval_time_1min", "Enable Zone1 Heating/cooling");
+                }
+              }
+              int32_t duration_zone2_timer_elapsed = 0;
+              if (id(manually_disabled_zone2_heating_timestamp) > 0 and id(Restore_enable_Zone2)==1) {
+                duration_zone2_timer_elapsed = id(esptime).now().timestamp - (int32_t)id(manually_disabled_zone2_heating_timestamp);
+                if (duration_zone2_timer_elapsed > (id(${devicename}_restore_time_heat_zone2_after_turn_off).state * 60)) {
+                  id(${devicename}_power_heat_cool_control_zone2).turn_on();
+                  ESP_LOGI("interval_time_1min", "Enable Zone2 Heating/cooling");
+                }
+              }
+
+              //Secure heatpump from pipe freeze -if pump_i don't run in last hour start external pump for eg. 5 minutes and add when load PUMP_I is active disable relay
+              float ext_t4_temp = id(${devicename}_outdoor_ambient_temperature).state;
+              bool pump_i_status = id(${devicename}_load_output_water_pump_pump_i).state;
+              int32_t duration_pump_i_lastrun = 0;
+              ESP_LOGI("interval_time_1min","PUMP_I last run now:%li, pump_ts %i, duration: %i, outside temp %f", id(esptime).now().timestamp, id(timestamp_water_pump_timestamp_last_run), duration_pump_i_lastrun, ext_t4_temp);
+              if (id(timestamp_water_pump_timestamp_last_run) > 0) {
+                duration_pump_i_lastrun = id(esptime).now().timestamp - id(timestamp_water_pump_timestamp_last_run);
+                if (duration_pump_i_lastrun > ((int32_t)id(${devicename}_pump_i_antifrize_check_last_run_interval).state * 60) and !pump_i_status and ext_t4_temp < float(id(${devicename}_temp_secure_antifreeze).state) ) {
+                  //start external relay if pump_i not active in last hour with external temp under declared val
+                  ESP_LOGI("time start relay pump","PROCEDURE START RELAY PUMP");
+                  id(${devicename}_relay1_external_pump).turn_on();  //#################
+                  id(${devicename}_relay2_external_pump).turn_on();   //###################
+                }
+              }
+              //check how long external switch was on -if more than 5 minutes -turn off
+              int32_t duration_relay1_active = id(esptime).now().timestamp - (int32_t)id(relay1_start);
+              if (duration_relay1_active > (id(${devicename}_output_external_pump_for_antifreeze_relay1).state * 60) and id(relay1_start) > 0) {
+                ESP_LOGI("interval_time_1min relay","Relay1 Stops %um", duration_relay1_active);
+                id(${devicename}_relay1_external_pump).turn_off();   //#########################
+              }
+              int32_t duration_relay2_active = id(esptime).now().timestamp - (int32_t)id(relay2_start);
+              if (duration_relay2_active > (id(${devicename}_external_relay_timer).state * 60) and id(relay2_start) > 0) {
+                ESP_LOGI("interval_time_1min_relay","Relay2 Stops %u", duration_relay2_active);
+                id(${devicename}_relay2_external_pump).turn_off();   //#################
+              }
+            }
+  - interval: 60min #15min
+    then:
+      - lambda: |-
+            if (!id(esptime).is_failed()) {
+              //calculate curve and set T1s
+              //${devicename}_temperature_t1s_zone1      set_water_temperature_t1s_zone_1
+              auto operation_state = id(${devicename}_operational_mode).state;
+              ESP_LOGI("interval_time_30min", "Setting temp for mode .%s. compare: %s", operation_state.c_str(), (operation_state == "Cool")?"YES":"NO");
+
+              //calculae curve
+              float ext_t4_temp = id(${devicename}_outdoor_ambient_temperature).state;
+              float calculated_temp = 35;
+              float avg_temp;
+              if (${devicename}_outdoor_ambient_temperature_daily != 0) {
+                avg_temp = id(${devicename}_outdoor_ambient_temperature_daily).state;
+              } else if (${devicename}_outdoor_ambient_temperature_hourly != 0) {
+                avg_temp = id(${devicename}_outdoor_ambient_temperature_hourly).state;
+              } else avg_temp = id(${devicename}_outdoor_ambient_temperature).state;
+              // Arduino map implementation 
+              // Long map(long xx, long in_min, long in_max, long out_min, long out_max){
+              // Rreturn (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;}
+              float xx, in_min, in_max, out_min, out_max;
+              // float temp_floorheat = map(avg_temp, -20, 15, 50, 25); //zmapuj zakres zewnatrz gdy -20 to grzej 50 a gdy zewnatrz 15 grzej 15
+              xx = avg_temp;
+              in_min = -20;
+              in_max = 15;
+              out_min = 50;
+              out_max = 25;
+              float temp_floorheat = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+              xx = temp_floorheat;
+              in_min = 50;
+              in_max = 25;
+              out_min = 50;
+              out_max = 35;
+              // calculated_temp = map(temp_floorheat, 50, 25, 50, 35);
+              calculated_temp = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+
+              if (calculated_temp < 30) calculated_temp = 28;
+              calculated_temp *= 0.2;
+              ESP_LOGI("interval_time_30min", "Calculated curve for heating my without room temps is %f", calculated_temp);
+              id(${devicename}_calculated_curve).publish_state(calculated_temp);
+
+
+              float baseTemp = calculated_temp; // Flow temperature at 0°C outdoor
+              float tempChangePerDegree = 1.0; // Flow temperature increase per degree drop in outdoor temperature
+              // Calculate temperature difference from desired room temperature
+              float tempDifference = 22.0 - float(id(${devicename}_external_temp_sensor_avg_rooms_temp).state);    //22 is wanted room temp
+              if (avg_temp < 0) {
+                calculated_temp = baseTemp + (-avg_temp) * tempChangePerDegree + (tempDifference * 1.5);
+              } else {
+                calculated_temp = baseTemp - avg_temp * (tempChangePerDegree / 2) + (tempDifference * 1.5);
+              }
+
+              // float temp_floorheat = map(srednia, -20, 15, 50, 25); //zmapuj zakres zewnatrz gdy -20 to grzej 50 a gdy zewnatrz 15 grzej 15
+              // float setT1STempZone1 = map(temp_floorheat, 50, 25, 50, 35);
+              // *0.2
+              ESP_LOGI("interval_time_30min", "Calculated curve for heating is %f", calculated_temp);
+              id(${devicename}_calculated_curve2).publish_state(calculated_temp);
+              // Arduino map implementation
+              xx = id(${devicename}_external_temp_sensor_avg_rooms_temp).state;
+              in_min = 19.5;
+              in_max = 22;
+              out_min = 45;
+              out_max = 28;                    
+              float temp_curve = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+              // float temp_curve = map(id(${devicename}_external_temp_sensor_avg_rooms_temp).state, 19.5, 22, 45, 28);
+
+              calculated_temp = temp_curve;
+              ESP_LOGI("interval_time_30min", "Calculated curve 3 for heating is %f", temp_curve);
+              id(${devicename}_calculated_curve3).publish_state(temp_curve);
+
+
+              // Set Heating/Cooling temp of Zone 1 calculated
+              if (operation_state == "Cool") {
+                auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+                t1s_zone_1.set_value(5);
+                t1s_zone_1.perform(); 
+                ESP_LOGI("interval_time_30min", "Setting temp for Cool mode %d", 5);
+              } else if (operation_state == "Heat" or operation_state == "Auto") {
+                auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+                if (calculated_temp < 29) calculated_temp = 29;
+                t1s_zone_1.set_value(calculated_temp);
+                t1s_zone_1.perform();
+                ESP_LOGI("interval_time_30min", "Setting temp for Heat mode %f Out Temp %f", calculated_temp, ext_t4_temp);
+              }
+            }
+  - interval: 120min #1h
+    then:
+      - lambda: |-
+            //change parameters to summer mode -months 5-9
+            bool essential_changed = false;
+            float new_delta_dhw_day = 6;
+            //save statuses of heating dhw and zones
+            bool dhwstate = id(${devicename}_power_dhw_t5s).state;
+            bool zone1state = id(${devicename}_power_heat_cool_control_zone1).state;
+            bool zone2state = id(${devicename}_power_heat_cool_control_zone2).state;
+            ESP_LOGI("interval_delta", "now.month: %i, month_start_summer: %i, month_end_summer: %i comp month>=month_start: %s, id(esptime).now().month <= month_end_summer %s", id(esptime).now().month, ${month_start_summer}, ${month_end_summer}, (id(esptime).now().month >= ${month_start_summer})?"Yes":"No", id(esptime).now().month <= ${month_end_summer}?"Yes":"No");
+            if (id(esptime).now().month >= ${month_start_summer} and id(esptime).now().month <= ${month_end_summer}) {
+              //change from heat to cool don't stop heatpump
+              auto m1_mode = id( ${devicename}_operational_mode).make_call();
+              m1_mode.set_option("Cool");
+              m1_mode.perform();
+              ESP_LOGE("interval_time_1h_1","Enable Summer Mode -change behavior to COOLING for summertime and update deltas");
+              //heatpump stop after: dt1s5 dt1sh dtsh dtsc
+              float new_delta = 7.0F;
+              if (id(${devicename}_dt1s5).state != new_delta) {
+                auto delta_dt1s5 = id(${devicename}_dt1s5).make_call();
+                delta_dt1s5.set_value(new_delta);
+                delta_dt1s5.perform();
+                essential_changed = true;
+              }
+              if (id(${devicename}_dt1sh).state != new_delta) {
+                auto delta_dt1sh = id(${devicename}_dt1sh).make_call();
+                delta_dt1sh.set_value(new_delta);
+                delta_dt1sh.perform();
+                essential_changed = true;
+              }
+              if (id(${devicename}_dtsh).state != new_delta) {
+                auto delta_dtsh = id(${devicename}_dtsh).make_call();
+                delta_dtsh.set_value(new_delta);
+                delta_dtsh.perform();
+                essential_changed = true;
+              }
+              if (id(${devicename}_dtsc).state != new_delta) {
+                auto delta_dtsc = id(${devicename}_dtsc).make_call();
+                delta_dtsc.set_value(new_delta);
+                delta_dtsc.perform();
+                essential_changed = true;
+              }
+              new_delta_dhw_day = 5;
+            }
+            //change parameters to winter mode -months 1-4 and 10-12
+            ESP_LOGI("interval_delta", "now.month: %i, month_start_summer: %i, month_end_summer: %i comp month<month_start: %s, id(esptime).now().month > month_end_summer %s", id(esptime).now().month, ${month_start_summer}, ${month_end_summer}, (id(esptime).now().month < ${month_start_summer})?"Yes":"No", id(esptime).now().month > ${month_end_summer}?"Yes":"No");
+            if (id(esptime).now().month < ${month_start_summer} or id(esptime).now().month > ${month_end_summer}) {
+              //change from heat to cool don't stop heatpump
+              auto m1_mode = id( ${devicename}_operational_mode).make_call();
+              m1_mode.set_option("Heat");
+              m1_mode.perform();
+              ESP_LOGE("interval_time_1h_1","Enable Winter Mode -change behavior to HEATING and update deltas");
+              //heatpump stop after: dt1s5 dt1sh dtsh dtsc
+              float new_delta = 5.0F;
+              if (id(${devicename}_dt1s5).state != new_delta) {
+                auto delta_dt1s5 = id(${devicename}_dt1s5).make_call();
+                delta_dt1s5.set_value(new_delta);
+                delta_dt1s5.perform();
+                essential_changed = true;
+              }
+              if (id(${devicename}_dt1sh).state != new_delta) {
+                auto delta_dt1sh = id(${devicename}_dt1sh).make_call();
+                delta_dt1sh.set_value(new_delta);
+                delta_dt1sh.perform();
+                essential_changed = true;
+              }
+              if (id(${devicename}_dtsh).state != new_delta) {
+                auto delta_dtsh = id(${devicename}_dtsh).make_call();
+                delta_dtsh.set_value(new_delta);
+                delta_dtsh.perform();
+                essential_changed = true;
+              }
+              if (id(${devicename}_dtsc).state != new_delta) {
+                auto delta_dtsc = id(${devicename}_dtsc).make_call();
+                delta_dtsc.set_value(new_delta);
+                delta_dtsc.perform();
+                essential_changed = true;
+              }
+              new_delta_dhw_day = 7;
+            }
+            //set delta DHW to 5degree for day
+            //changing delta disables heatpump
+            float actual_delta_dhw = id(${devicename}_dt5_on).state;
+            //for winter return delta 7, for summer delta 5
+            if (id(esptime).now().hour >= ${hour_start_day} and id(esptime).now().hour <= ${hour_end_day}) {
+              if (actual_delta_dhw != new_delta_dhw_day ) {
+                auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
+                delta__dt5_on.set_value(new_delta_dhw_day);
+                delta__dt5_on.perform();
+              }
+              
+              ESP_LOGE("interval_time_1h_1_delta","Changed delta T5s for DHW at day to: %f", new_delta_dhw_day);
+            } else if (id(esptime).now().hour < ${hour_start_day} or id(esptime).now().hour > ${hour_end_day}  ) {
+              //set delta DHW to reach minimum wanted DHW temp to allow drop at night
+              //CHANGE DELTA FOR DHW WATER HEATING to ~32deg for night (Actual set DHW temp to which is heated - minimal accepted temp for DHW + 1)
+              float new_delta_night = (float(id(${devicename}_set_dhw_tank_temperature_t5s).state) - float(id(${devicename}_gl_dhw_minimal_temp).state) + 1);
+              if (actual_delta_dhw != new_delta_night) {
+                auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
+                delta__dt5_on.set_value(new_delta_night);
+                delta__dt5_on.perform();
+                essential_changed = true;
+                ESP_LOGE("interval_time_1h_1","Changed delta T5s for DHW at night to: %f", new_delta_night);
+              }
+            }
+            // Neccesserry default values turn on
+            // Maybe: Make heat pump silent at night between 22 and 6 am  YorkM5functionMOde   bitSet(tmptemp, 6);    //SilentMode              bitClear(tmptemp, 7);  //SuperSilent
+            // I use only zone 1 -actually this is buffer -not directly to radiators -this is much better choice, in cooling i cool buffer. Enabling air conditioner is different functionallity ;(
+            // After setting any of values below heat pump turn off heating/cooling
+            if (!id(${devicename}_p_s_1_heating_and_cooling_first_or_water_first).state) {
+              id(${devicename}_p_s_1_heating_and_cooling_first_or_water_first).publish_state(true);
+              essential_changed = true;
+              ESP_LOGI("interval_time_1h_2", "Set p_s_1_heating_and_cooling_first_or_water_first");
+            }
+            if (!id(${devicename}_p_s_1_enable_heating).state) {
+              id(${devicename}_p_s_1_enable_heating).publish_state(true);
+              essential_changed = true;
+              ESP_LOGI("interval_time_1h_2", "Set p_s_1_enable_heating");
+            }
+            if (!id(${devicename}_p_s_1_enable_cooling).state) {
+              id(${devicename}_p_s_1_enable_cooling).publish_state(true);
+              essential_changed = true;
+              ESP_LOGI("interval_time_1h_2", "Set p_s_1_enable_cooling");
+            }
+            if (!id(${devicename}_p_s_1_enable_water_heating).state) {
+              id(${devicename}_p_s_1_enable_water_heating).publish_state(true);
+              essential_changed = true;
+              ESP_LOGI("interval_time_1h_2", "Set p_s_1_enable_water_heating");
+            }
+            //#update heat and cool end for zone 1 -i use buffer to cool so I need to set for cool "Fan Coil Unit" which enables temp range 5-25 degree
+            auto zone1_cooling_end_state = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
+            if (zone1_cooling_end_state != "Fan Coil Unit") {
+              auto zone1_cooling_end = id(${devicename}_zone_1_end_cooling_mode_emission_type).make_call();
+              zone1_cooling_end.set_option("Fan Coil Unit");
+              zone1_cooling_end.perform();
+              essential_changed = true;
+              ESP_LOGI("interval_time_1h_2", "Set Zone 1 Cooling to Fan Coil Unit was: %s", zone1_cooling_end_state.c_str());
+            }
+            //#Radiator and Fan Coil Unit enables temp range 35 to 65degree i want below 35 ;)
+            auto zone1_heating_end_state = id(${devicename}_zone_1_end_heating_mode_emission_type).state;
+            if (zone1_heating_end_state != "Underfloor Heating") {
+              auto zone1_heating_end = id(${devicename}_zone_1_end_heating_mode_emission_type).make_call();
+              zone1_heating_end.set_option("Underfloor Heating");
+              zone1_heating_end.perform();
+              essential_changed = true;
+              ESP_LOGI("interval_time_1h_2", "Set Zone 1 heating to Underfloor Heating was: %s", zone1_heating_end_state.c_str());
+            }
+            if (essential_changed) {
+              delay(60000);
+              //some essential parameter was chanagedd so Heat pump disable heat -so enable it now -this is not manual disable
+              if (dhwstate) id(${devicename}_power_dhw_t5s).turn_on();
+              if (zone1state) id(${devicename}_power_heat_cool_control_zone1).turn_on();
+              if (zone2state) id(${devicename}_power_heat_cool_control_zone2).turn_on();
+              ESP_LOGE("interval_time_1h_1", "ReEnable %s%s%s Heat/Cool after change essentials (enable heating/cooling/DHW/DHW first/change emmissions...etc)", id(Restore_enable_DHW)?"DHW":"", id(Restore_enable_Zone1)?" and Zone1":"", id(Restore_enable_Zone2)?" and Zone2":"");
+            }
+################################################################################################################################
+button:
+  - platform: restart
+    name: "Restart"
+    id: "${devicename}_restart"
+    icon: mdi:lock-reset
+    entity_category: "diagnostic"
+  - platform: factory_reset
+    name: "Restart with Controller Factory Default Settings -not Heat Pump"
+    id: "${devicename}_factory_reset_and_restart"
+    icon: mdi:lock-reset
+    entity_category: "diagnostic"
+################################################################################################################################
 select:
   # Register: 1
   - platform: modbus_controller
@@ -107,7 +642,7 @@ select:
   # Register: 269, default: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Power Input Limitation Type"
+    name: "Power Input Limitation to"
     id: "${devicename}_power_input_limitation_type"
     icon: mdi:state-machine
     address: 0x10d
@@ -139,16 +674,11 @@ select:
     lambda: |-
       // Update the global var unmasked_value_register_272
       id(unmasked_value_register_272) = x;
-      
       // ESP_LOGI("Register 272","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-
       // Extracting 4-bit values
-      uint8_t zone2_c_emission = (x >> 12) & 0xF;
-      uint8_t zone1_c_emission = (x >> 8) & 0xF;
-      uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
-
       // ESP_LOGI("Register 272","zone1_h_emission is %d"zone2_h_emission);
+      // Map/dictionary with the possible values
       std::string string_result;
       if (zone1_h_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -162,7 +692,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      // ESP_LOGD("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
+      ESP_LOGI("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 1
       new_value &= 0xFFF0;     // Clear the first 4 bits
@@ -187,15 +717,11 @@ select:
     lambda: |-
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
-      // ESP_LOGD("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-
+      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
       // Extracting 4-bit values
-      uint8_t zone2_c_emission = (x >> 12) & 0xF;
-      uint8_t zone1_c_emission = (x >> 8) & 0xF;
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      uint8_t zone1_h_emission = x & 0xF;
-
-      // ESP_LOGD("Register 272","zone2_h_emission is %d", zone2_h_emission);
+      // ESP_LOGI("Register 272","zone2_h_emission is %d", zone2_h_emission);
+      // Map/dictionary with the possible values
       std::string string_result;
       if (zone2_h_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -209,7 +735,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      // ESP_LOGD("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
+      ESP_LOGI("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 2
       new_value &= 0xFF0F;             // Clear the second pair of 4 bits
@@ -235,14 +761,10 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
-
       // Extracting 4-bit values
-      uint8_t zone2_c_emission = (x >> 12) & 0xF;
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
-      uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      uint8_t zone1_h_emission = x & 0xF;
-
       // ESP_LOGD("Register 272","zone1_c_emission is %d", zone1_c_emission);
+      // Map/dictionary with the possible values
       std::string string_result;
       if (zone1_c_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -256,7 +778,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      // ESP_LOGI("Register 272", "zone1_c_emission Set option to %s (%lld)", x.c_str(), value);
+      ESP_LOGI("Register 272", "zone1_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 1
       new_value &= 0xF0FF;             // Clear the third pair of 4 bits
@@ -282,14 +804,11 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGI("Register 272","unmasked_value_register_272: 0x%x", id(unmasked_value_register_272);
-
+      id(unmasked_value_register_272) = x;
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
-      uint8_t zone1_c_emission = (x >> 8) & 0xF;
-      uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      uint8_t zone1_h_emission = x & 0xF;
-
       // ESP_LOGI("Register 272","zone2_c_emission is %d", zone2_c_emission);
+      // Map/dictionary with the possible values
       std::string string_result;
       if (zone2_c_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -303,7 +822,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      // ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
+      ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 2
       new_value &= 0x0FFF;              // Clear the fourth pair of 4 bits
@@ -312,12 +831,153 @@ select:
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
       return {};
-
+################################################################################################################################
 sensor:
+  ##############REMOTE SENSORS#############################################
+  - platform: homeassistant
+    name: "External Temp Sensor of avg Rooms temp"
+    id: "${devicename}_external_temp_sensor_avg_rooms_temp"
+    entity_id: sensor.wanas_m7_temp_pomieszcz_2
+    internal: true
+    unit_of_measurement: "°C"
+    icon: mdi:temperature-celsius
+    on_value: 
+      then:
+        lambda: |-
+          // Update the global var to save last read
+          id(external_temp_sensor_avg_rooms_temp_saved) = x;
+  ##############LOCAL SENSORS#####################################################################################
   - platform: uptime
+    id: ${devicename}_uptime_sec
     name: Uptime
-    id: "${devicename}_uptime"
+    unit_of_measurement: s
     icon: mdi:timelapse
+    entity_category: "diagnostic"
+    on_value: 
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = x;
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              std::string result;
+              if ( days > 3650 ) {
+                result = "Starting up";
+              } else if ( days ) {
+                result = (std::to_string(days) +"d " + std::to_string(hours) +"h " + std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
+              } else if ( hours ) {
+                result = (std::to_string(hours) +"h " + std::to_string(minutes) +"m "+ std::to_string(seconds) + "s");
+              } else if ( minutes ) {
+                result = (std::to_string(minutes) +"m "+ std::to_string(seconds) +"s");
+              } else {
+                result = (std::to_string(seconds) +"s");
+              }
+              return result;
+  - platform: wifi_signal
+    name: WiFi Signal
+    id: ${devicename}_wifi_signal
+    update_interval: 60s
+    entity_category: "diagnostic"
+    icon: mdi:wifi
+  ###########APPEND SENSORS #################
+  - platform: template
+    name: "SM Last time PUMP_I Run"
+    id: ${devicename}_water_pump_i_runtime
+    entity_category: "diagnostic"
+    unit_of_measurement: s
+    icon: mdi:clock
+    # update_interval: 15s
+    lambda: "if (id(timestamp_water_pump_timestamp_last_run)==0) return 0; else return id(esptime).now().timestamp - id(timestamp_water_pump_timestamp_last_run);"
+  - platform: template
+    name: "SM Recovery Heating DHW time in"
+    id: ${devicename}_recovery_heating_dhw_time_in
+    entity_category: "diagnostic"
+    unit_of_measurement: s
+    icon: mdi:clock
+    # update_interval: 15s
+    internal: true
+    lambda: "if (id(manually_disabled_dhw_heating_timestamp)==0 or id(Restore_enable_DHW)==false) {return 0;} else {return (id(${devicename}_restore_time_heat_dhw_after_turn_off).state * 60) - id(esptime).now().timestamp - id(manually_disabled_dhw_heating_timestamp);}"
+  - platform: template
+    name: "SM Recovery Heating/Cooling Zone1 time in"
+    id: ${devicename}_recovery_heating_cooling_zone1_time_in
+    entity_category: "diagnostic"
+    unit_of_measurement: s
+    icon: mdi:clock
+    # update_interval: 15s
+    internal: true
+    lambda: "if (id(manually_disabled_zone1_heating_timestamp)==0 or id(Restore_enable_Zone1)==false) return 0; else return (id(${devicename}_restore_time_heat_zone1_after_turn_off).state * 60) - id(esptime).now().timestamp - id(manually_disabled_zone1_heating_timestamp);"
+  - platform: template
+    name: "SM Recovery Heating/Cooling Zone2 time in"
+    id: ${devicename}_recovery_heating_cooling_zone2_time_in
+    entity_category: "diagnostic"
+    unit_of_measurement: s
+    icon: mdi:clock
+    # update_interval: 15s
+    internal: true
+    lambda: "if (id(manually_disabled_zone2_heating_timestamp)==0 or id(Restore_enable_Zone2)==false) return 0; else return (id(${devicename}_restore_time_heat_zone2_after_turn_off).state * 60) - id(esptime).now().timestamp - id(manually_disabled_zone2_heating_timestamp);"
+  - platform: template
+    name: "SM Averange Hourly outside temp"
+    id: "${devicename}_outdoor_ambient_temperature_hourly"
+    icon: mdi:temperature-celsius
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    update_interval: never #T4 send this update
+    filters:
+      - sliding_window_moving_average:
+          window_size: 120
+          send_every: 1
+          send_first_at: 1
+    on_value: 
+      then:
+        - lambda: "id(tempereture_avg_last_hour) = x;"
+    # web_server_sorting_weight: 190
+  - platform: template
+    name: "SM Averange Daily outside temp"
+    id: "${devicename}_outdoor_ambient_temperature_daily"
+    icon: mdi:temperature-celsius
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    update_interval: 30min
+    lambda: >
+      return id(${devicename}_outdoor_ambient_temperature_hourly).state;
+    filters:
+      - sliding_window_moving_average:
+          window_size: 48
+          send_every: 1
+          send_first_at: 1
+    on_value: 
+      then:
+        - lambda: "id(tempereture_avg_last_24h) = x;"
+  - platform: template
+    name: "SM Calculated Curve"
+    id: ${devicename}_calculated_curve
+    unit_of_measurement: °C
+    icon: mdi:temperature-celsius
+  - platform: template
+    name: "SM Calculated Curve2"
+    id: ${devicename}_calculated_curve2
+    unit_of_measurement: °C
+    icon: mdi:temperature-celsius
+  - platform: template
+    name: "SM Calculated Curve3"
+    id: ${devicename}_calculated_curve3
+    unit_of_measurement: °C
+    icon: mdi:temperature-celsius
+
+  - platform: template
+    name: "Activate DHW below this value" #Activation DHW heating when drop to this value
+    id: ${devicename}_helper_activate_dhw_below_this_value
+    unit_of_measurement: °C
+    icon: mdi:temperature-celsius
+    update_interval: 30s
+    lambda: "return id(${devicename}_set_dhw_tank_temperature_t5s).state - id(${devicename}_dt5_on).state;"
+    
+  ############# YORK #############
   - platform: template
     name: "Coefficient of Performance"
     id: "${devicename}_coefficient_of_performance"
@@ -382,37 +1042,13 @@ sensor:
       id(unmasked_value_register_5) = x;
       return x;
   # Register: 6 -> Is present in this config as a 'number'
-  # Register: 7
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Forced Water Tank Heating"
-    id: "${devicename}_forced_water_tank_heating"
-    icon: mdi:fire-alert
-    register_type: holding
-    address: 0x7
-    value_type: U_WORD
-  # Register: 8
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Forced Tank Backup Heater"
-    id: "${devicename}_forced_tbh"
-    icon: mdi:fire-alert
-    register_type: holding
-    address: 0x8
-    value_type: U_WORD
-  # Register: 9
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Forced Hydraulic Module Rear Electric Heater 1"
-    id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1"
-    icon: mdi:fire-alert
-    register_type: holding
-    address: 0x9
-    value_type: U_WORD
+  # Register: 7 -> Is present in this config as a 'switch'
+  # Register: 8 -> Is present in this config as a 'switch'
+  # Register: 9 -> Is present in this config as a 'switch'
   # Register: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "t_SG_MAX"
+    name: "t_SG_MAX or Reserved"
     id: "${devicename}_t_sg_max"
     icon: mdi:clock
     register_type: holding
@@ -452,8 +1088,8 @@ sensor:
     value_type: U_WORD
     unit_of_measurement: "%"
     filters: 
-    - calibrate_linear:
-      # York, MIDEA have movement 0-480
+    - calibrate_linear:  
+      #York have movement 0-480
       - 0 -> 0.0
       - 480 -> 100.0
   # Register: 104
@@ -496,6 +1132,11 @@ sensor:
     address: 0x6B
     unit_of_measurement: "°C"
     value_type: S_WORD
+    on_value: 
+      then: 
+        lambda: |-
+          //Send actual outside temp to calculate avg hourly
+          id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(x);
   # Register: 108
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -576,6 +1217,12 @@ sensor:
     address: 0x73
     unit_of_measurement: "°C"
     value_type: S_WORD
+    on_value_range:
+      - below: !lambda "return float(id(${devicename}_gl_dhw_minimal_temp).state);"
+        then:
+          #enable DHW heating if DHW temp is too low
+          - switch.turn_on: ${devicename}_power_dhw_t5s
+          - logger.log: "TURN ON WATER HEATING -TEMP BELOW id(${devicename}_gl_dhw_minimal_temp).state=~32DEG"
   # Register: 116
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -620,8 +1267,8 @@ sensor:
   # Midea: Tbt1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Hydraulic Module Current 1"
-    id: "${devicename}_hydraulic_module_current_1"
+    name: "Hydraulic Module Current 1 or tbt1"
+    id: "${devicename}_hydraulic_module_current_1_tbt1"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     register_type: holding
@@ -631,8 +1278,8 @@ sensor:
   # Midea: Tbt2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Hydraulic Module Current 2"
-    id: "${devicename}_hydraulic_module_current_2"
+    name: "Hydraulic Module Current 2 or tbt2"
+    id: "${devicename}_hydraulic_module_current_2_tbt2"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     register_type: holding
@@ -1055,23 +1702,23 @@ sensor:
   # Register: 251 -> Is present in this config as a 'number'
   # Register: 252 -> Is present in this config as a 'number'
   # Register: 253
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Comfort Parameter Reserved 3"
-    id: "${devicename}_comfort_parameter_3"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0xfd
-    value_type: U_WORD
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Comfort Parameter Reserved 3"
+  #   id: "${devicename}_comfort_parameter_3"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0xfd
+  #   value_type: U_WORD
   # Register: 254
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Comfort Parameter Reserved 4"
-    id: "${devicename}_comfort_parameter_4"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0xfe
-    value_type: U_WORD
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Comfort Parameter Reserved 4"
+  #   id: "${devicename}_comfort_parameter_4"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0xfe
+  #   value_type: U_WORD
   # Register: 255 -> Is present in this config as a 'number'
   # Register: 256 -> Is present in this config as a 'number'
   # Register: 257 -> Is present in this config as a 'number'
@@ -1102,154 +1749,169 @@ sensor:
       int t5 = id(${devicename}_water_tank_temperature_t5).state;
       int t1s_dhw = t5 + dt1s5;
       return t1s_dhw;
-
+################################################################################################################################
 binary_sensor:
+  ###################################MARM MY SENSOR EXTERNAL HEAT SOURCE ###########################
+  - platform: homeassistant
+    name: "MARM20 Pump Working Disable HeatPump from Heating and DHW"
+    entity_id: input_boolean.scene_daytime
+    id: "marm_pump_is_running_m20"
+    internal: true
+    icon: mdi:eye
+    on_state:
+      then:
+        #if state from HA other source pump is running means heating so diable heatpump -in my case only dhw, zone1 or 2 don't care -heatpump is connected to independed pipe in buffer
+        - switch.turn_off: "${devicename}_power_dhw_t5s"
+        # - switch.turn_off: "${devicename}_power_heat_cool_control_zone1"
+        # - switch.turn_off: "${devicename}_power_heat_cool_control_zone2"
+        - logger.log: "MARM20 HA Sensor: Disable DHW and Floor Heating on HeatPump...."
+
+  ################################### YORK ###########################
   # Register: 0 -> Is also read as 'sensor' to read the complete value, used for the templated 'switch'(es)
   # Bit: 0 -> Is present in this config as a 'switch'
   # Bit: 1 -> Is present in this config as a 'switch'
   # Bit: 2 -> Is present in this config as a 'switch'
   # Bit: 3 -> Is present in this config as a 'switch'
   # Bit: 4
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 4"
-    id: "${devicename}_power_reserved_bit_4"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x10
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 4"
+  #   id: "${devicename}_power_reserved_bit_4"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x10
   # Bit: 5
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 5"
-    id: "${devicename}_power_reserved_bit_5"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x20
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 5"
+  #   id: "${devicename}_power_reserved_bit_5"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x20
   # Bit: 6
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 6"
-    id: "${devicename}_power_reserved_bit_6"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x40
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 6"
+  #   id: "${devicename}_power_reserved_bit_6"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x40
   # Bit: 7
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 7"
-    id: "${devicename}_power_reserved_bit_7"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x80
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 7"
+  #   id: "${devicename}_power_reserved_bit_7"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x80
   # Bit: 8
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 8"
-    id: "${devicename}_power_reserved_bit_8"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x100
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 8"
+  #   id: "${devicename}_power_reserved_bit_8"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x100
   # Bit: 9
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 9"
-    id: "${devicename}_power_reserved_bit_9"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x200
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 9"
+  #   id: "${devicename}_power_reserved_bit_9"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x200
   # Bit: 10
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 10"
-    id: "${devicename}_power_reserved_bit_10"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x400
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 10"
+  #   id: "${devicename}_power_reserved_bit_10"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x400
   # Bit: 11
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 11"
-    id: "${devicename}_power_reserved_bit_11"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x800
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 11"
+  #   id: "${devicename}_power_reserved_bit_11"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x800
   # Bit: 12
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 12"
-    id: "${devicename}_power_reserved_bit_12"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x1000
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 12"
+  #   id: "${devicename}_power_reserved_bit_12"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x1000
   # Bit: 13
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 13"
-    id: "${devicename}_power_reserved_bit_13"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x2000
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 13"
+  #   id: "${devicename}_power_reserved_bit_13"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x2000
   # Bit: 14
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 14"
-    id: "${devicename}_power_reserved_bit_14"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x4000
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 14"
+  #   id: "${devicename}_power_reserved_bit_14"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x4000
   # Bit: 15
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Power Reserved BIT 15"
-    id: "${devicename}_power_reserved_bit_15"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x0
-    bitmask: 0x8000
-
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Power Reserved BIT 15"
+  #   id: "${devicename}_power_reserved_bit_15"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x0
+  #   bitmask: 0x8000
   # Register: 5 -> moved to switch without these marked as reserved_bit and one R/O
   # Bit: 0
-  - platform: template
-    name: "Function Setting Reserved BIT 0"
-    id: "${devicename}_function_setting_reserved_bit_0"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_5) & 0x01) == 0x01; // Return status bit1"
+  # - platform: template
+  #   name: "Function Setting Reserved BIT 0"
+  #   id: "${devicename}_function_setting_reserved_bit_0"
+  #   icon: mdi:head-question-outline
+  #   lambda: "return (id(unmasked_value_register_5) & 0x01) == 0x01; // Return status bit1"
   # Bit: 1
-  - platform: template
-    name: "Function Setting Reserved BIT 1"
-    id: "${devicename}_function_setting_reserved_bit_1"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_5) & 0x02) == 0x02; // Return status bit1"
+  # - platform: template
+  #   name: "Function Setting Reserved BIT 1"
+  #   id: "${devicename}_function_setting_reserved_bit_1"
+  #   icon: mdi:head-question-outline
+  #   lambda: "return (id(unmasked_value_register_5) & 0x02) == 0x02; // Return status bit1"
   # Bit: 2
-  - platform: template
-    name: "Function Setting Reserved BIT 2"
-    id: "${devicename}_function_setting_reserved_bit_2"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_5) & 0x04) == 0x04; // Return status bit2"
+  # - platform: template
+  #   name: "Function Setting Reserved BIT 2"
+  #   id: "${devicename}_function_setting_reserved_bit_2"
+  #   icon: mdi:head-question-outline
+  #   lambda: "return (id(unmasked_value_register_5) & 0x04) == 0x04; // Return status bit2"
   # Bit: 3
-  - platform: template
-    name: "Function Setting Reserved BIT 3"
-    id: "${devicename}_function_setting_reserved_bit_3"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_5) & 0x08) == 0x08; // Return status bit3"
+  # - platform: template
+  #   name: "Function Setting Reserved BIT 3"
+  #   id: "${devicename}_function_setting_reserved_bit_3"
+  #   icon: mdi:head-question-outline
+  #   lambda: "return (id(unmasked_value_register_5) & 0x08) == 0x08; // Return status bit3"
   # Bit: 4 -> Is present in this config as a 'switch'
-  # Bit: 5 -> is R/O but changed to template to avoid multiple modbus requests
+  # Bit: 5 -> is R/O
   - platform: template
-    name: "Function Setting Holiday Away"
-    id: "${devicename}_function_setting_holiday_away"
+    name: "F.S. Holiday Away"
+    id: "${devicename}_f_s_holiday_away"
     icon: mdi:eye
-    lambda: "return (id(unmasked_value_register_5) & 0x20) == 0x20; // Return status bit5"
+    lambda: "return (id(unmasked_value_register_5) & 0x20) == 0x20; //return status bit5"
   # Bit: 6 -> Is present in this config as a 'switch'
   # Bit: 7 -> Is present in this config as a 'switch'
   # Bit: 8 -> Is present in this config as a 'switch'
@@ -1259,28 +1921,28 @@ binary_sensor:
   # Bit: 12 -> Is present in this config as a 'switch'
   # Bit: 13 -> Is present in this config as a 'switch'
   # Bit: 14
-  - platform: template
-    name: "Function Setting Reserved BIT 14"
-    id: "${devicename}_function_setting_reserved_bit_14"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_5) & 0x4000) == 0x4000; // Return status bit14"
+  # - platform: template
+  #   name: "Function Setting Reserved BIT 14"
+  #   id: "${devicename}_function_setting_reserved_bit_14"
+  #   icon: mdi:head-question-outline
+  #   lambda: "return (id(unmasked_value_register_5) & 0x4000) == 0x4000; // Return status bit14"
   # Bit: 15
-  - platform: template
-    name: "Function Setting Reserved BIT 15"
-    id: "${devicename}_function_setting_reserved_bit_15"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_5) & 0x8000) == 0x8000; // Return status bit15"
+  # - platform: template
+  #   name: "Function Setting Reserved BIT 15"
+  #   id: "${devicename}_function_setting_reserved_bit_15"
+  #   icon: mdi:head-question-outline
+  #   lambda: "return (id(unmasked_value_register_5) & 0x8000) == 0x8000; // Return status bit15"
 
   # Register: 128
   # Bit: 0
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Status BIT 1 Reserved BIT 0"
-    id: "${devicename}_status_bit_1_reserved_bit_0"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x80
-    bitmask: 0x1
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Status BIT 1 Reserved BIT 0"
+  #   id: "${devicename}_status_bit_1_reserved_bit_0"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x80
+  #   bitmask: 0x1
   # Bit: 1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1381,14 +2043,14 @@ binary_sensor:
     address: 0x80
     bitmask: 0x800
   # Bit: 12
-  - platform: modbus_controller
-    name: "Status BIT 1 Reserved BIT 12"
-    modbus_controller_id: "${devicename}"
-    id: "${devicename}_status_bit_1_reserved_bit_12"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x80
-    bitmask: 0x1000
+  # - platform: modbus_controller
+  #   name: "Status BIT 1 Reserved BIT 12"
+  #   modbus_controller_id: "${devicename}"
+  #   id: "${devicename}_status_bit_1_reserved_bit_12"
+  #   icon: mdi:head-question-outline
+  #   register_type: holding
+  #   address: 0x80
+  #   bitmask: 0x1000
   # Bit: 13
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1431,7 +2093,7 @@ binary_sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Load Output Electric Heater IBH 2"
-    id: "${devicename}_load_output_reserved"
+    id: "${devicename}_load_output_electric_heater_ibh_2"
     icon: mdi:head-question-outline
     register_type: holding
     address: 0x81
@@ -1454,10 +2116,24 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x8
+    on_press: 
+      then:
+        - lambda: |-
+            id(${devicename}_relay1_external_pump).turn_off();  //#XXXXXXX
+            id(${devicename}_relay2_external_pump).turn_off();  //#XXXXXXX
+            ESP_LOGI("PUMP_I Status","turn off relay 1 and 2");  //#XXXXXXX
+            id(timestamp_water_pump_timestamp_last_run) = 0;
+    on_release: 
+      # calculate the total time = (old total time) + (current epoch time) - (stored on_press epoch time)
+      # and publish in the template sensor
+      then:
+        - lambda: |-
+            id(timestamp_water_pump_timestamp_last_run) = id(esptime).now().timestamp;
+            ESP_LOGI("PUMP_I Status","Set global timestamp last pump run and turn off");
   # Bit: 4
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output SV 1"
+    name: "Load Output SV1 -DHW"
     id: "${devicename}_load_output_sv1"
     icon: mdi:eye
     register_type: holding
@@ -1466,8 +2142,8 @@ binary_sensor:
   # Bit: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output Reserved BIT 5"
-    id: "${devicename}_load_output_reserved_bit_5"
+    name: "Load Output SV2"
+    id: "${devicename}_load_output_sv2"
     icon: mdi:head-question-outline
     register_type: holding
     address: 0x81
@@ -1502,8 +2178,8 @@ binary_sensor:
   # Bit: 9
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output SV 2"
-    id: "${devicename}_load_output_sv2"
+    name: "Load Output SV3"
+    id: "${devicename}_load_output_sv3"
     icon: mdi:eye
     register_type: holding
     address: 0x81
@@ -1563,19 +2239,18 @@ binary_sensor:
     register_type: holding
     address: 0x81
     bitmask: 0x8000
-  # Bit: 0
+  # Register: 142 Online State of slave units 1-15
+  # Bit: 0 Reserved
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit Online Status: Reserved BIT 0"
+  #   id: "${devicename}_slave_unit_online_status_reserved_bit_0"
+  #   icon: mdi:eye
 
-  # Register: 142
-  # Bit: 0
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit Online Status: Reserved BIT 0"
-    id: "${devicename}_slave_unit_online_status_reserved_bit_0"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x1
-  # Bit: 1
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x1
+  #Bit: 1  -> registered for future use multiblock modules
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Slave Unit 1 Online Status"
@@ -1584,220 +2259,273 @@ binary_sensor:
     register_type: holding
     address: 0x8e
     bitmask: 0x2
-  # Bit: 2
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 2 Online Status"
-    id: "${devicename}_slave_unit_2_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x4
-  # Bit: 3
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 3 Online Status"
-    id: "${devicename}_slave_unit_3_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x8
-  # Bit: 4
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 4 Online Status"
-    id: "${devicename}_slave_unit_4_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x10
-  # Bit: 5
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 5 Online Status"
-    id: "${devicename}_slave_unit_5_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x20
-  # Bit: 6
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 6 Online Status"
-    id: "${devicename}_slave_unit_6_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x40
-  # Bit: 7
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 7 Online Status"
-    id: "${devicename}_slave_unit_7_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x80
-  # Bit: 8
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 8 Online Status"
-    id: "${devicename}_slave_unit_8_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x100
-  # Bit: 9
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 9 Online Status"
-    id: "${devicename}_slave_unit_9_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x200
-  # Bit: 10
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 10 Online Status"
-    id: "${devicename}_slave_unit_10_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x400
-  # Bit: 11
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 11 Online Status"
-    id: "${devicename}_slave_unit_11_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x800
-  # Bit: 12
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 12 Online Status"
-    id: "${devicename}_slave_unit_12_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x1000
-  # Bit: 13
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 13 Online Status"
-    id: "${devicename}_slave_unit_13_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x2000
-  # Bit: 14
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 14 Online Status"
-    id: "${devicename}_slave_unit_14_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x4000
-  # Bit: 15
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Slave Unit 15 Online Status"
-    id: "${devicename}_slave_unit_15_online_status"
-    icon: mdi:eye
-    register_type: holding
-    address: 0x8e
-    bitmask: 0x8000
-
+  # Bit: 2  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 2 Online Status"
+  #   id: "${devicename}_slave_unit_2_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x4
+  # Bit: 3  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 3 Online Status"
+  #   id: "${devicename}_slave_unit_3_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x8
+  # Bit: 4  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 4 Online Status"
+  #   id: "${devicename}_slave_unit_4_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x10
+  # Bit: 5  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 5 Online Status"
+  #   id: "${devicename}_slave_unit_5_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x20
+  # Bit: 6  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 6 Online Status"
+  #   id: "${devicename}_slave_unit_6_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x40
+  # Bit: 7  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 7 Online Status"
+  #   id: "${devicename}_slave_unit_7_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x80
+  # Bit: 8  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 8 Online Status"
+  #   id: "${devicename}_slave_unit_8_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x100
+  # Bit: 9  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 9 Online Status"
+  #   id: "${devicename}_slave_unit_9_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x200
+  # Bit: 10  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 10 Online Status"
+  #   id: "${devicename}_slave_unit_10_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x400
+  # Bit: 11  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 11 Online Status"
+  #   id: "${devicename}_slave_unit_11_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x800
+  # Bit: 12  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 12 Online Status"
+  #   id: "${devicename}_slave_unit_12_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x1000
+  # Bit: 13  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 13 Online Status"
+  #   id: "${devicename}_slave_unit_13_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x2000
+  # Bit: 14  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 14 Online Status"
+  #   id: "${devicename}_slave_unit_14_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x4000
+  # Bit: 15  -> registered for future use multiblock modules
+  # - platform: modbus_controller
+  #   modbus_controller_id: "${devicename}"
+  #   name: "Slave Unit 15 Online Status"
+  #   id: "${devicename}_slave_unit_15_online_status"
+  #   icon: mdi:eye
+  #   register_type: holding
+  #   address: 0x8e
+  #   bitmask: 0x8000
   # Register: 210, Bit: 6, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 T1S Heating High Low Temperature Settings"
-    id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
+    name: "PS1 T1S Heating High Low Temperature Settings RO?"
+    id: "${devicename}_p_s_1_t1s_heating_high_low_temperature_settings"
     icon: mdi:eye
     lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40; // Return status bit6"
   # Register: 210, Bit: 8, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 T1s Cooling High Low Temperature Settings"
-    id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
+    name: "PS1 T1s Cooling High Low Temperature Settings RO?"
+    id: "${devicename}_p_s_1_t1s_cooling_high_low_temperature_settings"
     icon: mdi:eye
     lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100; // Return status bit8"
   # Register: 210, Bit: 11, default: false, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 1 Reserved BIT 11"
-    id: "${devicename}_parameter_setting_1_reserved_bit_11"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_210) & 0x800) == 0x800; // Return status bit11"
+  # - platform: template
+  #   name: "P.S. 1 Reserved BIT 11"
+  #   id: "${devicename}_p_s_1_reserved_bit_11"
+  #   icon: mdi:head-question-outline
+  #   disabled_by_default: true
+  #   lambda: "return (id(unmasked_value_register_210) & 0x800) == 0x800; // Return status bit11"
   # Register: 210, Bit: 14, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Supports Water Tank Electric Heater TBH"
-    id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
+    name: "PS1 Supports Water Tank Electric Heater TBH RO?"
+    id: "${devicename}_p_s_1_supports_water_tank_electric_heater_tbh"
     icon: mdi:eye
+    disabled_by_default: true
     lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000; // Return status bit14"
-    
-  # Register: 211, Bit: 15, default: false, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 2 Reserved BIT 15"
-    id: "${devicename}_parameter_setting_2_reserved_bit_15"
-    icon: mdi:head-question-outline
-    lambda: "return (id(unmasked_value_register_211) & 0x8000) == 0x8000; // Return status bit15"
-    
+
+  # Register: 211, Bit: 15, default: false, TODO: verify default -> moved to switch
+  # - platform: template
+  #   name: "P.S. 2 Reserved BIT 15"
+  #   id: "${devicename}_p_s_2_reserved_bit_15"
+  #   icon: mdi:head-question-outline
+  #   disabled_by_default: true
+  #   lambda: "return (id(unmasked_value_register_211) & 0x8000) == 0x8000; // Return status bit15"
+
   # Template binary sensor which shows if the heat pump is running
   - platform: template
     name: "Heat pump running"
     id: "${devicename}_heat_pump_running"
     icon: mdi:power
+    entity_category: "diagnostic"
+    device_class: plug
     lambda: |-
       int fan_speed = id(${devicename}_fan_speed).state;
       int compressor_frequency = id(${devicename}_compressor_operating_frequency).state;
-      bool external_water_pump_on = id(${devicename}_load_output_external_water_pump_p_o).state;
+      bool external_water_pump_on = false; //id(${devicename}_load_output_external_water_pump_p_o).state;   //disabled
+      bool internal_water_pump_I_on = id(${devicename}_load_output_water_pump_pump_i).state;
+      //rather water_pump_i is better to check -external pump almost always run when Heatpump is idle, but most often nobody have it
 
-      // If fan_speed is above 0, compressor_frequency is above 0 or external_water_pump_on is true,
+      // If fan_speed is above 0, compressor_frequency is above 0 or external_water_pump_on is true or rather internal pump_i is true,
       // then the outside unit of the heat pump system is running
-      if (fan_speed > 0 || compressor_frequency > 0 || external_water_pump_on) {
+      if (fan_speed > 0 || compressor_frequency > 0 || external_water_pump_on || internal_water_pump_I_on) {
           return true;
       } else {
           return false;
       }
 
 switch:
-  - platform: factory_reset
-    name: Restart with Factory Default Settings
-    id: "${devicename}_restart_with_factory_default_settings"
-    icon: mdi:restart-alert
+  #######################SECURE ANTIFREEZE##############################
+  # - platform: gpio
+  - platform: template
+    name: "Relay 1 External Pump"
+    id: "${devicename}_relay1_external_pump"
+    # pin: GPIO27
+    optimistic: True
+    icon: mdi:toggle-switch-off-outline
+    on_turn_on: 
+      then:
+        lambda: |-
+          if (id(${devicename}_load_output_water_pump_pump_i).state) {
+          //turn off when pump_i active
+            id(${devicename}_relay1_external_pump).turn_off();
+            ESP_LOGI("TAG", "load_output_water_pump_pump_i is ON. Disable relay1 %d", id(relay1_start));
+          } else {
+            id(relay1_start) = id(esptime).now().timestamp;
+            ESP_LOGI("TAG", "relay1_external_pump ON %d", id(relay1_start));
+          }
+    on_turn_off: 
+      then:
+        lambda: |-
+          id(relay1_start) = 0;
+          id(timestamp_water_pump_timestamp_last_run) = id(esptime).now().timestamp;
+          ESP_LOGI("TAG", "relay1 OFF %d and save new time for last work PUMP_I", id(relay1_start));
+    entity_category: "diagnostic"
+   
+  # - platform: gpio
+  - platform: template
+    name: "Relay 2 External Pump"
+    id: "${devicename}_relay2_external_pump"
+    # pin: GPIO26
+    optimistic: True
+    icon: mdi:toggle-switch-off-outline
+    on_turn_on: 
+      then:
+        lambda: |-
+          if (id(${devicename}_load_output_water_pump_pump_i).state) {
+          //turn off when pump_i active
+            id(${devicename}_relay2_external_pump).turn_off();
+          } else {
+            id(relay2_start) = id(esptime).now().timestamp;
+            ESP_LOGI("TAG", "relay2_external2 %d", id(relay2_start));
+          }
+    on_turn_off: 
+        lambda: |-
+          id(relay2_start) = 0;
+          ESP_LOGE("TAG", "relay2 OFF %d", id(relay2_start));
+    entity_category: "diagnostic"
+  #########################################YORK###############################  
   # Register: 0 -> Bit 0
   # When Room Temperature Control is enabled, the temperature sensor in the remote controller
   # will be used to define when the heatpump should be turned (powered) on or off
   - platform: template
-    name: "Room Temperature Control"
-    id: "${devicename}_room_temperature_control"
+    name: "Power Climate Control -uses FanCoilUnit" #Room Temperature Control by FanCoilUnit"
+    id: "${devicename}_power_climate_control_fancoilunit"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_0) & 0x1) == 0x1;"
     on_turn_on:
-      # - logger.log: "Switch Turned On!"
+      #- logger.log: "Switch Turned On!"
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
-            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            //write new value to heatpump if changed
+            ESP_LOGI("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
     on_turn_off:
-      # - logger.log: "Switch Turned Off!"
+      #- logger.log: "Switch Turned Off!"    
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_0)) {
-            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            ESP_LOGI("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -1809,39 +2537,41 @@ switch:
   # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
   # the room thermostat will decide when this will be on or off.
   - platform: template
-    name: "Water Flow Temperature Control Zone 1"
-    id: "${devicename}_water_flow_temperature_control_zone_1"
+    name: "Power Heat/Cool Control Zone 1"        #Water Flow Temperature Control Zone 1"
+    id: "${devicename}_power_heat_cool_control_zone1"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_0) & 0x2) == 0x2; // Return bit 0x2 status"
+    optimistic : true
+    lambda: "return (id(unmasked_value_register_0) & 0x2) == 0x2;"
     on_turn_on:
-      # - logger.log: "Switch Turned On!"
+      #- logger.log: "Switch Turned On!"
       - lambda: |-
-          uint16_t checked_bit = 0x2;                          // Affected bit number
+          uint16_t checked_bit = 0x2;                          //affected bit number
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
-          new_value &= ~checked_bit;                           // Clear and set
+          new_value &= ~checked_bit;                                             // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
-            // Write new value to heatpump if changed
-            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            //write new value to heatpump if changed
+            ESP_LOGI("unmasked_value_register_0", "Set option to on power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
+          id(manually_disabled_zone1_heating_timestamp) = 0;
     on_turn_off:
-      # - logger.log: "Switch Turned Off!"
+      #- logger.log: "Switch Turned Off!"    
       - lambda: |-
           uint16_t checked_bit = 0x2;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_0)) {
-            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            ESP_LOGI("unmasked_value_register_0", "Set option to off power_heat_cool_control_zone1 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
+          id(manually_disabled_zone1_heating_timestamp) = id(esptime).now().timestamp;
   # Register: 0 -> Bit 2 DHW
   - platform: template
     name: "Power DHW T5S"
@@ -1849,34 +2579,39 @@ switch:
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda:  |-
-        return (id(unmasked_value_register_0) & 0x4) == 0x4;
+        bool state_dhw = (id(unmasked_value_register_0) & 0x4) == 0x4;
+        // if (state_dhw) id(manually_disabled_dhw_heating_timestamp) = 0; else if (id(manually_disabled_dhw_heating_timestamp) == 0) id(manually_disabled_dhw_heating_timestamp) = id(esptime).now().timestamp;
+        return state_dhw;
     on_turn_on:
-      # - logger.log: "Switch Turned On!"
+      #- logger.log: "Switch Turned On!"
       - lambda: |-
           uint16_t checked_bit = 0x4;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
-            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            ESP_LOGI("unmasked_value_register_0", "Set option to on power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
+          id(manually_disabled_dhw_heating_timestamp) = 0;
     on_turn_off:
-      # - logger.log: "Switch Turned Off!"
+      #- logger.log: "Switch Turned Off!"    
       - lambda: |-
           uint16_t checked_bit = 0x4;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;                           // Clear and set
+          
           if ((new_value) != id(unmasked_value_register_0)) {
-            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            ESP_LOGI("unmasked_value_register_0", "Set option to off power_dhw_t5s 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
+          id(manually_disabled_dhw_heating_timestamp) = id(esptime).now().timestamp;
   # Register: 0 -> Bit 3
   # When Water Flow Temperature Control is enabled for thise zone, the target outlet water temperature
   # will be used to define when the heatpump should be turned (powered) on or off
@@ -1884,53 +2619,56 @@ switch:
   # If room thermostat is enabled, controlling this switch will be done by the heatpump. In other words,
   # the room thermostat will decide when this will be on or off.
   - platform: template
-    name: "Water Flow Temperature Control Zone 2"
-    id: "${devicename}_water_flow_temperature_control_zone_2"
+    name: "Power Heat/Cool Control Zone 2"     #Water Flow Temperature Control Zone 2" #this is for cooling with Fan Coil Unit!
+    id: "${devicename}_power_heat_cool_control_zone2"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_0) & 0x8) == 0x8;"
     on_turn_on:
-      # - logger.log: "Switch Turned On!"
+      #- logger.log: "Switch Turned On!"
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_0)) {
-            // ESP_LOGD("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            ESP_LOGI("unmasked_value_register_0", "Set option to on power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
+          id(manually_disabled_zone2_heating_timestamp) = 0;
     on_turn_off:
-      # - logger.log: "Switch Turned Off!"
+      #- logger.log: "Switch Turned Off!"    
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_0);  // The original unmasked value
           new_value &= ~checked_bit;                           // Clear and set
+          
           if ((new_value) != id(unmasked_value_register_0)) {
-            // ESP_LOGD("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
+            ESP_LOGI("unmasked_value_register_0", "Set option to off power_air_conditioner_zone_2 0x%x -> 0x%x", id(unmasked_value_register_0), new_value);
             id(unmasked_value_register_0) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x0, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
+          id(manually_disabled_zone2_heating_timestamp) = id(esptime).now().timestamp;
   # Register: 5 -> Bit: 4
   - platform: template
-    name: "Function Setting Disinfect"
-    id: "${devicename}_function_setting_disinfect"
+    name: "F.S. Disinfect"
+    id: "${devicename}_f_s_disinfect"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_5) & 0x10) == 0x10; // Return status bit 4"
+    optimistic : true
+    lambda: "return (id(unmasked_value_register_5) & 0x10) == 0x10; //return status bit 4"
     on_turn_on:
-      # - logger.log: "Switch Turned On!"
+      #- logger.log: "Switch Turned On!"
       - lambda: |-
-          uint16_t checked_bit = 0x10;                         // Bit to change
+          uint16_t checked_bit = 0x10;                         //bit to change
           uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;                           // Clear and set
+          new_value &= ~checked_bit;                                             // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_5)) {
             // ESP_LOGD("unmasked_value_register_5", "Set option to on f_s_disinfect 0x%x -> 0x%xs", id(unmasked_value_register_5), new_value);
@@ -1939,26 +2677,26 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
     on_turn_off:
-      # - logger.log: "Switch Turned Off!"
+      #- logger.log: "Switch Turned Off!"    
       - lambda: |-
-          uint16_t checked_bit = 0x10;                         // Bit to change
+          uint16_t checked_bit = 0x10;                         //bit to change
           uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;                           // Clear and set
+          new_value &= ~checked_bit;                                             // Clear and set
           if ((new_value) != id(unmasked_value_register_5)) {
             // ESP_LOGD("unmasked_value_register_5", "Set option to off f_s_disinfect 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
             id(unmasked_value_register_5) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
             ${devicename}->queue_command(set_payload_command);
-          }
-  # Register: 5 -> Bit: 5 Is present in this config as a 'binary_sensor'
+          }  
+  # Register: 5 -> Bit: 5 Holiiiiday -> as Binary Sensor -it is possible to read but not to save
   # Register: 5 -> Bit: 6
   - platform: template
-    name: "Function Setting Silent Mode"
-    id: "${devicename}_function_setting_silent_mode"
+    name: "F.S. Silent Mode"
+    id: "${devicename}_f_s_silent_mode"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_5) & 0x40) == 0x40;"
     on_turn_on:
       - lambda: |-
@@ -1982,15 +2720,15 @@ switch:
             id(unmasked_value_register_5) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x5, new_value);
             ${devicename}->queue_command(set_payload_command);
-          }
+          }  
   # Register: 5 -> Bit: 7
   - platform: template
-    name: "Function Setting Silent Mode Level"
-    id: "${devicename}_function_setting_silent_mode_level"
+    name: "F.S. Silent Mode Level 1 or 2"
+    id: "${devicename}_f_s_silent_mode_level"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_5) & 0x80) == 0x80;"
     on_turn_on:
       - lambda: |-
@@ -2014,15 +2752,16 @@ switch:
             id(unmasked_value_register_5) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
             ${devicename}->queue_command(set_payload_command);
-          }
+          }  
   # Register: 5 -> Bit: 8
   - platform: template
-    name: "Function Setting Holiday Home"
-    id: "${devicename}_function_setting_holiday_home"
+    name: "F.S. Holiday Home"
+    id: "${devicename}_f_s_holiday_home"
     icon: mdi:eye
+    disabled_by_default: true
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_5) & 0x100) == 0x100;"
     on_turn_on:
       - lambda: |-
@@ -2046,16 +2785,17 @@ switch:
             id(unmasked_value_register_5) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
             ${devicename}->queue_command(set_payload_command);
-          }
+          }  
   # Register: 5 -> Bit: 9 Is present in this config as a 'binary_sensor'
   # Register: 5 -> Bit: 10
   - platform: template
-    name: "Function Setting ECO Mode"
-    id: "${devicename}_function_setting_eco_mode"
+    name: "F.S. ECO Mode"
+    id: "${devicename}_f_s_eco_mode"
     icon: mdi:eye
+    disabled_by_default: true
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_5) & 0x400) == 0x400;"
     on_turn_on:
       - lambda: |-
@@ -2073,7 +2813,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x400;
           uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;                           //Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_5)) {
             // ESP_LOGD("unmasked_value_register_5", "Set option to off f_s_eco_mode 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
             id(unmasked_value_register_5) = new_value;
@@ -2082,12 +2822,12 @@ switch:
           }
   # Register: 5 -> Bit: 11
   - platform: template
-    name: "Function Setting DHW Pumps Running Constant Temperature Water Recycling"
-    id: "${devicename}_function_setting_dhw_pumps_running_constant_temperature_water_recycling"
+    name: "F.S. DHW Pumps Running Constant Temperature Water Recycling"
+    id: "${devicename}_f_s_dhw_pumps_running_constant_temperature_water_recycling"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_5) & 0x800) == 0x800;"
     on_turn_on:
       - lambda: |-
@@ -2149,6 +2889,7 @@ switch:
     name: "Weather Compensation Zone 2"
     id: "${devicename}_weather_compensation_zone_2"
     icon: mdi:eye
+    disabled_by_default: true
     entity_category: config
     restore_mode: DISABLED
     optimistic: true
@@ -2169,44 +2910,79 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2000;
           uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;                           //Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_5)) {
             // ESP_LOGD("unmasked_value_register_5", "Set option to off weather_compensation_zone_2 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
             id(unmasked_value_register_5) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
             ${devicename}->queue_command(set_payload_command);
-          }
-
+          }    
   # Register: 7
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Forced Water Tank Heating On/Off"
+    name: "Forced Water Tank Heater On/Off"
     id: "${devicename}_forced_water_tank_heating_on_off"
     icon: mdi:fire-alert
     address: 0x7
     register_type: holding
     entity_category: config
+    lambda: |-
+            ESP_LOGI("Register 7", "Forced water tank Heater value: %d", x);
+            return x == 1;
     write_lambda: |-
-      uint16_t value = 0;
+            uint16_t value = x;
+            // Check if value is off -if yes change value to 2 as documentation says
+            if (value == 0) value = 2;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x7, value);
+            ${devicename}->queue_command(set_payload_command);
+            ESP_LOGI("Register 7", "Set forced water tank Heater to: %s", value == 1?"ON":"OFF");
+            return {};
+  # Register: 8
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Forced Tank Buffer Heater"
+    id: "${devicename}_forced_tbh"
+    icon: mdi:fire-alert
+    address: 0x8
+    register_type: holding
+    entity_category: config
+    lambda: |-
+            // ESP_LOGI("Register 8", "Forced Tank Buffer Heater value: %d", x);
+            return x == 1;
+    write_lambda: |-
+            uint16_t value = x;
+            // Check if value is off -if yes change value to 2 as documentation says
+            if (value == 0) value = 2;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x8, value);
+            ${devicename}->queue_command(set_payload_command);
+            ESP_LOGI("Register 8", "Forced Tank Buffer Heater to: %s", value == 1?"ON":"OFF");
+            return {};
+  # Register: 9
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Forced Hydraulic Module Rear Electric Heater 1"
+    id: "${devicename}_forced_hydraulic_module_rear_electric_heater_1"
+    icon: mdi:fire-alert
+    address: 0x9
+    register_type: holding
+    entity_category: config
+    lambda: |-
+            ESP_LOGI("Register 9", "Forced Hydraulic Module Rear Electric Heater 1 value: %d", x);
+            return x == 1;
+    write_lambda: |-
+            uint16_t value = x;
+            // Check if value is off -if yes change value to 2 as documentation says
+            if (value == 0) value = 2;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x9, value);
+            ${devicename}->queue_command(set_payload_command);
+            ESP_LOGI("Register 9", "Set Forced Hydraulic Module Rear Electric Heater 1 to: %s", value == 1?"ON":"OFF");
+            return {};
 
-      if (x == 1) {
-        // ESP_LOGI("main", "Set forced water tank heating ON");
-        value = 1;
-      } else {
-        // ESP_LOGI("main", "Set forced water tank heating OFF");
-        value = 2;
-      }
-
-      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x7, value);
-      ${devicename}->queue_command(set_payload_command);
-
-      return {};
-
-  # Register: 210, default: true, TODO: verify default
+  # Register: 210, default: true, TODO: verify default   -After change any of these bits -heat pump goes off in parameter 0. Default for YORK MonoBlock C: 17088, Split B: 25281
   # Register: 210, Bit: 0
   - platform: template
-    name: "Parameter Setting 1 Heating And Cooling First Or Water First"
-    id: "${devicename}_parameter_setting_1_heating_and_cooling_first_or_water_first"
+    name: "PS1 Heating And Cooling First Or Water First"
+    id: "${devicename}_p_s_1_heating_and_cooling_first_or_water_first"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
@@ -2216,7 +2992,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to on p_s_1_heating_and_cooling_first_or_water_first 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2228,7 +3004,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to off p_s_1_heating_and_cooling_first_or_water_first 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2237,9 +3013,10 @@ switch:
           }
   # Register: 210, Bit: 1, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Dual Room Thermostat Supported"
-    id: "${devicename}_parameter_setting_1_dual_room_thermostat_supported"
+    name: "PS1 Dual Room Thermostat Supported"
+    id: "${devicename}_p_s_1_dual_room_thermostat_supported"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2248,7 +3025,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to on p_s_1_dual_room_thermostat_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2260,7 +3037,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to off p_s_1_dual_room_thermostat_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2269,9 +3046,10 @@ switch:
           }
   # Register: 210, Bit: 2, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Room Thermostat"
-    id: "${devicename}_parameter_setting_1_room_thermostat"
+    name: "PS1 Room Thermostat"
+    id: "${devicename}_p_s_1_room_thermostat"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2280,7 +3058,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x4;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to on p_s_1_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2292,7 +3070,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x4;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to off p_s_1_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2301,9 +3079,10 @@ switch:
           }
   # Register: 210, Bit: 3, default: true, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Supports Room Thermostat"
-    id: "${devicename}_parameter_setting_1_supports_room_thermostat"
+    name: "PS1 Supports Room Thermostat"
+    id: "${devicename}_p_s_1_supports_room_thermostat"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2312,7 +3091,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to on p_s_1_supports_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2324,7 +3103,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to off p_s_1_supports_room_thermostat 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2333,9 +3112,10 @@ switch:
           }
   # Register: 210, Bit: 4, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Supports Room Temperature Sensor Ta"
-    id: "${devicename}_parameter_setting_1_supports_room_temperature_sensor_ta"
+    name: "PS1 Supports Room Temperature Sensor Ta"
+    id: "${devicename}_p_s_1_supports_room_temperature_sensor_ta"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2344,7 +3124,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x10;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to on p_s_1_supports_room_temperature_sensor_ta 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2356,7 +3136,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x10;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGD("unmasked_value_register_210", "Set option to off p_s_1_supports_room_temperature_sensor_ta 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2364,10 +3144,10 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   # Register: 210, Bit: 5, default: false, TODO: verify default
-  # Midea, YORK: PUMPI silent mode, 1; valid, 0: invalid
+  # Midea: PUMPI silent mode, 1; valid, 0: invalid
   - platform: template
-    name: "Parameter Setting 1 Supports T1 Sensor"
-    id: "${devicename}_parameter_setting_1_supports_t1_sensor"
+    name: "PS1 Silent Mode PUMP I,"
+    id: "${devicename}_p_s_1_silent_mode_pump_i"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -2377,7 +3157,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x20;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_silent_mode_pump_i 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2389,18 +3169,18 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x20;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_silent_mode_pump_i 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 6 is in binary_sensor
+  # Register: 210, Bit: 6, is RO -> moved to binary_sensor
   # Register: 210, Bit: 7, default: true, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Enable Heating"
-    id: "${devicename}_parameter_setting_1_enable_heating"
+    name: "PS1 Enable Heating"
+    id: "${devicename}_p_s_1_enable_heating"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -2410,7 +3190,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x80;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2422,18 +3202,18 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x80;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 8 is in binary_sensor
+  # Register: 210, Bit: 8, is RO -> moved to binary_sensor
   # Register: 210, Bit: 9, default: true, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Enable Cooling"
-    id: "${devicename}_parameter_setting_1_enable_cooling"
+    name: "PS1 Enable Cooling"
+    id: "${devicename}_p_s_1_enable_cooling"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -2443,7 +3223,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x200;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_cooling 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2455,7 +3235,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x200;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_cooling 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2464,9 +3244,10 @@ switch:
           }
   # Register: 210, Bit: 10, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 DHW Pump Supports Pipe Disinfect"
-    id: "${devicename}_parameter_setting_1_dhw_pump_supports_pipe_disinfect"
+    name: "PS1 DHW Pump Supports Pipe Disinfect"
+    id: "${devicename}_p_s_1_dhw_pump_supports_pipe_disinfect"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2475,7 +3256,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x400;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_dhw_pump_supports_pipe_disinfect 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2487,7 +3268,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x400;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                                               // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_dhw_pump_supports_pipe_disinfect 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2497,9 +3278,10 @@ switch:
   # Register: 210, Bit: 11 is in binary_sensor
   # Register: 210, Bit: 12, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 DHW Pump Supported"
-    id: "${devicename}_parameter_setting_1_dhw_pump_supported"
+    name: "PS1 DHW Pump Supported"
+    id: "${devicename}_p_s_1_dhw_pump_supported"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2508,7 +3290,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1000;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_dhw_pump_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2520,7 +3302,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1000;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_dhw_pump_supported 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
@@ -2529,9 +3311,10 @@ switch:
           }
   # Register: 210, Bit: 13, default: true, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Supports Disinfection"
-    id: "${devicename}_parameter_setting_1_supports_disinfection"
+    name: "PS1 Supports Disinfection"
+    id: "${devicename}_p_s_1_supports_disinfection"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2540,7 +3323,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2000;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
@@ -2552,31 +3335,31 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2000;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
             // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 14 is in binary_sensor
+  # Register: 210, Bit: 14, is RO -> moved to binary_sensor
   # Register: 210, Bit: 15, default: true, TODO: verify default
   - platform: template
-    name: "Parameter Setting 1 Enable Water Heating"
-    id: "${devicename}_parameter_setting_1_enable_water_heating"
+    name: "PS1 Enable Water Heating"
+    id: "${devicename}_p_s_1_enable_water_heating"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_210) & 0x8000) == 0x8000;"
     on_turn_on:
       - lambda: |-
           uint16_t checked_bit = 0x8000;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
+            ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2585,19 +3368,20 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x8000;
           uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
+            ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_enable_water_heating 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
             id(unmasked_value_register_210) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-
-  # Register: 211, Bit: 0, default: false, TODO: verify default 0=pipe
+  # Register: 211 -After change any of these bits -heat pump goes off in parameter 0
+  # Register: 211, Bit: 0, default: false, TODO: verify default 0 = pipe
   - platform: template
-    name: "Parameter Setting 2 IBH AHS Installation Position"
-    id: "${devicename}_parameter_setting_2_ibh_ahs_installation_position"
+    name: "PS2 IBH AHS Installation Position"
+    id: "${devicename}_p_s_2_ibh_ahs_installation_position"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2606,10 +3390,10 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2618,30 +3402,30 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
   # Register: 211, Bit: 1, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Tbt Sensor Enable"
-    id: "${devicename}_parameter_setting_2_tbt_sensor_enable"
+    name: "PS2 Tbt Sensor Enable"
+    id: "${devicename}_p_s_2_tbt_sensor_enable"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
-    optimistic: true
+    optimistic : true
     lambda: "return (id(unmasked_value_register_211) & 0x2) == 0x2;"
     on_turn_on:
       - lambda: |-
           uint16_t checked_bit = 0x2;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2650,18 +3434,19 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_tbt_sensor_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
   # Register: 211, Bit: 2, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Ta Sensor Position"
-    id: "${devicename}_parameter_setting_2_ta_sensor_position"
+    name: "PS2 Ta Sensor Position"
+    id: "${devicename}_p_s_2_ta_sensor_position"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2670,10 +3455,10 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x4;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2682,18 +3467,19 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x4;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_ta_sensor_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
   # Register: 211, Bit: 3, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Double Zone Setting Is Valid"
-    id: "${devicename}_parameter_setting_2_double_zone_setting_is_valid"
+    name: "PS2 Double Zone Setting Is Valid"
+    id: "${devicename}_p_s_2_double_zone_setting_is_valid"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2702,10 +3488,10 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2714,17 +3500,17 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x8;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_ibh_ahs_installation_position 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
   # Register: 211, Bit: 4, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Setting The High Low Temperature Of Heating Mode T1S"
-    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_heating_mode_t1s"
+    name: "PS2 Setting The High Low Temperature Of Heating Mode T1S"
+    id: "${devicename}_p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -2734,10 +3520,10 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x10;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            // ESP_LOGI("unmasked_value_register_211", "Set option to on p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2746,17 +3532,17 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x10;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
-            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
+            // ESP_LOGI("unmasked_value_register_211", "Set option to off p_s_2_setting_the_high_low_temperature_of_heating_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
   # Register: 211, Bit: 5, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Setting The High Low Temperature Of Cooling Mode T1S"
-    id: "${devicename}_parameter_setting_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
+    name: "PS2 Setting The High Low Temperature Of Cooling Mode T1S"
+    id: "${devicename}_p_s_2_setting_the_high_low_temperature_of_cooling_mode_t1s"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -2766,9 +3552,10 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x20;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_setting_the_high_low_temperature_of_cooling_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2777,8 +3564,9 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x20;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_setting_the_high_low_temperature_of_cooling_mode_t1s 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2786,8 +3574,8 @@ switch:
   # Register: 211, Bit: 6, default: false, TODO: verify default
   # Midea: T1B sensor enable -buffer sensor
   - platform: template
-    name: "Parameter Setting 2 Tw2 Enabled"
-    id: "${devicename}_parameter_setting_2_tw2_enabled"
+    name: "PS2 Tw2 T1B Enabled"
+    id: "${devicename}_p_s_2_tw2_enabled"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config
@@ -2797,9 +3585,10 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x40;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_tw2_enabled 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
@@ -2808,17 +3597,19 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x40;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
+            // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_tw2_enabled 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
   # Register: 211, Bit: 7, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Smart Grid"
-    id: "${devicename}_parameter_setting_2_smart_grid"
+    name: "PS2 Smart Grid"
+    id: "${devicename}_p_s_2_smart_grid"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2827,7 +3618,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x80;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             id(unmasked_value_register_211) = new_value;
@@ -2838,7 +3629,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x80;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
@@ -2846,9 +3637,10 @@ switch:
           }
   # Register: 211, Bit: 8, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Port Definition"
-    id: "${devicename}_parameter_setting_2_port_definition"
+    name: "PS2 Port 0-OnOff_1-DHW heater"
+    id: "${devicename}_p_s_2_port_definition"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2857,7 +3649,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x100;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             id(unmasked_value_register_211) = new_value;
@@ -2868,7 +3660,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x100;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
@@ -2876,9 +3668,10 @@ switch:
           }
   # Register: 211, Bit: 9, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Solar Energy Kit Enable"
-    id: "${devicename}_parameter_setting_2_solar_energy_kit_enable"
+    name: "PS2 Solar Energy Kit Enable"
+    id: "${devicename}_p_s_2_solar_energy_kit_enable"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2887,7 +3680,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x200;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_solar_energy_kit_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
@@ -2899,7 +3692,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x200;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_solar_energy_kit_enable 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
@@ -2908,9 +3701,10 @@ switch:
           }
   # Register: 211, Bit: 10, default: false, TODO: verify default, Solar energy input port 1: CN18 0: CN11
   - platform: template
-    name: "Parameter Setting 2 Solar Energy Input Port"
-    id: "${devicename}_parameter_setting_2_solar_energy_input_port"
+    name: "PS2 Solar Energy Input Port"
+    id: "${devicename}_p_s_2_solar_energy_input_port"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2919,7 +3713,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x400;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
@@ -2931,7 +3725,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x400;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_smart_grid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
@@ -2940,9 +3734,10 @@ switch:
           }
   # Register: 211, Bit: 11, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Piping Length Selection"
-    id: "${devicename}_parameter_setting_2_piping_length_selection"
+    name: "PS2 Piping Length Selection"
+    id: "${devicename}_p_s_2_piping_length_selection"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2951,7 +3746,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x800;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_piping_length_selection 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
@@ -2963,7 +3758,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x800;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_piping_length_selection 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
@@ -2972,9 +3767,10 @@ switch:
           }
   # Register: 211, Bit: 12, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Tbt2 Sensor Is Valid"
-    id: "${devicename}_parameter_setting_2_tbt2_sensor_is_valid"
+    name: "PS2 Tbt2 Sensor Is Valid"
+    id: "${devicename}_p_s_2_tbt2_sensor_is_valid"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -2983,7 +3779,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1000;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_tbt2_sensor_is_valid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
@@ -2995,7 +3791,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x1000;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_tbt2_sensor_is_valid 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
@@ -3004,9 +3800,10 @@ switch:
           }
   # Register: 211, Bit: 13, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 Enable Temperature Collection Kit"
-    id: "${devicename}_parameter_setting_2_enable_temperature_collection_kit"
+    name: "PS2 Enable Temperature Collection Kit"
+    id: "${devicename}_p_s_2_enable_temperature_collection_kit"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -3015,7 +3812,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2000;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_enable_temperature_collection_kit 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
@@ -3027,7 +3824,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x2000;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_enable_temperature_collection_kit 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
@@ -3036,9 +3833,10 @@ switch:
           }
   # Register: 211, Bit: 14, default: false, TODO: verify default
   - platform: template
-    name: "Parameter Setting 2 M1M2 Is Used For AHS Control"
-    id: "${devicename}_parameter_setting_2_m1m2_is_used_for_ahs_control"
+    name: "PS2 M1M2 Is Used For AHS Control"
+    id: "${devicename}_p_s_2_m1m2_is_used_for_ahs_control"
     icon: mdi:eye
+    disabled_by_default: true
     restore_mode: DISABLED
     entity_category: config
     optimistic: true
@@ -3047,7 +3845,7 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x4000;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to on p_s_2_m1m2_is_used_for_ahs_control 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
@@ -3059,15 +3857,61 @@ switch:
       - lambda: |-
           uint16_t checked_bit = 0x4000;
           uint16_t new_value = id(unmasked_value_register_211);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
+          new_value &= ~checked_bit;                           // Clear and set
           if ((new_value) != id(unmasked_value_register_211)) {
             // ESP_LOGD("unmasked_value_register_211", "Set option to off p_s_2_m1m2_is_used_for_ahs_control 0x%x -> 0x%x", id(unmasked_value_register_211), new_value);
             id(unmasked_value_register_211) = new_value;
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 211, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 211, BIT15 is in 'binary_sensor' as reserved
+  # Register: 211, BIT15 is in binary_sensor as reserved
 
+  - platform: template
+    name: "SM Enable RecoverTime enable DHW"
+    id: "${devicename}_enable_recoverytime_enable_dhw"
+    optimistic: true
+    entity_category: "config"
+    icon: mdi:switch
+    #update global with value to save
+    # on_turn_on:
+    #   then:
+    #     lambda: "id(Restore_enable_DHW) = 1;"
+    # on_turn_off:
+    #   then:
+    #     lambda: "id(Restore_enable_DHW) = 0;"
+    on_turn_on: 
+      then:
+        lambda: 'id(Restore_enable_DHW) = 1; ESP_LOGI("Enable RecoverTime enable DHW"," is ON state: %d", id(Restore_enable_DHW)); id(${devicename}_enable_recoverytime_enable_dhw).publish_state(id(Restore_enable_DHW));'
+    on_turn_off: 
+      then:
+        lambda: 'id(Restore_enable_DHW) = 0; ESP_LOGI("Enable RecoverTime enable DHW"," is OFF state: %d", id(Restore_enable_DHW)); id(${devicename}_enable_recoverytime_enable_dhw).publish_state(id(Restore_enable_DHW));'
+  - platform: template
+    name: "SM Enable RecoverTime enable Zone1"
+    id: "${devicename}_enable_recoverytime_enable_zone1"
+    optimistic: true
+    entity_category: "config"
+    icon: mdi:switch
+    #update global with value to save
+    on_turn_on: 
+      then:
+        lambda: 'id(Restore_enable_Zone1) = 1; ESP_LOGI("Enable RecoverTime enable ZONE1"," is ON state: %d", id(Restore_enable_Zone1)); id(${devicename}_enable_recoverytime_enable_zone1).publish_state(id(Restore_enable_Zone1));'
+    on_turn_off: 
+      then:
+        lambda: 'id(Restore_enable_Zone1) = 0; ESP_LOGI("Enable RecoverTime enable Zone1"," is OFF state: %d", id(Restore_enable_Zone1)); id(${devicename}_enable_recoverytime_enable_zone1).publish_state(id(Restore_enable_Zone1));'
+  - platform: template
+    name: "SM Enable RecoverTime enable Zone2"
+    id: "${devicename}_enable_recoverytime_enable_zone2"
+    optimistic: true
+    entity_category: "config"
+    icon: mdi:switch
+    #update global with value to save
+    on_turn_on: 
+      then:
+        lambda: 'id(Restore_enable_Zone2) = 1; ESP_LOGI("Enable RecoverTime enable Zone2"," is ON state: %d", id(Restore_enable_Zone2)); id(${devicename}_enable_recoverytime_enable_zone2).publish_state(id(Restore_enable_Zone2));'
+    on_turn_off: 
+      then:
+        lambda: 'id(Restore_enable_Zone2) = 0; ESP_LOGI("Enable RecoverTime enable Zone2"," is OFF state: %d", id(Restore_enable_Zone2)); id(${devicename}_enable_recoverytime_enable_zone2).publish_state(id(Restore_enable_Zone2));'
+################################################################################################################################
 number:
   # Register: 2 (Zone 1, Low)
   - platform: modbus_controller
@@ -3081,7 +3925,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 5
-    max_value: 60
+    max_value: 65
     mode: slider
     lambda: |-
       // Update the global var unmasked_value_water_temperature_t1s
@@ -3096,11 +3940,26 @@ number:
       return value_bytes[1];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
-      uint8_t value_byte = x;                                    // New byte value with the new temp for zone 1
+      uint8_t value_byte = x;                                  // New byte value with the new temp for zone 1
+      auto operation_state = id(${devicename}_operational_mode).state;
+      auto end_heating_unit = id(${devicename}_zone_1_end_heating_mode_emission_type).state;
+      auto end_cooling_unit = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
+      
+      if (operation_state == "Cool") {
+        if (x < 5 and end_cooling_unit == "Fan Coil Unit") value_byte = 5;
+        if (x < 18 and end_cooling_unit != "Fan Coil Unit") value_byte = 18;
+        if (x > 25) value_byte = 25;
+      } else if (operation_state == "Heat" or operation_state == "Auto") {
+        if (x < 25 and end_heating_unit == "Underfloor Heating") value_byte = 25;
+        if (x > 55 and end_heating_unit == "Underfloor Heating") value_byte = 55;
+        if (x < 35 and end_heating_unit == "Radiator") value_byte = 35;
+        if (x > 65 and end_heating_unit == "Radiator") value_byte = 65;
+      }
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= value_byte;  // Update the lower byte with the new byte value
 
-      // ESP_LOGI("Register 6Low, set_water_temperature_t1s_zone_1", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
+      ESP_LOGI("Register 6Low, set_water_temperature_t1s_zone_1", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
+
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
       ${devicename}->queue_command(set_payload_command);
       id(unmasked_value_water_temperature_t1s) = value;
@@ -3118,11 +3977,13 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 5
-    max_value: 60
+    max_value: 65
     mode: slider
     lambda: |-
       // The global var unmasked_value_water_temperature_t1s is already
       // updated in the previous, where the low byte variant is executed
+      // id(unmasked_value_water_temperature_t1s) = x;
+
       uint8_t value_bytes[2];
       uint16_t value = x;
       value_bytes[0] = value >> 8;     // high byte (zone 2)
@@ -3131,11 +3992,26 @@ number:
       return value_bytes[0];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
-      uint8_t value_byte = x;                                    // New byte value with the new temp for zone 2
+      uint8_t value_byte = x;                                  // New byte value with the new temp for zone 2
+
+      // Apply minmax for standard temp
+      auto operation_state = id(${devicename}_operational_mode).state;
+      auto end_heating_unit = id(${devicename}_zone_2_end_heating_mode_emission_type).state;
+      auto end_cooling_unit = id(${devicename}_zone_2_end_cooling_mode_emission_type).state;
+      if (operation_state == "Cool") {
+        if (x < 5 and end_cooling_unit == "Fan Coil Unit") value_byte = 5;
+        if (x < 18 and end_cooling_unit != "Fan Coil Unit") value_byte = 18;
+        if (x >25) value_byte = 25;
+      } else if (operation_state == "Heat") {
+        if (x < 25 and end_heating_unit == "Underfloor Heating") value_byte = 25;
+        if (x > 55 and end_heating_unit == "Underfloor Heating") value_byte = 55;
+        if (x < 35 and end_heating_unit == "Radiator") value_byte = 35;
+        if (x > 65 and end_heating_unit == "Radiator") value_byte = 65;
+      }
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (value_byte << 8);  // Update the upper byte with the new byte value
 
-      // ESP_LOGD("set_water_temperature_t1s_zone_2", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
+      ESP_LOGI("set_water_temperature_t1s_zone_2", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
       ${devicename}->queue_command(set_payload_command);
       id(unmasked_value_water_temperature_t1s) = value;
@@ -3180,8 +4056,7 @@ number:
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
 
-      // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
-      // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
+      // ESP_LOGI("Register 6Low","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
 
       return value_bytes[1];
     write_lambda: |-
@@ -3191,8 +4066,7 @@ number:
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= value_byte;  // Update the lower byte with the new byte value
 
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_curve_selection));
-      // ESP_LOGI("main", "New value: %d", value);
+      ESP_LOGI("Register 6Low", "Original value: %d, New value: %d", id(unmasked_curve_selection), value);
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x6, value);
       ${devicename}->queue_command(set_payload_command);
@@ -3228,10 +4102,123 @@ number:
 
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (value_byte << 8);  // Update the upper byte with the new byte value
-
+      ESP_LOGI("Register 6High", "Original value: %d, New value: %d", id(unmasked_curve_selection), value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x6, value);
       ${devicename}->queue_command(set_payload_command);
 
+      return {};
+# Register: 10
+#  - platform: modbus_controller
+#    modbus_controller_id: "${devicename}"
+#    name: "Reserved"
+#    id: "${devicename}_reserved"
+#    register_type: holding
+#    address: 10
+#    value_type: U_WORD
+#    entity_category: "config"
+  #  web_server_sorting_weight: 5
+  # Register: 11
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Temperature T1s Zone1"
+    id: "${devicename}_temperature_t1s_zone1"
+    icon: mdi:temperature-celsius
+    register_type: holding
+    address: 11
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: "config"
+    min_value: 5
+    max_value: 65
+    mode: slider
+    # web_server_sorting_weight: 5
+    lambda: |-
+        float value = x;
+        auto operation_state = id(${devicename}_operational_mode).state;
+        auto end_heating_unit = id(${devicename}_zone_1_end_heating_mode_emission_type).state;
+        auto end_cooling_unit = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
+        if (operation_state == "Cool") {
+          if (x < 5 and end_cooling_unit == "Fan Coil Unit") value = 5;
+          if (x < 18 and end_cooling_unit != "Fan Coil Unit") value = 18;
+          if (x > 25) value = 25;
+        } else if (operation_state == "Heat") {
+          if (x < 25 and end_heating_unit == "Underfloor Heating") value = 25;
+          if (x > 55 and end_heating_unit == "Underfloor Heating") value = 55;
+          if (x < 35 and end_heating_unit == "Radiator") value = 35;
+          if (x > 65 and end_heating_unit == "Radiator") value = 65;
+        }
+        return value;
+    write_lambda: |-
+        //return{}; //maybe this duplicate write?
+        uint16_t value = x;
+        auto operation_state = id(${devicename}_operational_mode).state;
+        auto end_heating_unit = id(${devicename}_zone_1_end_heating_mode_emission_type).state;
+        auto end_cooling_unit = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
+        if (operation_state == "Cool") {
+          if (x < 5 and end_cooling_unit == "Fan Coil Unit") value = 5;
+          if (x < 18 and end_cooling_unit != "Fan Coil Unit") value = 18;
+          if (x > 25) value = 25;
+        } else if (operation_state == "Heat") {
+          if (x < 25 and end_heating_unit == "Underfloor Heating") value = 25;
+          if (x > 55 and end_heating_unit == "Underfloor Heating") value = 55;
+          if (x < 35 and end_heating_unit == "Radiator") value = 35;
+          if (x > 65 and end_heating_unit == "Radiator") value = 65;
+        }
+        ESP_LOGI("temperature_t1s_zone1", "Set option to %f, New value: %d", float(x), value);
+        esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 11, value);
+        ${devicename}->queue_command(set_payload_command);
+        return {};
+
+  # Register: 12
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Temperature T1s Zone2"
+    id: "${devicename}_temperature_t1s_zone2"
+    icon: mdi:temperature-celsius
+    register_type: holding
+    address: 12
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 5
+    max_value: 65
+    mode: slider
+    # web_server_sorting_weight: 5
+    lambda: |-
+        float value = x;
+        auto operation_state = id(${devicename}_operational_mode).state;
+        auto end_heating_unit = id(${devicename}_zone_2_end_heating_mode_emission_type).state;
+        auto end_cooling_unit = id(${devicename}_zone_2_end_cooling_mode_emission_type).state;
+        if (operation_state == "Cool") {
+          if (x < 5 and end_cooling_unit == "Fan Coil Unit") value = 5;
+          if (x < 18 and end_cooling_unit != "Fan Coil Unit") value = 18;
+          if (x >25) value = 25;
+        } else if (operation_state == "Heat") {
+          if (x < 25 and end_heating_unit == "Underfloor Heating") value = 25;
+          if (x > 55 and end_heating_unit == "Underfloor Heating") value = 55;
+          if (x < 35 and end_heating_unit == "Radiator") value = 35;
+          if (x > 65 and end_heating_unit == "Radiator") value = 65;
+        }
+        return value;
+    write_lambda: |-
+      //return{}; //maybe this duplicate write?
+      uint16_t value = x;
+      auto operation_state = id(${devicename}_operational_mode).state;
+      auto end_heating_unit = id(${devicename}_zone_2_end_heating_mode_emission_type).state;
+      auto end_cooling_unit = id(${devicename}_zone_2_end_cooling_mode_emission_type).state;
+      if (operation_state == "Cool") {
+        if (x < 5 and end_cooling_unit == "Fan Coil Unit") value = 5;
+        if (x < 18 and end_cooling_unit != "Fan Coil Unit") value = 18;
+        if (x >25) value = 25;
+      } else if (operation_state == "Heat") {
+        if (x < 25 and end_heating_unit == "Underfloor Heating") value = 25;
+        if (x > 55 and end_heating_unit == "Underfloor Heating") value = 55;
+        if (x < 35 and end_heating_unit == "Radiator") value = 35;
+        if (x > 65 and end_heating_unit == "Radiator") value = 65;
+      }
+      ESP_LOGI("temperature_t1s_zone2", "Set option to %f, New value: %d", float(x), value);
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 12, value);
+      ${devicename}->queue_command(set_payload_command);
       return {};
   # Register: 209, default: 5
   - platform: modbus_controller
@@ -3246,7 +4233,8 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-  # Register: 212, default: 5
+  # Register: 212, default: 5, YORK: 10
+  # When DHW T5 drops dT5_on below then DHW heating starts
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "dT5_On"
@@ -3273,6 +4261,7 @@ number:
     min_value: 5
     max_value: 40
   # Register: 214, default: 5
+  # Delay to ruen on compressor in DHW mode
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T Interval DHW"
@@ -3286,6 +4275,7 @@ number:
     min_value: 5
     max_value: 30
   # Register: 215, default: 43
+  # Max outside temp T4 above which compressor will run for DHW but with minimal efficiency
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4 DHW max"
@@ -3299,10 +4289,11 @@ number:
     min_value: 35
     max_value: 43
   # Register: 216, default: -10
+  # Min outside temp T4 above which compressor will run for DHW
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4 DHW min"
-    id: "${devicename}_t4dhwmin"
+    id: "${devicename}_t4_dhw_min"
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0xd8
@@ -3310,7 +4301,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: -25
-    max_value: 5
+    max_value: 30
   # Register: 217, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3357,6 +4348,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Temperature For Disinfection Operation"
     id: "${devicename}_t5s_di"
+    disabled_by_default: true
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0xdc
@@ -3366,6 +4358,7 @@ number:
     min_value: 60
     max_value: 70
   # Register: 221, default: 210
+  # Max time for disinfect function
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Maximum Disinfection Duration"
@@ -3552,6 +4545,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
     id: "${devicename}_t_ibh_delay"
+    disabled_by_default: true
     icon: mdi:camera-timer
     register_type: holding
     address: 0xeb
@@ -3565,6 +4559,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Ambient Temperature Trigger For AHS"
     id: "${devicename}_t4_ahs_on"
+    disabled_by_default: true
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0xed
@@ -3578,6 +4573,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Trigger Temperature Difference Between T1S And Current Heat for AHS"
     id: "${devicename}_dt1_ahs_on"
+    disabled_by_default: true
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0xee
@@ -3591,6 +4587,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Delay Time for Enabling AHS"
     id: "${devicename}_t_ahs_delay"
+    disabled_by_default: true
     icon: mdi:camera-timer
     register_type: holding
     address: 0xf0
@@ -3656,6 +4653,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Heating Or Cooling Temperature When Holiday Mode Is Active"
     id: "${devicename}_t1s_h_a_h"
+    disabled_by_default: true
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0xf5
@@ -3669,6 +4667,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Domestic Hot Water Temperature When Holiday Mode is Active"
     id: "${devicename}_t5s_h_a_dhw"
+    disabled_by_default: true
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0xf6
@@ -3709,6 +4708,7 @@ number:
     name: "DTbt2"
     id: "${devicename}_dtbt2"
     icon: mdi:temperature-celsius
+    disabled_by_default: true
     register_type: holding
     address: 0xf9
     value_type: U_WORD
@@ -3722,6 +4722,7 @@ number:
     name: "IBH1 Power"
     id: "${devicename}_ibh1_power"
     icon: mdi:alpha-w
+    disabled_by_default: true
     register_type: holding
     address: 0xfa
     value_type: U_WORD
@@ -3736,6 +4737,7 @@ number:
     name: "IBH2 Power"
     id: "${devicename}_ibh2_power"
     icon: mdi:alpha-w
+    disabled_by_default: true
     register_type: holding
     address: 0xfb
     value_type: U_WORD
@@ -3750,6 +4752,7 @@ number:
     name: "TBH Power"
     id: "${devicename}_tbh_power"
     icon: mdi:alpha-w
+    disabled_by_default: true
     register_type: holding
     address: 0xfc
     value_type: U_WORD
@@ -3764,6 +4767,7 @@ number:
     name: "Temperature Rise Day Number"
     id: "${devicename}_t_dryup"
     icon: mdi:calendar-week
+    disabled_by_default: true
     register_type: holding
     address: 0xff
     value_type: U_WORD
@@ -3776,6 +4780,7 @@ number:
     name: "Drying Day Number"
     id: "${devicename}_t_highpeak"
     icon: mdi:calendar-week
+    disabled_by_default: true
     register_type: holding
     address: 0x100
     value_type: U_WORD
@@ -3788,6 +4793,7 @@ number:
     name: "Temperature Drop Day Number"
     id: "${devicename}_t_dryd"
     icon: mdi:calendar-week
+    disabled_by_default: true
     register_type: holding
     address: 0x101
     value_type: U_WORD
@@ -3799,6 +4805,7 @@ number:
     modbus_controller_id: "${devicename}"
     name: "Highest Drying Temperature"
     id: "${devicename}_t_drypeak"
+    disabled_by_default: true
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0x102
@@ -3813,6 +4820,7 @@ number:
     name: "Running Time Of Floor Heating For The First Time"
     id: "${devicename}_t_firstfh"
     icon: mdi:clock-check-outline
+    disabled_by_default: true
     register_type: holding
     address: 0x103
     value_type: U_WORD
@@ -3826,6 +4834,7 @@ number:
     name: "T1S Of Floor Heating For The First Time"
     id: "${devicename}_t1s_firstfh"
     icon: mdi:temperature-celsius
+    disabled_by_default: true
     register_type: holding
     address: 0x104
     value_type: U_WORD
@@ -3980,8 +4989,7 @@ number:
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= input_byte;  // Update the lower byte with the new byte value
 
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_270));
-      // ESP_LOGI("main", "New value: %d", value);
+      ESP_LOGI("Register _t_t4_fresh_h", "Original value: %d, New value: %d", id(unmasked_curve_selection), value);
 
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
       ${devicename}->queue_command(set_payload_command);
@@ -4027,6 +5035,8 @@ number:
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (input_byte << 8);  // Update the upper byte with the new byte value
 
+      ESP_LOGI("Register 10e _t_t4_fresh_c", "Original value: %d, New value: %d", id(unmasked_curve_selection), value);
+
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x10e, value);
       ${devicename}->queue_command(set_payload_command);
 
@@ -4047,13 +5057,158 @@ number:
     min_value: 2.0
     max_value: 20.0
     step: 0.5
+  ######################################## OUTSIDE IMPLEMENTATIONS ############################################      
+  - platform: template
+    name: "SM Restore DHW Heat after time"
+    id: "${devicename}_restore_time_heat_dhw_after_turn_off"
+    icon: mdi:clock-check-outline
+    min_value: 0
+    max_value: 1440
+    step: 5
+    unit_of_measurement: min
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 210
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("Restore DHW Heat after time","Restore DHW Heat after time: %f min", x);'
+  - platform: template
+    name: "SM Restore Zone1 Heat/Cool after time"
+    id: "${devicename}_restore_time_heat_zone1_after_turn_off"
+    icon: mdi:clock-check-outline
+    min_value: 0
+    max_value: 1440
+    step: 5
+    unit_of_measurement: min
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 210
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("Restore Zone1 Heat after time","Restore Zone1 Heat after time: %f min", x);'
+  - platform: template
+    name: "SM Restore Zone2 Heat after time"
+    id: "${devicename}_restore_time_heat_zone2_after_turn_off"
+    icon: mdi:clock-check-outline
+    min_value: 0
+    max_value: 1440
+    step: 5
+    unit_of_measurement: min
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 210
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("Restore Zone2 Heat after time","Restore Zone2 Heat after time: %f min", x);'
+  - platform: template  #activate antifreeze external pump under this temp T4 val if PUMP_I don't run for specific time
+    name: "SM Antifreeze time temp treshold"
+    id: "${devicename}_temp_secure_antifreeze"
+    icon: mdi:temperature-celsius
+    min_value: -1
+    max_value: 30
+    step: 1
+    unit_of_measurement: "°C"
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 3
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("SM Antifreeze time temp treshold","Actual value: %f °C", x);'
+  - platform: template
+    name: "SM Minimal DHW Temp Allow to drop"
+    id: "${devicename}_gl_dhw_minimal_temp"
+    icon: mdi:temperature-celsius
+    min_value: 25
+    max_value: 50
+    step: 1
+    unit_of_measurement: "°C"
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 32
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("SM Minimal DHW Temp Allow to drop","Actual value: %f °C", x);'        
+  - platform: template
+    name: "SM Antifreeze protect between PUMP_I run"
+    #pump_i_antifrize_check_last_run_interval: '(60*60)'  #interval to check if this time was pump_i not run to secure from antifreeze
+    id: "${devicename}_pump_i_antifrize_check_last_run_interval"
+    icon: mdi:clock
+    min_value: 1
+    max_value: 120
+    step: 1
+    unit_of_measurement: "min"
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 60
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("SM Antifreeze protect between PUMP_I run","Actual value: %f min", x);'       
 
+  - platform: template
+    name: "SM Output External pump for antifreeze"
+    #  output_external_pump_for_antifreeze_relay1: '(5 * 60)'         #time to run external pump for antifrize pipes after pump_i stopped for defined time pump_i_antifrize_check_last_run_interval
+    id: "${devicename}_output_external_pump_for_antifreeze_relay1"
+    icon: mdi:clock
+    min_value: 1
+    max_value: 15
+    step: 1
+    unit_of_measurement: "min"
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 5
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("SM Output External pump for antifreeze","Actual value: %f min", x);'       
+  - platform: template
+    name: "SM Output External pump -spare"
+    #  external_relay_timer: '(5 * 60)'         #time to run external pump for antifrize pipes after pump_i stopped for defined time pump_i_antifrize_check_last_run_interval
+    id: "${devicename}_external_relay_timer"
+    icon: mdi:clock
+    min_value: 1
+    max_value: 15
+    step: 1
+    unit_of_measurement: "min"
+    entity_category: "config"
+    optimistic: true
+    restore_value: true
+    initial_value: 5
+    on_value: 
+      then:
+        lambda: 'ESP_LOGI("SM Output External pump for antifreeze -spare","Actual value: %f min", x);'                        
+  
+################################################################################################################################
 text_sensor:
   - platform: version
-    name: "ESPHome Version"
+    name: ESPHome Version
     id: "${devicename}_esphome_version"
     icon: mdi:information
     hide_timestamp: true
+    entity_category: "diagnostic"
+  - platform: template
+    name: Uptime HR
+    id: uptime_human
+    icon: mdi:clock-start
+    entity_category: "diagnostic"
+  - platform: wifi_info
+    ip_address:
+      name: IP
+      entity_category: "diagnostic"
+      icon: mdi:ip-network
+    ssid:
+      name: SSID
+      entity_category: "diagnostic"
+      icon: mdi:wifi
+    bssid:
+      name: BSSID
+      entity_category: "diagnostic"
+      icon: mdi:wifi-alert
   # Active State
   - platform: template
     name: "Active State"
@@ -4067,12 +5222,12 @@ text_sensor:
           return {"Defrosting"};
         } else if (id(${devicename}_load_output_sv1).state) {
           return {"DHW"};
-        } else if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state
-          || id(${devicename}_water_flow_temperature_control_zone_1).state) {
+        } else if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state 
+          || id(${devicename}_power_heat_cool_control_zone1).state) {
           return {"Heating"};
         } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state
-          || id(${devicename}_room_temperature_control).state
-          || id(${devicename}_water_flow_temperature_control_zone_2).state) {
+          || id(${devicename}_power_climate_control_fancoilunit).state
+          || id(${devicename}_power_heat_cool_control_zone2).state) {
           return {"Cooling"};
         } else {
           return {"Unknown"};
@@ -4443,9 +5598,10 @@ text_sensor:
         else if (rawdata == 2) output = "Cooling";
         else if (rawdata == 3) output = "Heating";
         else if (rawdata == 5) output = "DHW Heating";
-        // ESP_LOGD("Register 101","Operating mode %s (%d)", output.c_str(), rawdata);
+        // ESP_LOGI("Register 101","Operating mode %s (%d)", output.c_str(), rawdata);
         return output;
-  # Register: 200 (High byte)
+
+# Register: 200 (High byte)
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Home Appliance Type"
@@ -4459,7 +5615,7 @@ text_sensor:
          int idx = item->offset;
          std::string z = "";
          uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         // ESP_LOGD("Register 200", "The home appliance type is 0x%x", rawdata);
+         // ESP_LOGI("Register 200", "The home appliance type is 0x%x", rawdata);
          if ((rawdata >> 8) == 7) {
            z = "Air to water heat pump";
          } else {
@@ -4480,7 +5636,7 @@ text_sensor:
          int idx = item->offset;
          std::string z = "";
          uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         // ESP_LOGD("Register 200", "The home appliance sub type is 0x%x", rawdata);
+         // ESP_LOGI("Register 200", "The home appliance sub type is 0x%x", rawdata);
          if (((rawdata & 0x000F) ) == 2) {
            z = "R32";
          } else {
@@ -4501,10 +5657,74 @@ text_sensor:
          int idx = item->offset;
          std::string z = "";
          uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-         // ESP_LOGD("Register 200", "The home appliance product code is 0x%x rawdata ", rawdata);
+         // ESP_LOGI("Register 200", "The home appliance product code is 0x%x rawdata ", rawdata);
          if (((rawdata & 0x00F0) >> 4) == 4) {
            z = "4";
          } else {
            z = std::to_string((rawdata & 0x00F0) >> 4);
          }
          return {z};
+  #########ADDED TIME PUMPS##############
+  - platform: template
+    name: "SM Recovery Heating DHW time at"
+    id: ${devicename}_recovery_heating_dhw_time_at
+    icon: mdi:clock
+    entity_category: "diagnostic"
+    update_interval: 15s
+    lambda: |-
+      time_t dur = id(manually_disabled_dhw_heating_timestamp) + (time_t)(id(${devicename}_restore_time_heat_dhw_after_turn_off).state * 60);// - (id(esptime).now().timestamp - id(manually_disabled_dhw_heating_timestamp));
+      char time_str[30];
+      ESP_LOGI("text_sensor", "dur: %li, manually_disabled_dhw_heating_timestamp: %li, _restore_time_heat_dhw_after_turn_off: %li, stan: %s:%s", (long int)dur, (long int)id(manually_disabled_dhw_heating_timestamp),  (long int)id(${devicename}_restore_time_heat_dhw_after_turn_off).state, id(Restore_enable_DHW)?"ON":"OFF", id(${devicename}_enable_recoverytime_enable_dhw).state?"Yes":"No");
+      if (dur > (id(${devicename}_restore_time_heat_dhw_after_turn_off).state * 60) and id(Restore_enable_DHW)) {
+        time_t time_at = dur;
+        strftime(time_str, sizeof(time_str), "%H:%M", localtime(&time_at));  //%Y-%m-%d 
+      } else sprintf(time_str, "N/D");
+      ESP_LOGI("text_sensor", "recovery_heating_dhw_time_at: %s Enable Recovery mode: %s", time_str, id(${devicename}_enable_recoverytime_enable_dhw).state?"Yes":"No");
+      return {time_str};
+    # web_server_sorting_weight: -190   
+  - platform: template
+    name: "SM Recovery Heating/Cooling Zone1 time at"
+    id: ${devicename}_recovery_heating_cooling_zone1_time_at
+    icon: mdi:clock
+    entity_category: "diagnostic"
+    update_interval: 15s
+    lambda: |-
+      time_t dur = id(manually_disabled_zone1_heating_timestamp) + (time_t)(id(${devicename}_restore_time_heat_zone1_after_turn_off).state*60); 
+      char time_str[30];
+      if (dur > (id(${devicename}_restore_time_heat_zone1_after_turn_off).state * 60) and id(Restore_enable_Zone1)) {
+        time_t time_at = dur;
+        strftime(time_str, sizeof(time_str), "%H:%M", localtime(&time_at));  //%Y-%m-%d 
+      } else sprintf(time_str, "N/D");
+      ESP_LOGI("text_sensor", "recovery_heating_cooling_zone1_time_at: %s Enable Recovery mode: %s", time_str, id(${devicename}_enable_recoverytime_enable_zone1).state?"Yes":"No");
+      return {time_str};
+    # web_server_sorting_weight: -190   
+  - platform: template
+    name: "SM Recovery Heating/Cooling Zone2 time at"
+    id: ${devicename}_recovery_heating_cooling_zone2_time_at
+    icon: mdi:clock
+    entity_category: "diagnostic"
+    update_interval: 15s
+    lambda: |-
+      time_t dur = id(manually_disabled_zone2_heating_timestamp) + (time_t)(id(${devicename}_restore_time_heat_zone2_after_turn_off).state * 60);
+      char time_str[30];
+      if (dur > (id(${devicename}_restore_time_heat_zone2_after_turn_off).state * 60) and id(Restore_enable_Zone2)) {
+        time_t time_at = dur;
+        strftime(time_str, sizeof(time_str), "%H:%M", localtime(&time_at));  //%Y-%m-%d 
+      } else sprintf(time_str, "N/D");
+      ESP_LOGI("text_sensor", "recovery_heating_cooling_zone2_time_at: %s Enable Recovery mode: %s", time_str, id(${devicename}_enable_recoverytime_enable_zone2).state?"Yes":"No");
+      return {time_str};    
+  - platform: template
+    name: "SM Last time PUMP_I Run At"
+    id: ${devicename}_water_pump_i_runtime_at
+    icon: mdi:clock
+    entity_category: "diagnostic"
+    update_interval: 15s
+    lambda: |-
+      time_t dur = id(timestamp_water_pump_timestamp_last_run);
+      char time_str[30];
+      if (dur > 0) {
+        time_t time_at = dur;
+        strftime(time_str, sizeof(time_str), "%H:%M", localtime(&time_at));  //%Y-%m-%d 
+      } else sprintf(time_str, "N/D");
+      ESP_LOGI("text_sensor", "water_pump_i_runtime_at: %s", time_str);
+      return {time_str};

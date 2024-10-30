@@ -22,7 +22,7 @@ globals:
   - id: unmasked_value_register_210
     type: uint16_t
     restore_value: no
-    initial_value: '0'    
+    initial_value: '0'
   - id: unmasked_value_register_211
     type: uint16_t
     restore_value: no

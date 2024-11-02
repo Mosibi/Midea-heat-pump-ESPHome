@@ -22,7 +22,7 @@ globals:
   - id: unmasked_value_register_210
     type: uint16_t
     restore_value: no
-    initial_value: '0'    
+    initial_value: '0'
   - id: unmasked_value_register_211
     type: uint16_t
     restore_value: no
@@ -139,8 +139,8 @@ select:
     lambda: |-
       // Update the global var unmasked_value_register_272
       id(unmasked_value_register_272) = x;
-
-      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+      
+      // ESP_LOGI("Register 272","unmasked_value_register_272: %d",id(unmasked_value_register_272));
 
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
@@ -148,33 +148,28 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
-      // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone1_h_emission];
+      // ESP_LOGI("Register 272","zone1_h_emission is %d"zone2_h_emission);
+      std::string string_result;
+      if (zone1_h_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone1_h_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone1_h_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone1_h_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone1_h_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      // ESP_LOGD("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 1
-
       new_value &= 0xFFF0;     // Clear the first 4 bits
       new_value |= value_byte; // Set the first 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGD("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
   # Register: 272 (bits 4-7), default: 2
   - platform: modbus_controller
@@ -192,7 +187,7 @@ select:
     lambda: |-
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
-      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+      // ESP_LOGD("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
 
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
@@ -200,33 +195,28 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
-      // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone2_h_emission];
+      // ESP_LOGD("Register 272","zone2_h_emission is %d", zone2_h_emission);
+      std::string string_result;
+      if (zone2_h_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone2_h_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone2_h_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone2_h_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone2_h_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      // ESP_LOGD("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 2
-
       new_value &= 0xFF0F;             // Clear the second pair of 4 bits
       new_value |= (value_byte << 4);  // Set the second pair of 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGI("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
   # Register: 272 (bits 8-11), default: 0
   - platform: modbus_controller
@@ -252,33 +242,28 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
-      // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone1_c_emission];
+      // ESP_LOGD("Register 272","zone1_c_emission is %d", zone1_c_emission);
+      std::string string_result;
+      if (zone1_c_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone1_c_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone1_c_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone1_c_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone1_c_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      // ESP_LOGI("Register 272", "zone1_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 1
-
       new_value &= 0xF0FF;             // Clear the third pair of 4 bits
       new_value |= (value_byte << 8);  // Set the third pair of 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGI("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
   # Register: 272 (bits 12-15), default: 0
   - platform: modbus_controller
@@ -296,7 +281,7 @@ select:
     lambda: |-
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
-      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+      // ESP_LOGI("Register 272","unmasked_value_register_272: 0x%x", id(unmasked_value_register_272);
 
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
@@ -304,33 +289,28 @@ select:
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
       uint8_t zone1_h_emission = x & 0xF;
 
-      // ESP_LOGI("","zone2_c_emission is %d", zone2_c_emission);
-      // ESP_LOGI("","zone1_c_emission is %d", zone1_c_emission);
-      // ESP_LOGI("","zone2_h_emission is %d", zone2_h_emission);
-      // ESP_LOGI("","zone1_h_emission is %d", zone1_h_emission);
-
-      // Map/dictionary with the possible values
-      std::map<int, std::string> emission_options;
-      emission_options[0] = "Fan Coil Unit";
-      emission_options[1] = "Radiator";
-      emission_options[2] = "Underfloor Heating";
-
-      return emission_options[zone2_c_emission];
+      // ESP_LOGI("Register 272","zone2_c_emission is %d", zone2_c_emission);
+      std::string string_result;
+      if (zone2_c_emission == 0) {
+        string_result = "Fan Coil Unit";
+      } else if (zone2_c_emission == 1) {
+        string_result = "Radiator";
+      } else if (zone2_c_emission == 2) {
+        string_result = "Underfloor Heating";
+      } else {
+        string_result = "Unknown: ";
+        string_result += std::to_string(zone2_c_emission);
+      }
+      return string_result;
     write_lambda: |-
-      ESP_LOGI("zone2_c_emission", "Set option to %s (%lld)", x.c_str(), value);
-
+      // ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 2
-
       new_value &= 0x0FFF;              // Clear the fourth pair of 4 bits
       new_value |= (value_byte << 12);  // Set the fourth pair of 4 bits with the new value
-
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_register_272));
-      // ESP_LOGI("main", "New value: %d", new_value);
-
+      // ESP_LOGI("Register 272", "Original value: %d -> New value: %d", id(unmasked_value_register_272), new_value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x110, new_value);
       ${devicename}->queue_command(set_payload_command);
-
       return {};
 
 sensor:
@@ -1731,13 +1711,31 @@ binary_sensor:
     address: 0x8e
     bitmask: 0x8000
 
+  # Register: 210, Bit: 6, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 1 T1S Heating High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
+    icon: mdi:eye
+    lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40; // Return status bit6"
+  # Register: 210, Bit: 8, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 1 T1s Cooling High Low Temperature Settings"
+    id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
+    icon: mdi:eye
+    lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100; // Return status bit8"
   # Register: 210, Bit: 11, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Reserved BIT 11"
     id: "${devicename}_parameter_setting_1_reserved_bit_11"
     icon: mdi:head-question-outline
     lambda: "return (id(unmasked_value_register_210) & 0x800) == 0x800; // Return status bit11"
-
+  # Register: 210, Bit: 14, default: false, TODO: verify default
+  - platform: template
+    name: "Parameter Setting 1 Supports Water Tank Electric Heater TBH"
+    id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
+    icon: mdi:eye
+    lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000; // Return status bit14"
+    
   # Register: 211, Bit: 15, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 2 Reserved BIT 15"
@@ -2192,10 +2190,10 @@ switch:
       uint16_t value = 0;
 
       if (x == 1) {
-        ESP_LOGI("main", "Set forced water tank heating ON");
+        // ESP_LOGI("main", "Set forced water tank heating ON");
         value = 1;
       } else {
-        ESP_LOGI("main", "Set forced water tank heating OFF");
+        // ESP_LOGI("main", "Set forced water tank heating OFF");
         value = 2;
       }
 
@@ -2398,38 +2396,7 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 6, default: false, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 1 T1S Heating High Low Temperature Settings"
-    id: "${devicename}_parameter_setting_1_t1s_heating_high_low_temperature_settings"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40;"
-    on_turn_on:
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_t1s_heating_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      - lambda: |-
-          uint16_t checked_bit = 0x40;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_t1s_heating_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+  # Register: 210, Bit: 6 is in binary_sensor
   # Register: 210, Bit: 7, default: true, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Enable Heating"
@@ -2462,38 +2429,7 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 8, default: false, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 1 T1s Cooling High Low Temperature Settings"
-    id: "${devicename}_parameter_setting_1_t1s_cooling_high_low_temperature_settings"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_210) & 0x100) == 0x100;"
-    on_turn_on:
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_t1s_cooling_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      - lambda: |-
-          uint16_t checked_bit = 0x100;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_t1s_cooling_high_low_temperature_settings 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+  # Register: 210, Bit: 8 is in binary_sensor
   # Register: 210, Bit: 9, default: true, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Enable Cooling"
@@ -2623,38 +2559,7 @@ switch:
             esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
             ${devicename}->queue_command(set_payload_command);
           }
-  # Register: 210, Bit: 14, default: true, TODO: verify default
-  - platform: template
-    name: "Parameter Setting 1 Supports Water Tank Electric Heater TBH"
-    id: "${devicename}_parameter_setting_1_supports_water_tank_electric_heater_tbh"
-    icon: mdi:eye
-    restore_mode: DISABLED
-    entity_category: config
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_210) & 0x4000) == 0x4000;"
-    on_turn_on:
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      - lambda: |-
-          uint16_t checked_bit = 0x4000;
-          uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
-          new_value &= ~checked_bit;                             // Clear and set
-          if ((new_value) != id(unmasked_value_register_210)) {
-            // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_supports_disinfection 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
-            id(unmasked_value_register_210) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
+  # Register: 210, Bit: 14 is in binary_sensor
   # Register: 210, Bit: 15, default: true, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 Enable Water Heating"
@@ -3183,29 +3088,22 @@ number:
       id(unmasked_value_water_temperature_t1s) = x;
 
       // ESP_LOGI("","unmasked_value_water_temperature_t1s: %d",id(unmasked_value_water_temperature_t1s));
-
       uint8_t value_bytes[2];
       uint16_t value = x;
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
-
-      // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
-      // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
-
+      // ESP_LOGI("Register 2Low","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
       return value_bytes[1];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
       uint8_t value_byte = x;                                    // New byte value with the new temp for zone 1
-
       value &= 0xFF00;      // Clear the lower byte of the value
       value |= value_byte;  // Update the lower byte with the new byte value
 
-      // ESP_LOGI("main", "Original value: %d", id(unmasked_value_water_temperature_t1s));
-      // ESP_LOGI("main", "New value: %d", value);
-
+      // ESP_LOGI("Register 6Low, set_water_temperature_t1s_zone_1", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
       ${devicename}->queue_command(set_payload_command);
-
+      id(unmasked_value_water_temperature_t1s) = value;
       return {};
 
   # Register: 2 (Zone 2, High)
@@ -3225,24 +3123,22 @@ number:
     lambda: |-
       // The global var unmasked_value_water_temperature_t1s is already
       // updated in the previous, where the low byte variant is executed
-      // id(unmasked_value_water_temperature_t1s) = x;
-
       uint8_t value_bytes[2];
       uint16_t value = x;
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
-
+      // ESP_LOGD("Register 2High","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
       return value_bytes[0];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
       uint8_t value_byte = x;                                    // New byte value with the new temp for zone 2
-
       value &= 0x00FF;             // Clear the upper byte of the value
       value |= (value_byte << 8);  // Update the upper byte with the new byte value
 
+      // ESP_LOGD("set_water_temperature_t1s_zone_2", "Set option to %f, Original value 0x%x New value: 0x%x", float(x), id(unmasked_value_water_temperature_t1s), value);
       esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x2, value);
       ${devicename}->queue_command(set_payload_command);
-
+      id(unmasked_value_water_temperature_t1s) = value;
       return {};
 
   # Register: 4
@@ -3257,7 +3153,7 @@ number:
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 20
-    max_value: 60
+    max_value: 65
     mode: slider
 
   # Register: 6 (Zone 1, Low)
@@ -3361,8 +3257,8 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     entity_category: config
-    min_value: 2
-    max_value: 10
+    min_value: 1
+    max_value: 30
   # Register: 213, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

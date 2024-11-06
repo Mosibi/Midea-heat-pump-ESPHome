@@ -21,7 +21,7 @@ yaml.add_constructor('!lambda', ignore_secret)
 
 # Update the YAML file
 with open(YAML_FILE, 'r') as yaml_file:
-    yaml_content = yaml.safe_load(yaml_file)
+    yaml_content = yaml.load(yaml_file, Loader=yaml.FullLoader)  # Use FullLoader instead of safe_load   yaml.safe_load(yaml_file)
 
 yaml_content['esphome']['project']['version'] = new_version
 

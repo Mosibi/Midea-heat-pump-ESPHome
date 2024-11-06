@@ -20,6 +20,18 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all branches and history
 
+      - name: Check Current Directory
+        run: |
+          echo "Current directory:"
+          pwd  # Print current directory
+          echo "Listing files:"
+          ls -l  # List files in the current directory
+
+      - name: List files in .github/scripts
+        run: |
+          echo "Listing files in .github/scripts/"
+          ls -l .github/scripts/
+
       - name: Install Python
         run: |
           sudo apt-get update
@@ -40,6 +52,11 @@ jobs:
         run: |
           git fetch origin ${{ env.TARGET_BRANCH }} # Fetch the latest target branch
           git checkout ${{ env.TARGET_BRANCH }}      # Checkout the target branch
+
+      - name: List files in .github/scripts after checkout
+        run: |
+          echo "Listing files in .github/scripts/ after checkout"
+          ls -l .github/scripts/
 
       - name: Update Version
         run: |

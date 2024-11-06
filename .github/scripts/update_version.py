@@ -9,18 +9,19 @@ YAML_FILE = 'heatpump.yaml'
 # Get the version from command-line arguments
 new_version = sys.argv[1]
 
-# Define a custom loader to handle unknown tags and leave them untouched
-class IgnoreUnknownTagsLoader(yaml.SafeLoader):
-    def construct_tagged(self, tag, node):
-        # This method is called to process any tagged node. If the tag is one we don't want to process,
-        # we simply return the node value (this way PyYAML doesn't try to process it).
-        if tag in ['!secret', '!lambda']:  # Ignore !secret and !lambda tags
-            return node.value
-        return super().construct_tagged(tag, node)  # Use the default behavior for other tags
+# Define a custom loader to treat `!secret` and `!lambda` tags as plain strings
+class IgnoreTagsLoader(yaml.SafeLoader):
+    def construct_yaml_str(self, node):
+        # Override the default string constructor to treat all tags as strings
+        return node.value
 
-# Use the custom loader to load the YAML
+# Register this custom constructor for `!secret` and `!lambda`
+IgnoreTagsLoader.add_constructor('!secret', IgnoreTagsLoader.construct_yaml_str)
+IgnoreTagsLoader.add_constructor('!lambda', IgnoreTagsLoader.construct_yaml_str)
+
+# Load the YAML file with the custom loader
 with open(YAML_FILE, 'r') as yaml_file:
-    yaml_content = yaml.load(yaml_file, Loader=IgnoreUnknownTagsLoader)
+    yaml_content = yaml.load(yaml_file, Loader=IgnoreTagsLoader)
 
 # Update the version field under esphome
 if 'esphome' in yaml_content and 'project' in yaml_content['esphome']:

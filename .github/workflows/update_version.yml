@@ -12,11 +12,13 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub Actions token
       DEFAULT_NAME: "github-actions[bot]"
       DEFAULT_EMAIL: "github-actions[bot]@users.noreply.github.com"
-      TARGET_BRANCH: "master-york-with-automations"                       # Target branch name
+      TARGET_BRANCH: "master-york-with-automations"  # Target branch name
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4  # Use the latest version
+        with:
+          fetch-depth: 0  # Fetch all branches and history
 
       - name: Install Python
         run: |
@@ -34,8 +36,14 @@ jobs:
           git config --local user.email "${{ env.DEFAULT_EMAIL }}"
           git config --local user.name "${{ env.DEFAULT_NAME }}"
 
+      - name: Checkout target branch
+        run: |
+          git fetch origin ${{ env.TARGET_BRANCH }} # Fetch the latest target branch
+          git checkout ${{ env.TARGET_BRANCH }}      # Checkout the target branch
+
       - name: Update Version
-        run: python3 .github/scripts/update_version.py ${{ github.event.release.tag_name }}
+        run: |
+          python3 .github/scripts/update_version.py ${{ github.event.release.tag_name }}
 
       - name: Commit Changes
         run: |

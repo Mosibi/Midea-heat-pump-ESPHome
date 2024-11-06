@@ -126,21 +126,21 @@ esphome:
   friendly_name: "${description}"
   project:
     name: !secret "Project_info"
-    version: 4.1.5
-  on_boot:
+    version: 4.1.6
+  # on_boot:
     ## configure controller settings at setup
-    priority: 500
-    then:
-      - lambda: 'id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(id(tempereture_avg_last_hour));'
-      - lambda: 'id(${devicename}_outdoor_ambient_temperature_daily).publish_state(id(tempereture_avg_last_24h));'
-      - lambda: 'id(${devicename}_enable_recoverytime_enable_dhw).publish_state(Restore_enable_DHW);' #Restore_enable_DHW));
-      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone1).publish_state(Restore_enable_Zone1);' #id(Restore_enable_Zone1));
-      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone2).publish_state(Restore_enable_Zone2);' #id(Restore_enable_Zone2));
-      - lambda: |-
-                  if (id(Restore_enable_DHW)) id(${devicename}_power_dhw_t5s).turn_on();
-                  if (id(Restore_enable_Zone1)) id(${devicename}_power_heat_cool_control_zone1).turn_on();
-                  if (id(Restore_enable_Zone2)) id(${devicename}_power_heat_cool_control_zone2).turn_on();
-                  ESP_LOGE("BOOT", "JUST BOOTED");
+    # priority: 100
+    # then:
+    #   - lambda: 'id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(id(tempereture_avg_last_hour));'
+    #   - lambda: 'id(${devicename}_outdoor_ambient_temperature_daily).publish_state(id(tempereture_avg_last_24h));'
+    #   - lambda: 'id(${devicename}_enable_recoverytime_enable_dhw).publish_state(Restore_enable_DHW);' #Restore_enable_DHW));
+    #   - lambda: 'id(${devicename}_enable_recoverytime_enable_zone1).publish_state(Restore_enable_Zone1);' #id(Restore_enable_Zone1));
+    #   - lambda: 'id(${devicename}_enable_recoverytime_enable_zone2).publish_state(Restore_enable_Zone2);' #id(Restore_enable_Zone2));
+    #   - lambda: |-
+    #               if (id(Restore_enable_DHW)) id(${devicename}_power_dhw_t5s).turn_on();
+    #               if (id(Restore_enable_Zone1)) id(${devicename}_power_heat_cool_control_zone1).turn_on();
+    #               if (id(Restore_enable_Zone2)) id(${devicename}_power_heat_cool_control_zone2).turn_on();
+    #               ESP_LOGE("BOOT", "JUST BOOTED");
     #this allow change ota password for next upload
     #id(my_ota).set_auth_password(!secret "heatpump_controller_ota_password");
 ################################################################################################################################
@@ -547,7 +547,9 @@ interval:
                 auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
                 delta__dt5_on.set_value(new_delta_dhw_day);
                 delta__dt5_on.perform();
+                essential_changed = true;
               }
+              id(${devicename}_power_dhw_t5s).turn_on();
               
               ESP_LOGE("interval_time_1h_1_delta","Changed delta T5s for DHW at day to: %f", new_delta_dhw_day);
             } else if (id(esptime).now().hour < ${hour_start_day} or id(esptime).now().hour > ${hour_end_day}  ) {
@@ -555,12 +557,13 @@ interval:
               //CHANGE DELTA FOR DHW WATER HEATING to ~32deg for night (Actual set DHW temp to which is heated - minimal accepted temp for DHW + 1)
               float new_delta_night = (float(id(${devicename}_set_dhw_tank_temperature_t5s).state) - float(id(${devicename}_gl_dhw_minimal_temp).state) + 1);
               if (actual_delta_dhw != new_delta_night) {
-                auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
-                delta__dt5_on.set_value(new_delta_night);
-                delta__dt5_on.perform();
-                essential_changed = true;
+                // auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
+                // delta__dt5_on.set_value(new_delta_night);
+                // delta__dt5_on.perform();
+                // essential_changed = true;
                 ESP_LOGE("interval_time_1h_1","Changed delta T5s for DHW at night to: %f", new_delta_night);
               }
+              id(${devicename}_power_dhw_t5s).turn_off();
             }
             // Neccesserry default values turn on
             // Maybe: Make heat pump silent at night between 22 and 6 am  YorkM5functionMOde   bitSet(tmptemp, 6);    //SilentMode              bitClear(tmptemp, 7);  //SuperSilent
@@ -605,7 +608,7 @@ interval:
               ESP_LOGI("interval_time_1h_2", "Set Zone 1 heating to Underfloor Heating was: %s", zone1_heating_end_state.c_str());
             }
             if (essential_changed) {
-              delay(60000);
+              delay(1500);
               //some essential parameter was chanagedd so Heat pump disable heat -so enable it now -this is not manual disable
               if (dhwstate) id(${devicename}_power_dhw_t5s).turn_on();
               if (zone1state) id(${devicename}_power_heat_cool_control_zone1).turn_on();
@@ -3944,7 +3947,6 @@ number:
       auto operation_state = id(${devicename}_operational_mode).state;
       auto end_heating_unit = id(${devicename}_zone_1_end_heating_mode_emission_type).state;
       auto end_cooling_unit = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
-      
       if (operation_state == "Cool") {
         if (x < 5 and end_cooling_unit == "Fan Coil Unit") value_byte = 5;
         if (x < 18 and end_cooling_unit != "Fan Coil Unit") value_byte = 18;
@@ -3993,7 +3995,6 @@ number:
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
       uint8_t value_byte = x;                                  // New byte value with the new temp for zone 2
-
       // Apply minmax for standard temp
       auto operation_state = id(${devicename}_operational_mode).state;
       auto end_heating_unit = id(${devicename}_zone_2_end_heating_mode_emission_type).state;

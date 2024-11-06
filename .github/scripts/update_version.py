@@ -13,18 +13,26 @@ new_version = sys.argv[1]
 # Get the current date in 'yyyy-mm-dd' format
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
-# Define a custom loader to treat `!secret` and `!lambda` tags as literal values (no processing)
+# Define custom loaders for the `!secret` and `!lambda` tags
 def secret_constructor(loader, node):
-    # Return the value as is for !secret
-    return node.value
+    return node.value  # Return the raw value of `!secret`
 
 def lambda_constructor(loader, node):
-    # Return the value as is for !lambda
-    return node.value
+    return node.value  # Return the raw value of `!lambda` to preserve formatting
 
-# Add the custom constructors for the `!secret` and `!lambda` tags to SafeLoader
+# Add custom constructors for `!secret` and `!lambda`
 yaml.SafeLoader.add_constructor('!secret', secret_constructor)
 yaml.SafeLoader.add_constructor('!lambda', lambda_constructor)
+
+# Define a custom dumper to preserve block-style literals for multi-line strings (like C++ code)
+def preserve_block_style(node):
+    # This is necessary to preserve the `|-` block style
+    return node.value
+
+# Use the custom YAML Dumper to handle `!lambda` as a block-style literal
+class CustomDumper(yaml.SafeDumper):
+    def increase_indent(self, flow=False, indentless=False):
+        return super(CustomDumper, self).increase_indent(flow=flow, indentless=indentless)
 
 # Load the YAML file with the custom loaders
 with open(YAML_FILE, 'r') as yaml_file:
@@ -34,10 +42,9 @@ with open(YAML_FILE, 'r') as yaml_file:
 if 'esphome' in yaml_content and 'project' in yaml_content['esphome']:
     yaml_content['esphome']['project']['version'] = new_version
 
-# Use the default YAML Dumper to maintain order and write back the modified YAML
-# Preserve the original formatting
+# Write the updated YAML back to the file, preserving multi-line blocks (like `!lambda`)
 with open(YAML_FILE, 'w') as yaml_file:
-    yaml.safe_dump(yaml_content, yaml_file, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    yaml.dump(yaml_content, yaml_file, Dumper=CustomDumper, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
 print(f'Updated version to {new_version} in {YAML_FILE}')
 
@@ -48,7 +55,7 @@ with open(CHANGELOG_FILE, 'r') as f:
 # Insert "## [Unreleased]\n### Changed:\n- " before the new version part
 updated_changelog = re.sub(
     r'\[Unreleased\](.*?)\n',
-    f'## [Unreleased]\n### Changed:\n- \n[{new_version}] - {current_date}\\1\n',
+    f'[Unreleased]\n### Changed:\n- \n## [{new_version}] - {current_date}\\1\n',
     changelog,
     flags=re.DOTALL
 )

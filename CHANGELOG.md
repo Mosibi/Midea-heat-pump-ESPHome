@@ -5,12 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## ## [Unreleased]
+## [Unreleased]
 ### Changed:
-- 
-[4.1.2Y] - 2024-11-06
-### Changed:
-
 - Update Register 2 min max value with verifing depending emmision type settings
 - Update Regioster 3 and 4 min, max value range
 - Add COP -Heat pump efficiency factor

@@ -1,5 +1,4 @@
 import re
-import yaml
 import sys
 import datetime
 
@@ -13,33 +12,20 @@ new_version = sys.argv[1]
 # Get the current date in 'yyyy-mm-dd' format
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
-# Define custom loaders for the `!secret` and `!lambda` tags
-def secret_constructor(loader, node):
-    return node.value  # Return the raw value of `!secret` without modification
-
-def lambda_constructor(loader, node):
-    return node.value  # Return the raw value of `!lambda` without modification
-
-# Add custom constructors for `!secret` and `!lambda` tags
-yaml.SafeLoader.add_constructor('!secret', secret_constructor)
-yaml.SafeLoader.add_constructor('!lambda', lambda_constructor)
-
-# Define a custom dumper to preserve block-style literals for multi-line strings (like C++ code)
-class CustomDumper(yaml.Dumper):
-    def increase_indent(self, flow=False, indentless=False):
-        return super(CustomDumper, self).increase_indent(flow=flow, indentless=indentless)
-
-# Load the YAML file with the custom loaders
+# Read the YAML file as raw text
 with open(YAML_FILE, 'r') as yaml_file:
-    yaml_content = yaml.safe_load(yaml_file)
+    yaml_content = yaml_file.read()
 
-# Update the version field under esphome if available
-if 'esphome' in yaml_content and 'project' in yaml_content['esphome']:
-    yaml_content['esphome']['project']['version'] = new_version
+# Use a regular expression to find and replace the version under `esphome -> project -> version`
+yaml_content_updated = re.sub(
+    r'(?<=esphome:\s*\n\s*project:\s*\n\s*version:\s*)([^\n]+)',  # Match version under `esphome -> project`
+    new_version,  # Replace with new version
+    yaml_content
+)
 
-# Write the updated YAML back to the file, preserving multi-line blocks (like `!lambda`)
+# Write the updated YAML content back to the file
 with open(YAML_FILE, 'w') as yaml_file:
-    yaml.dump(yaml_content, yaml_file, Dumper=CustomDumper, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    yaml_file.write(yaml_content_updated)
 
 print(f'Updated version to {new_version} in {YAML_FILE}')
 

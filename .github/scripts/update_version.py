@@ -11,7 +11,7 @@ YAML_FILE = 'heatpump.yaml'
 new_version = sys.argv[1]
 
 # Get the current date in 'yyyy-mm-dd' format
-current_date = "- " + datetime.datetime.now().strftime('%Y-%m-%d')
+current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
 # Define a custom loader to treat `!secret` and `!lambda` tags as literal values
 class IgnoreTagsLoader(yaml.SafeLoader):
@@ -41,10 +41,11 @@ print(f'Updated version to {new_version} in {YAML_FILE}')
 with open(CHANGELOG_FILE, 'r') as f:
     changelog = f.read()
 
-# Replace the [Unreleased] section with the new version and add the current date
+# Update the [Unreleased] section with the new version and date in the format:
+# ## [1.2.3] - 2024-11-06
 updated_changelog = re.sub(
     r'\[Unreleased\](.*?)\n##',
-    f'[Unreleased]\n### Changed:\n- \n##[{new_version} ({current_date})]\\1\n##',
+    f'## [{new_version}] - {current_date}\\1\n##',
     changelog,
     flags=re.DOTALL
 )
@@ -52,4 +53,4 @@ updated_changelog = re.sub(
 with open(CHANGELOG_FILE, 'w') as f:
     f.write(updated_changelog)
 
-print(f'Replaced [Unreleased] with [{new_version} ({current_date})] in {CHANGELOG_FILE}')
+print(f'Replaced [Unreleased] with [{new_version}] - {current_date} in {CHANGELOG_FILE}')

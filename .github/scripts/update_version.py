@@ -11,8 +11,8 @@ new_version = sys.argv[1]
 
 # Define the constructor for the !secret tag
 def secret_constructor(loader, node):
-    # You can either raise an error, or return a placeholder, or load from an external source
-    return "SECRET_VALUE"  # Replace with a placeholder or logic to retrieve the secret
+    # You can return a placeholder value, or fetch secrets from another source
+    return "SECRET_VALUE"
 
 # Add the custom constructor for the !secret tag
 yaml.add_constructor('!secret', secret_constructor)

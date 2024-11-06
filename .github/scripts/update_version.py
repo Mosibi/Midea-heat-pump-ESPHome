@@ -19,7 +19,7 @@ class IgnoreTagsLoader(yaml.SafeLoader):
         # Override the default string constructor to treat all tags as plain text
         return node.value
 
-# Register this custom constructor for `!secret` and `!lambda`
+# Register this custom constructor for `!secret` and `!lambda` to prevent YAML escaping
 IgnoreTagsLoader.add_constructor('!secret', IgnoreTagsLoader.construct_yaml_str)
 IgnoreTagsLoader.add_constructor('!lambda', IgnoreTagsLoader.construct_yaml_str)
 
@@ -32,6 +32,7 @@ if 'esphome' in yaml_content and 'project' in yaml_content['esphome']:
     yaml_content['esphome']['project']['version'] = new_version
 
 # Use the default YAML Dumper to maintain order and write back the modified YAML
+# Preserve the original formatting
 with open(YAML_FILE, 'w') as yaml_file:
     yaml.safe_dump(yaml_content, yaml_file, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
@@ -43,8 +44,8 @@ with open(CHANGELOG_FILE, 'r') as f:
 
 # Insert "## [Unreleased]\n### Changed:\n- " before the new version part
 updated_changelog = re.sub(
-    r'\[Unreleased\](.*?)\n##',
-    f'## [Unreleased]\n### Changed:\n- \n[{new_version}] - {current_date}\\1\n',
+    r'\[Unreleased\](.*?)\n',
+    f'[Unreleased]\n### Changed:\n- \n## [{new_version}] - {current_date}\\1\n',
     changelog,
     flags=re.DOTALL
 )

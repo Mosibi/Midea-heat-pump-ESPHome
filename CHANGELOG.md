@@ -19,12 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Register: 200 is moved to text sensor with Homapliance decode value code to text names
 - Update Register: 211 to be fully configurable except reserved values
 - Update Register: 210 to be fully configurable except reserved values
-- Update workflow procedure to update esphome->project->version to rease version number and Replace in changelog [Unreleased]
-### Changed:
-- 
-## [4.1.2Y] - 2024-11-06 to [release generated version] - date and add at beggining new [Unreleased]
-### Changed:
-- 
+- Update workflow procedure to update esphome->project->version to rease version number and Replace in changelog Unreleased to release_generated_version - date and add at beggining new Unreleased part
+ 
 ## [4.1.2Y] - 2024-11-06 and changed: name
 - Added example of secrets to global values -usefull with common multiple projects like wifi name and password and in one place all api and ota keys
 

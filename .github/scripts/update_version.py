@@ -9,6 +9,14 @@ YAML_FILE = 'heatpump.yaml'
 # Get the version from command-line arguments
 new_version = sys.argv[1]
 
+# Define the constructor for the !secret tag
+def secret_constructor(loader, node):
+    # You can either raise an error, or return a placeholder, or load from an external source
+    return "SECRET_VALUE"  # Replace with a placeholder or logic to retrieve the secret
+
+# Add the custom constructor for the !secret tag
+yaml.add_constructor('!secret', secret_constructor)
+
 # Update the YAML file
 with open(YAML_FILE, 'r') as yaml_file:
     yaml_content = yaml.safe_load(yaml_file)

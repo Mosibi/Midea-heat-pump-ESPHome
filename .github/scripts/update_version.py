@@ -1,6 +1,7 @@
 import re
 import yaml
 import sys
+import datetime
 
 # Define filenames as variables
 CHANGELOG_FILE = 'CHANGELOG.md'
@@ -9,10 +10,13 @@ YAML_FILE = 'heatpump.yaml'
 # Get the version from command-line arguments
 new_version = sys.argv[1]
 
-# Define a custom loader to treat `!secret` and `!lambda` tags as plain strings
+# Get the current date in 'yyyy-mm-dd' format
+current_date = "- " + datetime.datetime.now().strftime('%Y-%m-%d')
+
+# Define a custom loader to treat `!secret` and `!lambda` tags as literal values
 class IgnoreTagsLoader(yaml.SafeLoader):
     def construct_yaml_str(self, node):
-        # Override the default string constructor to treat all tags as strings
+        # Override the default string constructor to treat all tags as plain text
         return node.value
 
 # Register this custom constructor for `!secret` and `!lambda`
@@ -37,9 +41,15 @@ print(f'Updated version to {new_version} in {YAML_FILE}')
 with open(CHANGELOG_FILE, 'r') as f:
     changelog = f.read()
 
-updated_changelog = re.sub(r'\[Unreleased\](.*?)\n##', f'[Unreleased]\n### Changed:\n- \n## [{new_version}]\\1\n##', changelog, flags=re.DOTALL)
+# Replace the [Unreleased] section with the new version and add the current date
+updated_changelog = re.sub(
+    r'\[Unreleased\](.*?)\n##',
+    f'[Unreleased]\n### Changed:\n- \n##[{new_version} ({current_date})]\\1\n##',
+    changelog,
+    flags=re.DOTALL
+)
 
 with open(CHANGELOG_FILE, 'w') as f:
     f.write(updated_changelog)
 
-print(f'Replaced [Unreleased] with [{new_version}] in {CHANGELOG_FILE}')
+print(f'Replaced [Unreleased] with [{new_version} ({current_date})] in {CHANGELOG_FILE}')

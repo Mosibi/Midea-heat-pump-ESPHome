@@ -15,22 +15,17 @@ current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
 # Define custom loaders for the `!secret` and `!lambda` tags
 def secret_constructor(loader, node):
-    return node.value  # Return the raw value of `!secret`
+    return node.value  # Return the raw value of `!secret` without modification
 
 def lambda_constructor(loader, node):
-    return node.value  # Return the raw value of `!lambda` to preserve formatting
+    return node.value  # Return the raw value of `!lambda` without modification
 
-# Add custom constructors for `!secret` and `!lambda`
+# Add custom constructors for `!secret` and `!lambda` tags
 yaml.SafeLoader.add_constructor('!secret', secret_constructor)
 yaml.SafeLoader.add_constructor('!lambda', lambda_constructor)
 
 # Define a custom dumper to preserve block-style literals for multi-line strings (like C++ code)
-def preserve_block_style(node):
-    # This is necessary to preserve the `|-` block style
-    return node.value
-
-# Use the custom YAML Dumper to handle `!lambda` as a block-style literal
-class CustomDumper(yaml.SafeDumper):
+class CustomDumper(yaml.Dumper):
     def increase_indent(self, flow=False, indentless=False):
         return super(CustomDumper, self).increase_indent(flow=flow, indentless=indentless)
 
@@ -52,7 +47,7 @@ print(f'Updated version to {new_version} in {YAML_FILE}')
 with open(CHANGELOG_FILE, 'r') as f:
     changelog = f.read()
 
-# Insert "## [Unreleased]\n### Changed:\n- " before the new version part
+# Insert "[Unreleased]" and update the changelog with the new version part
 updated_changelog = re.sub(
     r'\[Unreleased\](.*?)\n',
     f'[Unreleased]\n### Changed:\n- \n## [{new_version}] - {current_date}\\1\n',
@@ -64,4 +59,4 @@ updated_changelog = re.sub(
 with open(CHANGELOG_FILE, 'w') as f:
     f.write(updated_changelog)
 
-print(f'Replaced [Unreleased] with ## [Unreleased]\n### Changed:\n- \n[{new_version}] - {current_date} in {CHANGELOG_FILE}')
+print(f'Replaced [Unreleased] with [Unreleased]\n### Changed:\n- \n## [{new_version}] - {current_date} in {CHANGELOG_FILE}')

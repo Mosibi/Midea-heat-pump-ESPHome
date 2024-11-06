@@ -11,6 +11,7 @@ new_version = sys.argv[1]
 
 # Define the constructor for the !secret tag
 def secret_constructor(loader, node):
+    print(f"Handling !secret tag with value: {node.value}")
     # You can return a placeholder value, or fetch secrets from another source
     return "SECRET_VALUE"
 
@@ -19,7 +20,7 @@ yaml.add_constructor('!secret', secret_constructor)
 
 # Update the YAML file
 with open(YAML_FILE, 'r') as yaml_file:
-    yaml_content = yaml.safe_load(yaml_file)
+    yaml_content = yaml.load(yaml_file, Loader=yaml.FullLoader)  # Use FullLoader instead of safe_load     yaml.safe_load(yaml_file)
 
 yaml_content['esphome']['project']['version'] = new_version
 

@@ -18,12 +18,12 @@ def secret_constructor(loader, node):
 yaml.add_constructor('!secret', secret_constructor)
 yaml.add_constructor('!lambda', secret_constructor)
 
-
 # Update the YAML file
 with open(YAML_FILE, 'r') as yaml_file:
-    yaml_content = yaml.safe_load(yaml_file)
+    yaml_content = yaml.safe_load(yaml_file)  # Load YAML content into yaml_content
 
-if 'esphome' in data:
+# Correct the data reference to 'yaml_content' instead of 'data'
+if 'esphome' in yaml_content:
     yaml_content['esphome']['project']['version'] = new_version
 
 # Use the default YAML Dumper to maintain order

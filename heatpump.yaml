@@ -126,7 +126,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: !secret "Project_info"
-    version: 4.1.6
+    version: 4.1.2Y
   # on_boot:
     ## configure controller settings at setup
     # priority: 100

@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed:
-- 
-## [4.1.2Y] - 2024-11-06
-### Changed:
 
 - Update Register 2 min max value with verifing depending emmision type settings
 - Update Regioster 3 and 4 min, max value range
@@ -19,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Register: 200 is moved to text sensor with Homapliance decode value code to text names
 - Update Register: 211 to be fully configurable except reserved values
 - Update Register: 210 to be fully configurable except reserved values
+- Update workflow procedure to update esphome->project->version to rease version number and Replace in changelog [Unreleased] to [release generated version] - date and add at beggining new [Unreleased] and changed: name
+- Added example of secrets to global values -usefull with common multiple projects like wifi name and password and in one place all api and ota keys
 
 ## [4.1.2] - 2024-10-16
 

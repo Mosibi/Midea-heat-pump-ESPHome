@@ -12,7 +12,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub Actions token
       DEFAULT_NAME: "github-actions[bot]"
       DEFAULT_EMAIL: "github-actions[bot]@users.noreply.github.com"
-      TARGET_BRANCH: "master"                       # Target branch name
+      TARGET_BRANCH: "master-york-with-automations"                       # Target branch name
 
     steps:
       - name: Checkout Code

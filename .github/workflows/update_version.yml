@@ -1,38 +1,46 @@
----
-name: Update version in heatpump.yaml
+name: Update Heatpump and Changelog Version from Release
 
 on:
-  pull_request:
-    branches:
-      - master
-    types: [closed]
-
-env:
-  YAML_UPDATED: false
+  release:
+    types: [published]
 
 jobs:
-  update-version:
-    if: ${{ github.event.pull_request.merged }}
+  update_version:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub Actions token
+      DEFAULT_NAME: "github-actions[bot]"
+      DEFAULT_EMAIL: "github-actions[bot]@users.noreply.github.com"
+      TARGET_BRANCH: "master"                       # Target branch name
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Update version
+      - name: Checkout Code
+        uses: actions/checkout@v4  # Use the latest version
+
+      - name: Install Python
         run: |
-          cat heatpump.yaml |grep -A7 ^esphome
-          bash .github/scripts/set_version.sh
-          cat heatpump.yaml |grep -A7 ^esphome
-      - name: Commit files
-        if: ${{ env.YAML_UPDATED == 'true' }}
+          sudo apt-get update
+          sudo apt-get install python3 python3-pip
+
+      - name: Install PyYAML
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "Updated version in heatpump.yaml"
-      - name: Push changes
-        if: ${{ env.YAML_UPDATED == 'true' }}
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          pip3 install pyyaml  # Use pip3 to install for Python 3
+
+      - name: Set Git Config
+        run: |
+          echo "Using NAME: ${{ env.DEFAULT_NAME }}"
+          echo "Using EMAIL: ${{ env.DEFAULT_EMAIL }}"
+          git config --local user.email "${{ env.DEFAULT_EMAIL }}"
+          git config --local user.name "${{ env.DEFAULT_NAME }}"
+
+      - name: Update Version
+        run: python3 .github/scripts/update_version.py ${{ github.event.release.tag_name }}
+
+      - name: Commit Changes
+        run: |
+          git add heatpump.yaml CHANGELOG.md
+          git commit -m "Update version to ${{ github.event.release.tag_name }}"
+          git push origin HEAD:${{ env.TARGET_BRANCH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

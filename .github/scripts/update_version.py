@@ -10,20 +10,21 @@ YAML_FILE = 'heatpump.yaml'
 new_version = sys.argv[1]
 
 # Define the constructor for the !secret tag
-def ignore_secret(loader, node):
-    # Simply return the node value (you could also return a placeholder if needed)
-    return None  # Or return "SECRET_VALUE" to use a placeholder
+def secret_constructor(loader, node):
+    # Return a placeholder value for the !secret tag
+    return 'SECRET_VALUE'  # You can adjust this if you'd like a different placeholder
 
 # Add the custom constructor for the !secret tag
-yaml.add_constructor('!secret', ignore_secret)
-yaml.add_constructor('!lambda', ignore_secret)
+yaml.add_constructor('!secret', secret_constructor)
+yaml.add_constructor('!lambda', secret_constructor)
 
 
 # Update the YAML file
 with open(YAML_FILE, 'r') as yaml_file:
-    yaml_content = yaml.load(yaml_file, Loader=yaml.FullLoader)  # Use FullLoader instead of safe_load   yaml.safe_load(yaml_file)
+    yaml_content = yaml.safe_load(yaml_file)
 
-yaml_content['esphome']['project']['version'] = new_version
+if 'esphome' in data:
+    yaml_content['esphome']['project']['version'] = new_version
 
 # Use the default YAML Dumper to maintain order
 with open(YAML_FILE, 'w') as yaml_file:
@@ -35,7 +36,7 @@ print(f'Updated version to {new_version} in {YAML_FILE}')
 with open(CHANGELOG_FILE, 'r') as f:
     changelog = f.read()
 
-updated_changelog = re.sub(r'\[Unreleased\](.*?)\n##', f'[Unreleased]\n### Changed:\n- \n[{new_version}]\\1\n##', changelog, flags=re.DOTALL)
+updated_changelog = re.sub(r'\[Unreleased\](.*?)\n##', f'[Unreleased]\n### Changed:\n- \n##[{new_version}]\\1\n##', changelog, flags=re.DOTALL)
 
 with open(CHANGELOG_FILE, 'w') as f:
     f.write(updated_changelog)

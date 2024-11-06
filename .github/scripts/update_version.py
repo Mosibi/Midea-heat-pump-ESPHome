@@ -19,10 +19,6 @@ class IgnoreTagsLoader(yaml.SafeLoader):
         # Override the default string constructor to treat all tags as plain text
         return node.value
 
-# Register this custom constructor for `!secret` and `!lambda` to prevent YAML escaping
-IgnoreTagsLoader.add_constructor('!secret', IgnoreTagsLoader.construct_yaml_str)
-IgnoreTagsLoader.add_constructor('!lambda', IgnoreTagsLoader.construct_yaml_str)
-
 # Load the YAML file with the custom loader
 with open(YAML_FILE, 'r') as yaml_file:
     yaml_content = yaml.load(yaml_file, Loader=IgnoreTagsLoader)

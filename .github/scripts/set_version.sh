@@ -1,54 +1,33 @@
-#!/usr/bin/env bash
+import re
+import yaml
+import sys
 
-# This script extracts the new version from the
-# file CHANGELOG.md and uses that version to update
-# .esphome.project.version in heatpump.yaml
+# Define filenames as variables
+CHANGELOG_FILE = 'CHANGELOG.md'
+YAML_FILE = 'heatpump.yaml'
 
+# Get the version from command-line arguments
+new_version = sys.argv[1]
 
-function Message() {
-  local LEVEL="${1:=INFO}"
-  local MESSAGE="${2}"
-  echo "$(basename $0) [${LEVEL}]: ${MESSAGE}"
-}
+# Update the YAML file
+with open(YAML_FILE, 'r') as yaml_file:
+    yaml_content = yaml.safe_load(yaml_file)
 
-function Info() {
-  local MESSAGE="${1}"
-  Message "INFO" "${MESSAGE}"
-}
+yaml_content['esphome']['project']['version'] = new_version
 
-function Warning() {
-  local MESSAGE="${1}"
-  Message "WARNGIN" "${MESSAGE}"
-}
+# Use the default YAML Dumper to maintain order
+with open(YAML_FILE, 'w') as yaml_file:
+    yaml.safe_dump(yaml_content, yaml_file, default_flow_style=False, sort_keys=False)
 
-function Error() {
-  local MESSAGE="${1}"
-  Message "ERROR" "${MESSAGE}"
-  exit 101
-}
+print(f'Updated version to {new_version} in {YAML_FILE}')
 
-VERSION_FROM_CHANGELOG=$(grep '^## \[[0-9]' CHANGELOG.md | sed -E 's/^##\ \[([0-9].*)\]\ -.*/\1/g' | head -1)
-VERSION_IN_YAML=$(awk '/^ {4}version:/ {print $NF}' heatpump.yaml)
+# Replace unreleased section in CHANGELOG.md
+with open(CHANGELOG_FILE, 'r') as f:
+    changelog = f.read()
 
-if [[ ! -z "${VERSION_FROM_CHANGELOG}" ]] && [[ "${VERSION_FROM_CHANGELOG}" =~ ^[0-9].*$ ]]; then
-  Info "Version extracted from changelog is ${VERSION_FROM_CHANGELOG}"
-  Info "Current version in heatpump.yaml is ${VERSION_IN_YAML}"
+updated_changelog = re.sub(r'\[Unreleased\](.*?)\n##', f'[Unreleased]\n### Changed:\n- \n[{new_version}]\\1\n##', changelog, flags=re.DOTALL)
 
-  if [[ "${VERSION_FROM_CHANGELOG}" == "${VERSION_IN_YAML}" ]]; then
-    Info "Versions are the same, nothing has to be done now"
-    exit 0
-  fi
+with open(CHANGELOG_FILE, 'w') as f:
+    f.write(updated_changelog)
 
-  # Check if version already exists
-  git describe "${VERSION_FROM_CHANGELOG}" --tags  1>/dev/null 2>/dev/null
-
-  if [[ $? -eq 0 ]]; then
-    Error "Version (tag) ${VERSION_FROM_CHANGELOG} already exists"
-  else
-    sed -i -E "s/(^\ {4}version:)(.*$)/\1 ${VERSION_FROM_CHANGELOG}/g" heatpump.yaml || Error "Could not update version in heatpump.yaml"
-    Info "Version in heatpump.yaml is successful updated to ${VERSION_FROM_CHANGELOG}"
-    echo "YAML_UPDATED=true" >> $GITHUB_ENV
-  fi
-else
-  Warning "Version extracted from CHANGELOG.md does not seem to be a version tag: ${VERSION_FROM_CHANGELOG}, version will not be updated"
-fi
+print(f'Replaced [Unreleased] with [{new_version}] in {CHANGELOG_FILE}')

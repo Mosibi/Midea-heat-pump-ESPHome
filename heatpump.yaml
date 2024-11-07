@@ -127,20 +127,20 @@ esphome:
   project:
     name: !secret "Project_info"
     version: 4.1.2Y
-  # on_boot:
+  on_boot:
     ## configure controller settings at setup
-    # priority: 100
-    # then:
-    #   - lambda: 'id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(id(tempereture_avg_last_hour));'
-    #   - lambda: 'id(${devicename}_outdoor_ambient_temperature_daily).publish_state(id(tempereture_avg_last_24h));'
-    #   - lambda: 'id(${devicename}_enable_recoverytime_enable_dhw).publish_state(Restore_enable_DHW);' #Restore_enable_DHW));
-    #   - lambda: 'id(${devicename}_enable_recoverytime_enable_zone1).publish_state(Restore_enable_Zone1);' #id(Restore_enable_Zone1));
-    #   - lambda: 'id(${devicename}_enable_recoverytime_enable_zone2).publish_state(Restore_enable_Zone2);' #id(Restore_enable_Zone2));
-    #   - lambda: |-
-    #               if (id(Restore_enable_DHW)) id(${devicename}_power_dhw_t5s).turn_on();
-    #               if (id(Restore_enable_Zone1)) id(${devicename}_power_heat_cool_control_zone1).turn_on();
-    #               if (id(Restore_enable_Zone2)) id(${devicename}_power_heat_cool_control_zone2).turn_on();
-    #               ESP_LOGE("BOOT", "JUST BOOTED");
+    priority: 100
+    then:
+      - lambda: 'id(${devicename}_outdoor_ambient_temperature_hourly).publish_state(id(tempereture_avg_last_hour));'
+      - lambda: 'id(${devicename}_outdoor_ambient_temperature_daily).publish_state(id(tempereture_avg_last_24h));'
+      - lambda: 'id(${devicename}_enable_recoverytime_enable_dhw).publish_state(Restore_enable_DHW);' #Restore_enable_DHW));
+      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone1).publish_state(Restore_enable_Zone1);' #id(Restore_enable_Zone1));
+      - lambda: 'id(${devicename}_enable_recoverytime_enable_zone2).publish_state(Restore_enable_Zone2);' #id(Restore_enable_Zone2));
+      - lambda: |-
+                  if (id(Restore_enable_DHW)) id(${devicename}_power_dhw_t5s).turn_on();
+                  if (id(Restore_enable_Zone1)) id(${devicename}_power_heat_cool_control_zone1).turn_on();
+                  if (id(Restore_enable_Zone2)) id(${devicename}_power_heat_cool_control_zone2).turn_on();
+                  ESP_LOGE("BOOT", "JUST BOOTED");
     #this allow change ota password for next upload
     #id(my_ota).set_auth_password(!secret "heatpump_controller_ota_password");
 ################################################################################################################################
@@ -677,11 +677,12 @@ select:
     lambda: |-
       // Update the global var unmasked_value_register_272
       id(unmasked_value_register_272) = x;
+      
       // ESP_LOGI("Register 272","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
       // Extracting 4-bit values
       uint8_t zone1_h_emission = x & 0xF;
       // ESP_LOGI("Register 272","zone1_h_emission is %d"zone2_h_emission);
-      // Map/dictionary with the possible values
       std::string string_result;
       if (zone1_h_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -695,7 +696,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      ESP_LOGI("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
+      // ESP_LOGD("Register 272", "zone1_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 1
       new_value &= 0xFFF0;     // Clear the first 4 bits
@@ -720,11 +721,13 @@ select:
     lambda: |-
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
-      // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+      // ESP_LOGD("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
       // Extracting 4-bit values
       uint8_t zone2_h_emission = (x >> 4) & 0xF;
-      // ESP_LOGI("Register 272","zone2_h_emission is %d", zone2_h_emission);
-      // Map/dictionary with the possible values
+
+
+      // ESP_LOGD("Register 272","zone2_h_emission is %d", zone2_h_emission);
       std::string string_result;
       if (zone2_h_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -738,7 +741,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      ESP_LOGI("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
+      // ESP_LOGD("Register 272", "zone2_h_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the heating emission type for zone 2
       new_value &= 0xFF0F;             // Clear the second pair of 4 bits
@@ -764,10 +767,10 @@ select:
       // Updating the global var unmasked_value_register_272 is already done
       // in the first part of this register
       // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
       // Extracting 4-bit values
       uint8_t zone1_c_emission = (x >> 8) & 0xF;
       // ESP_LOGD("Register 272","zone1_c_emission is %d", zone1_c_emission);
-      // Map/dictionary with the possible values
       std::string string_result;
       if (zone1_c_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -811,7 +814,6 @@ select:
       // Extracting 4-bit values
       uint8_t zone2_c_emission = (x >> 12) & 0xF;
       // ESP_LOGI("Register 272","zone2_c_emission is %d", zone2_c_emission);
-      // Map/dictionary with the possible values
       std::string string_result;
       if (zone2_c_emission == 0) {
         string_result = "Fan Coil Unit";
@@ -825,7 +827,7 @@ select:
       }
       return string_result;
     write_lambda: |-
-      ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
+      // ESP_LOGI("Register 272", "zone2_c_emission Set option to %s (%lld)", x.c_str(), value);
       uint16_t new_value = id(unmasked_value_register_272);  // The original unmasked value
       uint8_t value_byte = value;                            // New byte value with the cooling emission type for zone 2
       new_value &= 0x0FFF;              // Clear the fourth pair of 4 bits
@@ -1092,7 +1094,7 @@ sensor:
     unit_of_measurement: "%"
     filters: 
     - calibrate_linear:  
-      #York have movement 0-480
+      # York, MIDEA have movement 0-480
       - 0 -> 0.0
       - 480 -> 100.0
   # Register: 104
@@ -1270,7 +1272,7 @@ sensor:
   # Midea: Tbt1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Hydraulic Module Current 1 or tbt1"
+    name: "Hydraulic Module Current 1 or TBT1"
     id: "${devicename}_hydraulic_module_current_1_tbt1"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
@@ -1281,7 +1283,7 @@ sensor:
   # Midea: Tbt2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Hydraulic Module Current 2 or tbt2"
+    name: "Hydraulic Module Current 2 or TBT2"
     id: "${devicename}_hydraulic_module_current_2_tbt2"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
@@ -2390,7 +2392,7 @@ binary_sensor:
   #   bitmask: 0x8000
   # Register: 210, Bit: 6, default: false, TODO: verify default
   - platform: template
-    name: "PS1 T1S Heating High Low Temperature Settings RO?"
+    name: "PS1 T1S Heating High Low Temperature Settings"
     id: "${devicename}_p_s_1_t1s_heating_high_low_temperature_settings"
     icon: mdi:eye
     lambda: "return (id(unmasked_value_register_210) & 0x40) == 0x40; // Return status bit6"
@@ -2409,7 +2411,7 @@ binary_sensor:
   #   lambda: "return (id(unmasked_value_register_210) & 0x800) == 0x800; // Return status bit11"
   # Register: 210, Bit: 14, default: false, TODO: verify default
   - platform: template
-    name: "PS1 Supports Water Tank Electric Heater TBH RO?"
+    name: "PS1 Supports Water Tank Electric Heater TBH"
     id: "${devicename}_p_s_1_supports_water_tank_electric_heater_tbh"
     icon: mdi:eye
     disabled_by_default: true
@@ -5217,7 +5219,8 @@ text_sensor:
     icon: mdi:power
     entity_category: "diagnostic"
     lambda: |-
-      if (id(${devicename}_load_output_run).state) {
+      int fan_speed = id(${devicename}_fan_speed).state;
+      if (id(${devicename}_load_output_run).state or id(${devicename}_load_output_water_pump_pump_i).state or fan_speed > 0) {
         // The heat pump is on
         if (id(${devicename}_status_bit_1_defrosting).state) {
           return {"Defrosting"};

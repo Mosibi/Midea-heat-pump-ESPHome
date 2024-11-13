@@ -5212,10 +5212,20 @@ number:
     entity_category: config
     min_value: 25
     max_value: 55
+    initial_value: 38
     step: 1
     optimistic: True
     mode: slider
     restore_value: True
+    on_value: 
+      then:
+        - lambda: |-
+            if (id(esptime).now().hour >= ${hour_start_day} and id(esptime).now().hour <= ${hour_end_day}) {
+              // Set Heating to const 44deg on the day -there is chance that sun generate some energy -floor pump control temp for floor and second for recuperation radiant
+              auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+              t1s_zone_1.set_value(x);
+              t1s_zone_1.perform();
+            }
   - platform: template
     name: "Heating to temp at night"
     id: "${devicename}_heating_to_temp_at_night"
@@ -5224,11 +5234,20 @@ number:
     entity_category: config
     min_value: 25
     max_value: 55
+    initial_value: 30
     step: 1
     optimistic: True
     mode: slider
     restore_value: True
-
+    on_value: 
+      then:
+        - lambda: |-
+            if (id(esptime).now().hour < ${hour_start_day} or id(esptime).now().hour > ${hour_end_day}  ) {
+              // Set Heating to const 32deg on the night -no sun to generate energy
+              auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+              t1s_zone_1.set_value(x);
+              t1s_zone_1.perform();
+            }
 
 ################################################################################################################################
 text_sensor:

@@ -371,9 +371,10 @@ interval:
                 id(${devicename}_relay2_external_pump).turn_off();   //#################
               }
             }
-  - interval: 60min #15min
+  - interval: 600min #15min
     then:
       - lambda: |-
+            // Temporary disable this -set const values
             if (!id(esptime).is_failed()) {
               //calculate curve and set T1s
               //${devicename}_temperature_t1s_zone1      set_water_temperature_t1s_zone_1
@@ -452,8 +453,9 @@ interval:
               } else if (operation_state == "Heat" or operation_state == "Auto") {
                 auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
                 if (calculated_temp < 29) calculated_temp = 29;
-                t1s_zone_1.set_value(calculated_temp);
-                t1s_zone_1.perform();
+                if (calculated_temp > 43) calculated_temp = 43;
+                // t1s_zone_1.set_value(calculated_temp);
+                // t1s_zone_1.perform();
                 ESP_LOGI("interval_time_30min", "Setting temp for Heat mode %f Out Temp %f", calculated_temp, ext_t4_temp);
               }
             }
@@ -467,8 +469,9 @@ interval:
             bool dhwstate = id(${devicename}_power_dhw_t5s).state;
             bool zone1state = id(${devicename}_power_heat_cool_control_zone1).state;
             bool zone2state = id(${devicename}_power_heat_cool_control_zone2).state;
-            ESP_LOGI("interval_delta", "now.month: %i, month_start_summer: %i, month_end_summer: %i comp month>=month_start: %s, id(esptime).now().month <= month_end_summer %s", id(esptime).now().month, ${month_start_summer}, ${month_end_summer}, (id(esptime).now().month >= ${month_start_summer})?"Yes":"No", id(esptime).now().month <= ${month_end_summer}?"Yes":"No");
             if (id(esptime).now().month >= ${month_start_summer} and id(esptime).now().month <= ${month_end_summer}) {
+              //change from heat to cool don't stop heatpump
+              ESP_LOGI("interval_delta", "now.month: %i, month_start_summer: %i, month_end_summer: %i comp month>=month_start: %s, id(esptime).now().month <= month_end_summer %s", id(esptime).now().month, ${month_start_summer}, ${month_end_summer}, (id(esptime).now().month >= ${month_start_summer})?"Yes":"No", id(esptime).now().month <= ${month_end_summer}?"Yes":"No");
               //change from heat to cool don't stop heatpump
               auto m1_mode = id( ${devicename}_operational_mode).make_call();
               m1_mode.set_option("Cool");
@@ -500,12 +503,11 @@ interval:
                 delta_dtsc.perform();
                 essential_changed = true;
               }
-              new_delta_dhw_day = 5;
-            }
-            //change parameters to winter mode -months 1-4 and 10-12
-            ESP_LOGI("interval_delta", "now.month: %i, month_start_summer: %i, month_end_summer: %i comp month<month_start: %s, id(esptime).now().month > month_end_summer %s", id(esptime).now().month, ${month_start_summer}, ${month_end_summer}, (id(esptime).now().month < ${month_start_summer})?"Yes":"No", id(esptime).now().month > ${month_end_summer}?"Yes":"No");
+              new_delta_dhw_day = 5;    //for summer
+            } else
             if (id(esptime).now().month < ${month_start_summer} or id(esptime).now().month > ${month_end_summer}) {
-              //change from heat to cool don't stop heatpump
+              //change parameters to winter mode -months 1-4 and 10-12
+              ESP_LOGI("interval_delta", "now.month: %i, month_start_summer: %i, month_end_summer: %i comp month<month_start: %s, id(esptime).now().month > month_end_summer %s", id(esptime).now().month, ${month_start_summer}, ${month_end_summer}, (id(esptime).now().month < ${month_start_summer})?"Yes":"No", id(esptime).now().month > ${month_end_summer}?"Yes":"No");
               auto m1_mode = id( ${devicename}_operational_mode).make_call();
               m1_mode.set_option("Heat");
               m1_mode.perform();
@@ -536,35 +538,46 @@ interval:
                 delta_dtsc.perform();
                 essential_changed = true;
               }
-              new_delta_dhw_day = 7;
+              new_delta_dhw_day = 7;    //for winter
             }
-            //set delta DHW to 5degree for day
-            //changing delta disables heatpump
-            float actual_delta_dhw = id(${devicename}_dt5_on).state;
-            //for winter return delta 7, for summer delta 5
+
+
+            // Disable DHW for night or modify delta
             if (id(esptime).now().hour >= ${hour_start_day} and id(esptime).now().hour <= ${hour_end_day}) {
-              if (actual_delta_dhw != new_delta_dhw_day ) {
-                auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
-                delta__dt5_on.set_value(new_delta_dhw_day);
-                delta__dt5_on.perform();
-                essential_changed = true;
-              }
+              // Settings DHW for day
+              // new_delta_dhw_day = new_delta_dhw_day;
               id(${devicename}_power_dhw_t5s).turn_on();
+
+              // Set Heating to const 44deg on the day -there is chance that sun generate some energy -floor pump control temp for floor and second for recuperation radiant
+              auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+              t1s_zone_1.set_value(id(${devicename}_heating_to_temp_at_day).state);
+              t1s_zone_1.perform();
+            } else 
+            if (id(esptime).now().hour < ${hour_start_day} or id(esptime).now().hour > ${hour_end_day}  ) {
+              // Settings DHW for night
+              // CHANGE DELTA FOR DHW WATER HEATING to ~32deg for night (Actual set DHW temp to which is heated - minimal accepted temp for DHW + 1)
+              // delta will have value from destination temp - minimal temp eg. 48deg - 32 deg = 17deg
               
-              ESP_LOGE("interval_time_1h_1_delta","Changed delta T5s for DHW at day to: %f", new_delta_dhw_day);
-            } else if (id(esptime).now().hour < ${hour_start_day} or id(esptime).now().hour > ${hour_end_day}  ) {
-              //set delta DHW to reach minimum wanted DHW temp to allow drop at night
-              //CHANGE DELTA FOR DHW WATER HEATING to ~32deg for night (Actual set DHW temp to which is heated - minimal accepted temp for DHW + 1)
-              float new_delta_night = (float(id(${devicename}_set_dhw_tank_temperature_t5s).state) - float(id(${devicename}_gl_dhw_minimal_temp).state) + 1);
-              if (actual_delta_dhw != new_delta_night) {
-                // auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
-                // delta__dt5_on.set_value(new_delta_night);
-                // delta__dt5_on.perform();
-                // essential_changed = true;
-                ESP_LOGE("interval_time_1h_1","Changed delta T5s for DHW at night to: %f", new_delta_night);
-              }
+              // new_delta_night = (float(id(${devicename}_set_dhw_tank_temperature_t5s).state) - float(id(${devicename}_gl_dhw_minimal_temp).state) + 1);
+              // or disable DHW heating for night
               id(${devicename}_power_dhw_t5s).turn_off();
+
+              // Set Heating to const 32deg on the night -no sun to generate energy
+              auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+              t1s_zone_1.set_value(id(${devicename}_heating_to_temp_at_day).state);
+              t1s_zone_1.perform();
             }
+            // changing delta disables heatpump
+            // Applying delta value
+            float actual_delta_dhw = id(${devicename}_dt5_on).state;
+            if (actual_delta_dhw != new_delta_dhw_day ) {
+              auto delta__dt5_on = id(${devicename}_dt5_on).make_call();
+              delta__dt5_on.set_value(new_delta_dhw_day);
+              delta__dt5_on.perform();
+              essential_changed = true;
+              ESP_LOGE("interval_time_1h_1_delta","Changed delta T5s for DHW to: %f", new_delta_dhw_day);
+            }
+
             // Neccesserry default values turn on
             // Maybe: Make heat pump silent at night between 22 and 6 am  YorkM5functionMOde   bitSet(tmptemp, 6);    //SilentMode              bitClear(tmptemp, 7);  //SuperSilent
             // I use only zone 1 -actually this is buffer -not directly to radiators -this is much better choice, in cooling i cool buffer. Enabling air conditioner is different functionallity ;(
@@ -574,22 +587,25 @@ interval:
               essential_changed = true;
               ESP_LOGI("interval_time_1h_2", "Set p_s_1_heating_and_cooling_first_or_water_first");
             }
+            // Enable Heating bit
             if (!id(${devicename}_p_s_1_enable_heating).state) {
               id(${devicename}_p_s_1_enable_heating).publish_state(true);
               essential_changed = true;
               ESP_LOGI("interval_time_1h_2", "Set p_s_1_enable_heating");
             }
+            // Enable Cooling bit
             if (!id(${devicename}_p_s_1_enable_cooling).state) {
               id(${devicename}_p_s_1_enable_cooling).publish_state(true);
               essential_changed = true;
               ESP_LOGI("interval_time_1h_2", "Set p_s_1_enable_cooling");
             }
+            // Enable DHW heating bit
             if (!id(${devicename}_p_s_1_enable_water_heating).state) {
               id(${devicename}_p_s_1_enable_water_heating).publish_state(true);
               essential_changed = true;
               ESP_LOGI("interval_time_1h_2", "Set p_s_1_enable_water_heating");
             }
-            //#update heat and cool end for zone 1 -i use buffer to cool so I need to set for cool "Fan Coil Unit" which enables temp range 5-25 degree
+            // Emmision types update heat and cool end for zone 1 -i use buffer to cool so I need to set for cool "Fan Coil Unit" which enables temp range 5-25 degree
             auto zone1_cooling_end_state = id(${devicename}_zone_1_end_cooling_mode_emission_type).state;
             if (zone1_cooling_end_state != "Fan Coil Unit") {
               auto zone1_cooling_end = id(${devicename}_zone_1_end_cooling_mode_emission_type).make_call();
@@ -608,8 +624,9 @@ interval:
               ESP_LOGI("interval_time_1h_2", "Set Zone 1 heating to Underfloor Heating was: %s", zone1_heating_end_state.c_str());
             }
             if (essential_changed) {
-              delay(1500);
+              delay(900);
               //some essential parameter was chanagedd so Heat pump disable heat -so enable it now -this is not manual disable
+              // Restore previous states on/off
               if (dhwstate) id(${devicename}_power_dhw_t5s).turn_on();
               if (zone1state) id(${devicename}_power_heat_cool_control_zone1).turn_on();
               if (zone2state) id(${devicename}_power_heat_cool_control_zone2).turn_on();
@@ -5186,6 +5203,33 @@ number:
       then:
         lambda: 'ESP_LOGI("SM Output External pump for antifreeze -spare","Actual value: %f min", x);'                        
   
+  # Implementation heat buffer at day and night
+  - platform: template
+    name: "Heating to temp at day"
+    id: "${devicename}_heating_to_temp_at_day"
+    icon: mdi:temperature-celsius
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 55
+    step: 1
+    optimistic: True
+    mode: slider
+    restore_value: True
+  - platform: template
+    name: "Heating to temp at night"
+    id: "${devicename}_heating_to_temp_at_night"
+    icon: mdi:temperature-celsius
+    unit_of_measurement: "°C"
+    entity_category: config
+    min_value: 25
+    max_value: 55
+    step: 1
+    optimistic: True
+    mode: slider
+    restore_value: True
+
+
 ################################################################################################################################
 text_sensor:
   - platform: version

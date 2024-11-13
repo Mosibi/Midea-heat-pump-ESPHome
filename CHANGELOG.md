@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed:
-- 
+- Added 2 new number sensor: temp to heat at day and night -useful when using buffer not heating directly -the curve doesn't work well in that case
+- temporary disabled calculated curve -it is part updated every 600min now and disabled set heat temp t1s
+
 ## [4.1.2Y] - 2024-11-06
 ### Changed:
 

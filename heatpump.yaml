@@ -571,7 +571,7 @@ interval:
               if (id(${devicename}_operational_mode).state == ${subst_heat}) {
                 // Only in Heat mode
                 auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
-                t1s_zone_1.set_value(id(${devicename}_heating_to_temp_at_day).state);
+                t1s_zone_1.set_value(id(${devicename}_heating_to_temp_at_night).state);
                 t1s_zone_1.perform();
               }
             }

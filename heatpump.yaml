@@ -373,95 +373,90 @@ interval:
                 id(${devicename}_relay2_external_pump).turn_off();   //#################
               }
             }
-  - interval: 600min #15min
-    then:
-      - lambda: |-
-            // Temporary disable this -set const values
-            if (!id(esptime).is_failed()) {
-              //calculate curve and set T1s
-              //${devicename}_temperature_t1s_zone1      set_water_temperature_t1s_zone_1
-              auto operation_state = id(${devicename}_operational_mode).state;
-              ESP_LOGI("interval_time_30min", "Setting temp for mode .%s. compare: %s", operation_state.c_str(), (operation_state == ${subst_cool})?"YES":"NO");
+  # - interval: 600min #15min
+  #   then:
+  #     - lambda: |-
+  #           // Temporary disable this -set const values
+  #           if (!id(esptime).is_failed()) {
+  #             //calculate curve and set T1s
+  #             //${devicename}_temperature_t1s_zone1      set_water_temperature_t1s_zone_1
+  #             auto operation_state = id(${devicename}_operational_mode).state;
+  #             ESP_LOGI("interval_time_30min", "Setting temp for mode .%s. compare: %s", operation_state.c_str(), (operation_state == ${subst_cool})?"YES":"NO");
 
-              //calculae curve
-              float ext_t4_temp = id(${devicename}_outdoor_ambient_temperature).state;
-              float calculated_temp = 35;
-              float avg_temp;
-              if (${devicename}_outdoor_ambient_temperature_daily != 0) {
-                avg_temp = id(${devicename}_outdoor_ambient_temperature_daily).state;
-              } else if (${devicename}_outdoor_ambient_temperature_hourly != 0) {
-                avg_temp = id(${devicename}_outdoor_ambient_temperature_hourly).state;
-              } else avg_temp = id(${devicename}_outdoor_ambient_temperature).state;
-              // Arduino map implementation 
-              // Long map(long xx, long in_min, long in_max, long out_min, long out_max){
-              // Rreturn (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;}
-              float xx, in_min, in_max, out_min, out_max;
-              // float temp_floorheat = map(avg_temp, -20, 15, 50, 25); //zmapuj zakres zewnatrz gdy -20 to grzej 50 a gdy zewnatrz 15 grzej 15
-              xx = avg_temp;
-              in_min = -20;
-              in_max = 15;
-              out_min = 50;
-              out_max = 25;
-              float temp_floorheat = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-              xx = temp_floorheat;
-              in_min = 50;
-              in_max = 25;
-              out_min = 50;
-              out_max = 35;
-              // calculated_temp = map(temp_floorheat, 50, 25, 50, 35);
-              calculated_temp = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  #             //calculae curve
+  #             float ext_t4_temp = id(${devicename}_outdoor_ambient_temperature).state;
+  #             float calculated_temp = 35;
+  #             float avg_temp;
+  #             if (${devicename}_outdoor_ambient_temperature_daily != 0) {
+  #               avg_temp = id(${devicename}_outdoor_ambient_temperature_daily).state;
+  #             } else if (${devicename}_outdoor_ambient_temperature_hourly != 0) {
+  #               avg_temp = id(${devicename}_outdoor_ambient_temperature_hourly).state;
+  #             } else avg_temp = id(${devicename}_outdoor_ambient_temperature).state;
+  #             // Arduino map implementation 
+  #             // Long map(long xx, long in_min, long in_max, long out_min, long out_max){
+  #             // Rreturn (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;}
+  #             float xx, in_min, in_max, out_min, out_max;
+  #             // float temp_floorheat = map(avg_temp, -20, 15, 50, 25); //zmapuj zakres zewnatrz gdy -20 to grzej 50 a gdy zewnatrz 15 grzej 15
+  #             xx = avg_temp;
+  #             in_min = -20;
+  #             in_max = 15;
+  #             out_min = 50;
+  #             out_max = 25;
+  #             float temp_floorheat = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  #             xx = temp_floorheat;
+  #             in_min = 50;
+  #             in_max = 25;
+  #             out_min = 50;
+  #             out_max = 35;
+  #             // calculated_temp = map(temp_floorheat, 50, 25, 50, 35);
+  #             calculated_temp = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 
-              if (calculated_temp < 30) calculated_temp = 28;
-              calculated_temp *= 0.2;
-              ESP_LOGI("interval_time_30min", "Calculated curve for heating my without room temps is %f", calculated_temp);
-              id(${devicename}_calculated_curve).publish_state(calculated_temp);
-
-
-              float baseTemp = calculated_temp; // Flow temperature at 0°C outdoor
-              float tempChangePerDegree = 1.0; // Flow temperature increase per degree drop in outdoor temperature
-              // Calculate temperature difference from desired room temperature
-              float tempDifference = 22.0 - float(id(${devicename}_external_temp_sensor_avg_rooms_temp).state);    //22 is wanted room temp
-              if (avg_temp < 0) {
-                calculated_temp = baseTemp + (-avg_temp) * tempChangePerDegree + (tempDifference * 1.5);
-              } else {
-                calculated_temp = baseTemp - avg_temp * (tempChangePerDegree / 2) + (tempDifference * 1.5);
-              }
-
-              // float temp_floorheat = map(srednia, -20, 15, 50, 25); //zmapuj zakres zewnatrz gdy -20 to grzej 50 a gdy zewnatrz 15 grzej 15
-              // float setT1STempZone1 = map(temp_floorheat, 50, 25, 50, 35);
-              // *0.2
-              ESP_LOGI("interval_time_30min", "Calculated curve for heating is %f", calculated_temp);
-              id(${devicename}_calculated_curve2).publish_state(calculated_temp);
-              // Arduino map implementation
-              xx = id(${devicename}_external_temp_sensor_avg_rooms_temp).state;
-              in_min = 19.5;
-              in_max = 22;
-              out_min = 45;
-              out_max = 28;                    
-              float temp_curve = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-              // float temp_curve = map(id(${devicename}_external_temp_sensor_avg_rooms_temp).state, 19.5, 22, 45, 28);
-
-              calculated_temp = temp_curve;
-              ESP_LOGI("interval_time_30min", "Calculated curve 3 for heating is %f", temp_curve);
-              id(${devicename}_calculated_curve3).publish_state(temp_curve);
+  #             if (calculated_temp < 30) calculated_temp = 28;
+  #             calculated_temp *= 0.2;
+  #             ESP_LOGI("interval_time_30min", "Calculated curve for heating my without room temps is %f", calculated_temp);
+  #             id(${devicename}_calculated_curve).publish_state(calculated_temp);
 
 
-              // Set Heating/Cooling temp of Zone 1 calculated
-              if (operation_state == ${subst_cool}) {
-                auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
-                t1s_zone_1.set_value(5);
-                t1s_zone_1.perform(); 
-                ESP_LOGI("interval_time_30min", "Setting temp for Cool mode %d", 5);
-              } else if (operation_state == ${subst_heat} or operation_state == "Auto") {
-                auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
-                if (calculated_temp < 29) calculated_temp = 29;
-                if (calculated_temp > 43) calculated_temp = 43;
-                // t1s_zone_1.set_value(calculated_temp);
-                // t1s_zone_1.perform();
-                ESP_LOGI("interval_time_30min", "Setting temp for Heat mode %f Out Temp %f", calculated_temp, ext_t4_temp);
-              }
-            }
-  - interval: 120min #1h
+  #             float baseTemp = calculated_temp; // Flow temperature at 0°C outdoor
+  #             float tempChangePerDegree = 1.0; // Flow temperature increase per degree drop in outdoor temperature
+  #             // Calculate temperature difference from desired room temperature
+  #             float tempDifference = 22.0 - float(id(${devicename}_external_temp_sensor_avg_rooms_temp).state);    //22 is wanted room temp
+  #             if (avg_temp < 0) {
+  #               calculated_temp = baseTemp + (-avg_temp) * tempChangePerDegree + (tempDifference * 1.5);
+  #             } else {
+  #               calculated_temp = baseTemp - avg_temp * (tempChangePerDegree / 2) + (tempDifference * 1.5);
+  #             }
+
+  #             // float temp_floorheat = map(srednia, -20, 15, 50, 25); //zmapuj zakres zewnatrz gdy -20 to grzej 50 a gdy zewnatrz 15 grzej 15
+  #             // float setT1STempZone1 = map(temp_floorheat, 50, 25, 50, 35);
+  #             // *0.2
+  #             ESP_LOGI("interval_time_30min", "Calculated curve for heating is %f", calculated_temp);
+  #             id(${devicename}_calculated_curve2).publish_state(calculated_temp);
+  #             // Arduino map implementation
+  #             xx = id(${devicename}_external_temp_sensor_avg_rooms_temp).state;
+  #             in_min = 19.5;
+  #             in_max = 22;
+  #             out_min = 45;
+  #             out_max = 28;                    
+  #             float temp_curve = (xx - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  #             // float temp_curve = map(id(${devicename}_external_temp_sensor_avg_rooms_temp).state, 19.5, 22, 45, 28);
+
+  #             calculated_temp = temp_curve;
+  #             ESP_LOGI("interval_time_30min", "Calculated curve 3 for heating is %f", temp_curve);
+  #             id(${devicename}_calculated_curve3).publish_state(temp_curve);
+
+
+  #             // Set Heating/Cooling temp of Zone 1 calculated
+  #             if (operation_state == ${subst_heat} or operation_state == "Auto") {
+  #               auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+  #               if (calculated_temp < 29) calculated_temp = 29;
+  #               if (calculated_temp > 43) calculated_temp = 43;
+  #               // t1s_zone_1.set_value(calculated_temp);
+  #               // t1s_zone_1.perform();
+  #               ESP_LOGI("interval_time_30min", "Setting temp for Heat mode %f Out Temp %f", calculated_temp, ext_t4_temp);
+  #             }
+  #           }
+  - interval: 15min #1h
     then:
       - lambda: |-
             //change parameters to summer mode -months 5-9
@@ -479,6 +474,11 @@ interval:
               m1_mode.set_option(${subst_cool});
               m1_mode.perform();
               ESP_LOGE("interval_time_1h_1","Enable Summer Mode -change behavior to COOLING for summertime and update deltas");
+              // Set min allowed temp for FanFoilUnit to 5deg for cooling
+              auto t1s_zone_1 = id(${devicename}_set_water_temperature_t1s_zone_1).make_call();
+              t1s_zone_1.set_value(5);
+              t1s_zone_1.perform(); 
+              ESP_LOGI("interval_time_30min", "Setting temp for Cool mode %d", 5);              
               //heatpump stop after: dt1s5 dt1sh dtsh dtsc
               float new_delta = 7.0F;
               if (id(${devicename}_dt1s5).state != new_delta) {

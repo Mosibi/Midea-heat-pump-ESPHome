@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed:
-- Update to react after move slider day at night and day
+- Update to react after move slider day at night and day -delay depends on modbus updates
 - 
 
 ## [4.1.2aY] - 2024-11-13

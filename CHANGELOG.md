@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed:
 - Update to react after move slider day at night and day -delay depends on modbus updates
-- Update to change t1s for day and night only whet Heat mode is active and use substitution for "Heat" and "Cool" operating mode
+- Update to change t1s for day and night only whet Heat mode is active and optimizing interval 15min
 
 ## [4.1.2aY] - 2024-11-13
 ### Changed:

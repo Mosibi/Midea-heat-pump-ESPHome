@@ -5,18 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.0.0] - 2024-11-24
 
 ### Changed
 
-- Update Register 2 min max value with verifing depending emmision type settings
-- Update Regioster 3 and 4 min, max value range
-- Add COP -Heat pump efficiency factor
-- Update Register: 103 -Convert valve open position to percent representation
-- Update Register: 101 is moved to text sensor with status
-- Update Register: 200 is moved to text sensor with Homapliance decode value code to text names
-- Update Register: 211 to be fully configurable except reserved values
-- Update Register: 210 to be fully configurable except reserved values
+- Add COP - heat pump efficiency factor
+  - Be aware that the energy metering is not acurate at all, therefor do not trust the COP from this sensor
+- Update registers
+  - 2: min/max value with verifing depending emmision type settings
+  - 3: min/max value range
+  - 4: min/max value range
+  - 103: convert valve open position to percent representation
+  - 101: moved to text sensor with status
+  - 200: moved to text sensor with home appliance decode value code to text names
+  - 211: completely configurable except reserved values
+  - 210: completely configurable except reserved values
+- Built-in web frontend change from CSS v2 to v3
 
 ## [4.1.2] - 2024-10-16
 

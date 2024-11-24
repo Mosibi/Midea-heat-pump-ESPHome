@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add COP - heat pump efficiency factor
-  - Be aware the at least the energy metering is not acurate at all, therefor do not trust the COP from this sensor
+  - Be aware that the energy metering is not acurate at all, therefor do not trust the COP from this sensor
 - Update registers
   - 2: min/max value with verifing depending emmision type settings
   - 3: min/max value range

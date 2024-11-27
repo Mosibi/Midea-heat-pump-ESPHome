@@ -358,16 +358,7 @@ sensor:
     unit_of_measurement: "°C"
     filters:
       - multiply: 0.5
-  # Register: 4
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "DHW Tank Temperature T5s"
-    id: "${devicename}_dhw_tank_temperature_t5s"
-    icon: mdi:temperature-celsius
-    register_type: holding
-    address: 0x4
-    value_type: S_WORD
-    unit_of_measurement: "°C"
+  # Register: 4 -> Is present in this config as a 'number'
   # Register: 5 -> Config is present as select, but now we need get value from heatpump and save it as global var
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

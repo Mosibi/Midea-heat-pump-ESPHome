@@ -1104,6 +1104,27 @@ sensor:
       int t1s_dhw = t5 + dt1s5;
       return t1s_dhw;
 
+  - platform: template
+    name: "Active State Map"
+    id: "${devicename}_active_state_map"
+    unit_of_measurement: ""
+    accuracy_decimals: 0  # No decimals, value will show as integer
+    lambda: |-
+      static const std::map<std::string, int> status_map = {
+        {"Inactive", 0},
+        {"Heating", 1},
+        {"Cooling", 2},
+        {"DHW", 3},
+        {"Defrosting", 4}
+      };
+
+      auto state_item = status_map.find(id(${devicename}_active_state).state);
+      if (state_item != status_map.end()) {
+        return state_item->second; // Return integer value that matches the string value (Heating, Cooling, etc..)
+      } else {
+        return 99; // No mapping found
+      }
+
 binary_sensor:
   # Register: 0 -> Is also read as 'sensor' to read the complete value, used for the templated 'switch'(es)
   # Bit: 0 -> Is present in this config as a 'switch'

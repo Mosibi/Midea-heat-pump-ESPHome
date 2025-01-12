@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.0] - 2025-01-12
+
+### Added
+
+- Active State Map: A sensor that represents the state as a number. This can be used for example in Grafana to plot a state time timeline
+  - 0: Inactive, 1: Heating, 2: Cooling, 3: DHW, 4: Defrosting, 99: Unknown (no mapping found)
+
 ## [5.0.0] - 2024-11-24
 
 ### Changed

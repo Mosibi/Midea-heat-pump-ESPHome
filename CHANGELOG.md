@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Active State Map: A sensor that represents the state as a number. This can be used for example in Grafana to plot a state time timeline
   - 0: Inactive, 1: Heating, 2: Cooling, 3: DHW, 4: Defrosting, 99: Unknown (no mapping found)
 
+### Removed
+
+- Register 4 `sensor` entity removed and now only present as `number`
+
 ## [5.0.0] - 2024-11-24
 
 ### Changed

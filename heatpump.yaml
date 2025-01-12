@@ -346,18 +346,7 @@ sensor:
       return x;
   # Register: 1 -> Is present in this config as a 'select'
   # Register: 2 -> Is present in this config as a 'number'
-  # Register: 3
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Air Temperature Ts"
-    id: "${devicename}_air_temperature_ts"
-    icon: mdi:temperature-celsius
-    register_type: holding
-    address: 0x3
-    value_type: U_WORD
-    unit_of_measurement: "°C"
-    filters:
-      - multiply: 0.5
+  # Register: 3 -> Is present in this config as a 'number'
   # Register: 4 -> Is present in this config as a 'number'
   # Register: 5 -> Config is present as select, but now we need get value from heatpump and save it as global var
   - platform: modbus_controller
@@ -3153,6 +3142,27 @@ number:
       ${devicename}->queue_command(set_payload_command);
       id(unmasked_value_water_temperature_t1s) = value;
       return {};
+
+  # Register: 3
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Air Temperature Ts"
+    id: "${devicename}_air_temperature_ts"
+    icon: mdi:temperature-celsius
+    register_type: holding
+    address: 0x3
+    value_type: U_WORD
+    unit_of_measurement: "°C"
+    entity_category: config
+    device_class: temperature
+    min_value: 17
+    max_value: 30
+    step: 0.5
+    mode: slider
+    lambda: |-
+      return x * 0.5;
+    write_lambda: |-
+      return x * 2.0;
 
   # Register: 4
   - platform: modbus_controller

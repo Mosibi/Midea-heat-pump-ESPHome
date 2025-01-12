@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Register 3 `sensor` entity removed and now only present as `number`
 - Register 4 `sensor` entity removed and now only present as `number`
 
 ## [5.0.0] - 2024-11-24

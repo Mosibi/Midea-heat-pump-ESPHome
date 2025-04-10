@@ -3160,7 +3160,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 5
     max_value: 60
@@ -3199,7 +3198,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 5
     max_value: 60
@@ -3235,7 +3233,6 @@ number:
     address: 0x3
     value_type: U_WORD
     unit_of_measurement: "°C"
-    state_class: "measurement"
     entity_category: config
     device_class: temperature
     min_value: 17
@@ -3258,7 +3255,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 20
     max_value: 65
@@ -3365,7 +3361,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 1
     max_value: 30
@@ -3380,7 +3375,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 5
     max_value: 40
@@ -3408,7 +3402,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 35
     max_value: 43
@@ -3423,7 +3416,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -25
     max_value: 5
@@ -3453,7 +3445,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 0
     max_value: 10
@@ -3468,7 +3459,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -5
     max_value: 20
@@ -3483,7 +3473,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 60
     max_value: 70
@@ -3537,7 +3526,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 2
     max_value: 10
@@ -3552,7 +3540,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 1
     max_value: 10
@@ -3567,7 +3554,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 35
     max_value: 46
@@ -3582,7 +3568,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -5
     max_value: 25
@@ -3610,7 +3595,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 2
     max_value: 10
@@ -3625,7 +3609,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 1
     max_value: 10
@@ -3640,7 +3623,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 20
     max_value: 35
@@ -3655,7 +3637,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -25
     max_value: 5
@@ -3670,7 +3651,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -15
     max_value: 10
@@ -3685,7 +3665,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 1
     max_value: 7
@@ -3713,7 +3692,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -15
     max_value: 10
@@ -3728,7 +3706,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 1
     max_value: 7
@@ -3782,7 +3759,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 20
     max_value: 29
@@ -3797,7 +3773,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 10
     max_value: 17
@@ -3812,7 +3787,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 20
     max_value: 29
@@ -3827,7 +3801,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 20
     max_value: 25
@@ -3868,7 +3841,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 0
     max_value: 50
@@ -3961,7 +3933,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 30
     max_value: 55
@@ -3989,7 +3960,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 25
     max_value: 35
@@ -4004,7 +3974,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 5
     max_value: 25
@@ -4019,7 +3988,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 5
     max_value: 25
@@ -4034,7 +4002,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -5
     max_value: 46
@@ -4049,7 +4016,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -5
     max_value: 46
@@ -4064,7 +4030,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 25
     max_value: 65
@@ -4079,7 +4044,6 @@ number:
     value_type: U_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: 25
     max_value: 65
@@ -4094,7 +4058,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -25
     max_value: 30
@@ -4109,7 +4072,6 @@ number:
     value_type: S_WORD
     unit_of_measurement: "°C"
     device_class: "temperature"
-    state_class: "measurement"
     entity_category: config
     min_value: -25
     max_value: 30

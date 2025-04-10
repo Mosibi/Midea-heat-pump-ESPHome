@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Register 3 has been changed from type `sensor` to `number` to make them configurable
+- Updated with device class and state class, for better compatibility in Home Assistant sensors. With this modification, you can now compare temperatures on a graph, for example, under Home Assistant.
 
 ## [5.1.0] - 2025-01-12
 

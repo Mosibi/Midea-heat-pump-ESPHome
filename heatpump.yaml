@@ -411,6 +411,8 @@ sensor:
     address: 0x64
     value_type: U_WORD
     unit_of_measurement: Hz
+    device_class: "frequency"
+    state_class: "measurement"
   # Register: 101 -> Is present in this config as a 'text_sensor'
   # Register: 102
   - platform: modbus_controller
@@ -447,6 +449,8 @@ sensor:
     address: 0x68
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 105
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -457,6 +461,8 @@ sensor:
     address: 0x69
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 106
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -467,6 +473,8 @@ sensor:
     address: 0x6a
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 107
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -476,6 +484,8 @@ sensor:
     register_type: holding
     address: 0x6B
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     value_type: S_WORD
   # Register: 108
   - platform: modbus_controller
@@ -487,6 +497,8 @@ sensor:
     address: 0x6c
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 109
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -497,6 +509,8 @@ sensor:
     address: 0x6d
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 110
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -507,6 +521,8 @@ sensor:
     address: 0x6e
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 111
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -517,6 +533,8 @@ sensor:
     address: 0x6f
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 112
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -527,6 +545,8 @@ sensor:
     address: 0x70
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 113
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -537,6 +557,8 @@ sensor:
     address: 0x71
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 114
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -547,6 +569,8 @@ sensor:
     address: 0x72
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 115
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -556,6 +580,8 @@ sensor:
     register_type: holding
     address: 0x73
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     value_type: S_WORD
   # Register: 116
   - platform: modbus_controller
@@ -567,6 +593,8 @@ sensor:
     address: 0x74
     value_type: U_WORD
     unit_of_measurement: kPA
+    device_class: "pressure"
+    state_class: "measurement"
   # Register: 117
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -577,6 +605,8 @@ sensor:
     address: 0x75
     value_type: U_WORD
     unit_of_measurement: kPA
+    device_class: "pressure"
+    state_class: "measurement"
   # Register: 118
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -587,6 +617,8 @@ sensor:
     address: 0x76
     value_type: U_WORD
     unit_of_measurement: A
+    device_class: "current"
+    state_class: "measurement"
   # Register: 119
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -597,6 +629,8 @@ sensor:
     address: 0x77
     value_type: U_WORD
     unit_of_measurement: V
+    device_class: "voltage"
+    state_class: "measurement"
   # Register: 120
   # Midea: Tbt1
   - platform: modbus_controller
@@ -605,6 +639,8 @@ sensor:
     id: "${devicename}_hydraulic_module_current_1"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     register_type: holding
     address: 0x78
     value_type: U_WORD
@@ -616,6 +652,8 @@ sensor:
     id: "${devicename}_hydraulic_module_current_2"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     register_type: holding
     address: 0x79
     value_type: U_WORD
@@ -707,6 +745,8 @@ sensor:
     address: 0x84
     value_type: U_WORD
     unit_of_measurement: Hz
+    device_class: "frequency"
+    state_class: "measurement"
   # Register: 133
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -717,6 +757,8 @@ sensor:
     address: 0x85
     value_type: U_WORD
     unit_of_measurement: A
+    device_class: "current"
+    state_class: "measurement"
   # Register: 134
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -727,6 +769,8 @@ sensor:
     address: 0x86
     value_type: U_WORD
     unit_of_measurement: V
+    device_class: "voltage"
+    state_class: "measurement"
     filters:
       - multiply: 10
   # Register: 135
@@ -738,6 +782,8 @@ sensor:
     register_type: holding
     address: 0x87
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     value_type: S_WORD
   # Register: 136
   - platform: modbus_controller
@@ -749,6 +795,8 @@ sensor:
     address: 0x88
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 137
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -759,6 +807,8 @@ sensor:
     address: 0x89
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 138
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -805,6 +855,8 @@ sensor:
     address: 0x8d
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 143 and 144
   # U_DWORD combines this register with the next one
   - platform: modbus_controller
@@ -845,6 +897,8 @@ sensor:
     address: 0xc9
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0x00FF
   # Register: 201 (High), default: 25, TODO: verify default
   - platform: modbus_controller
@@ -856,6 +910,8 @@ sensor:
     address: 0xc9
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0xFF00
   # Register: 202 (Low), default: 5, TODO: verify default
   - platform: modbus_controller
@@ -867,6 +923,8 @@ sensor:
     address: 0xca
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0x00FF
   # Register: 202 (High), default: 5, TODO: verify default
   - platform: modbus_controller
@@ -878,6 +936,8 @@ sensor:
     address: 0xca
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0xFF00
   # Register: 203 (Low), default: 55, TODO: verify default
   - platform: modbus_controller
@@ -889,6 +949,8 @@ sensor:
     address: 0xcb
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0x00FF
   # Register: 203 (High), default: 55, TODO: verify default
   - platform: modbus_controller
@@ -900,6 +962,8 @@ sensor:
     address: 0xcb
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0xFF00
   # Register: 204 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
@@ -911,6 +975,8 @@ sensor:
     address: 0xcc
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0x00FF
   # Register: 204 (High), default: 25, TODO: verify default
   - platform: modbus_controller
@@ -922,6 +988,8 @@ sensor:
     address: 0xcc
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     bitmask: 0xFF00
   # Register: 205
   - platform: modbus_controller
@@ -933,6 +1001,8 @@ sensor:
     address: 0xcd
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     filters:
       - multiply: 0.5
   # Register: 206
@@ -945,6 +1015,8 @@ sensor:
     address: 0xce
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     filters:
       - multiply: 0.5
   # Register: 207
@@ -957,6 +1029,8 @@ sensor:
     address: 0xcf
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 208
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -967,6 +1041,8 @@ sensor:
     address: 0xd0
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
   # Register: 209 -> Is present in this config as a 'number'
   # Register: 210 -> Config is present as select, but now we need get value from heatpump and save it as global var
   - platform: modbus_controller
@@ -1078,6 +1154,8 @@ sensor:
     id: "${devicename}_t1s_dhw"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     lambda: |-
       int dt1s5 = id(${devicename}_dt1s5).state;
       int t5 = id(${devicename}_water_tank_temperature_t5).state;
@@ -3081,6 +3159,7 @@ number:
     address: 0x2
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 5
     max_value: 60
@@ -3118,6 +3197,7 @@ number:
     address: 0x2
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 5
     max_value: 60
@@ -3174,6 +3254,7 @@ number:
     address: 0x4
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 20
     max_value: 65
@@ -3279,6 +3360,7 @@ number:
     address: 0xd4
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 1
     max_value: 30
@@ -3292,6 +3374,7 @@ number:
     address: 0xd5
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 5
     max_value: 40
@@ -3318,6 +3401,7 @@ number:
     address: 0xd7
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 35
     max_value: 43
@@ -3331,6 +3415,7 @@ number:
     address: 0xd8
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -25
     max_value: 5
@@ -3359,6 +3444,7 @@ number:
     address: 0xda
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 0
     max_value: 10
@@ -3372,6 +3458,7 @@ number:
     address: 0xdb
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -5
     max_value: 20
@@ -3385,6 +3472,7 @@ number:
     address: 0xdc
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 60
     max_value: 70
@@ -3437,6 +3525,7 @@ number:
     address: 0xe0
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 2
     max_value: 10
@@ -3450,6 +3539,7 @@ number:
     address: 0xe1
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 1
     max_value: 10
@@ -3463,6 +3553,7 @@ number:
     address: 0xe2
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 35
     max_value: 46
@@ -3476,6 +3567,7 @@ number:
     address: 0xe3
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -5
     max_value: 25
@@ -3502,6 +3594,7 @@ number:
     address: 0xe5
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 2
     max_value: 10
@@ -3515,6 +3608,7 @@ number:
     address: 0xe6
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 1
     max_value: 10
@@ -3528,6 +3622,7 @@ number:
     address: 0xe7
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 20
     max_value: 35
@@ -3541,6 +3636,7 @@ number:
     address: 0xe8
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -25
     max_value: 5
@@ -3554,6 +3650,7 @@ number:
     address: 0xe9
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -15
     max_value: 10
@@ -3567,6 +3664,7 @@ number:
     address: 0xea
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 1
     max_value: 7
@@ -3593,6 +3691,7 @@ number:
     address: 0xed
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -15
     max_value: 10
@@ -3606,6 +3705,7 @@ number:
     address: 0xee
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 1
     max_value: 7
@@ -3658,6 +3758,7 @@ number:
     address: 0xf3
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 20
     max_value: 29
@@ -3671,6 +3772,7 @@ number:
     address: 0xf4
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 10
     max_value: 17
@@ -3684,6 +3786,7 @@ number:
     address: 0xf5
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 20
     max_value: 29
@@ -3697,6 +3800,7 @@ number:
     address: 0xf6
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 20
     max_value: 25
@@ -3736,6 +3840,7 @@ number:
     address: 0xf9
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 0
     max_value: 50
@@ -3827,6 +3932,7 @@ number:
     address: 0x102
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 30
     max_value: 55
@@ -3853,6 +3959,7 @@ number:
     address: 0x104
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 25
     max_value: 35
@@ -3866,6 +3973,7 @@ number:
     address: 0x105
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 5
     max_value: 25
@@ -3879,6 +3987,7 @@ number:
     address: 0x106
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 5
     max_value: 25
@@ -3892,6 +4001,7 @@ number:
     address: 0x107
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -5
     max_value: 46
@@ -3905,6 +4015,7 @@ number:
     address: 0x108
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -5
     max_value: 46
@@ -3918,6 +4029,7 @@ number:
     address: 0x109
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 25
     max_value: 65
@@ -3931,6 +4043,7 @@ number:
     address: 0x10a
     value_type: U_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: 25
     max_value: 65
@@ -3944,6 +4057,7 @@ number:
     address: 0x10b
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -25
     max_value: 30
@@ -3957,6 +4071,7 @@ number:
     address: 0x10c
     value_type: S_WORD
     unit_of_measurement: "°C"
+    device_class: "temperature"
     entity_category: config
     min_value: -25
     max_value: 30

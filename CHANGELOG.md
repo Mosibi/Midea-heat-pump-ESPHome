@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Register 3 has been changed from type `sensor` to `number` to make them configurable
 - Updated with device class and state class, for better compatibility in Home Assistant sensors. With this modification, you can now compare temperatures on a graph, for example, under Home Assistant.
+- Introduced a `binary_sensor` to detect when the compressor is running based on operating frequency > 0.
+- Counted compressor start events by monitoring transitions from OFF → ON.
+- Added a `template sensor` to expose the number of starts per hour (`starts/h`).
+- Automatically resets the counter every hour.
 
 ## [5.1.0] - 2025-01-12
 

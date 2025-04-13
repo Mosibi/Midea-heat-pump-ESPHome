@@ -1208,7 +1208,7 @@ binary_sensor:
     id: compressor_running
     device_class: running
     lambda: |-
-      return id(heatpump_compressor_operating_frequency).state > 0;
+      return id(${devicename}_compressor_operating_frequency).state > 0;
   
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

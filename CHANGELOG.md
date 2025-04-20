@@ -5,17 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [6.0.0] - 2025-04-20
 
 ### Changed
 
 - Register 3 has been changed from type `sensor` to `number` to make them configurable.
-- Updated with device class and state class, for better compatibility in Home Assistant sensors.
-- Introduced a `binary_sensor` to detect when the compressor is running based on operating frequency > 0.
-- Counted compressor start events by monitoring transitions from OFF → ON.
-- Added a `template sensor` to expose the number of starts per hour (`starts/h`).
-- Automatically resets the counter every hour.
+- Updated several entities with `device_class` and `state_class` options, for better compatibility in Home Assistant sensors.
 
+### Added
+
+- Introduced a `binary_sensor` to detect when the compressor is running based on operating frequency > 0.
+  - Counted compressor start events by monitoring transitions from OFF → ON.
+- Added a `template sensor` to expose the number of starts per hour (`starts/h`).
+  - Automatically resets the counter every hour.
 
 ## [5.1.0] - 2025-01-12
 
@@ -71,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This framework is recommended for ESP32 chips by ESPHome. Be aware that this is a breaking change. To apply this configuration update on an existing board, an one-time serial flash will be needed
 - Removed "ssid" and "password" from the wifi section. These will be stored by the captive portal component
 - Renamed "Power Air Conditioner Zone 1" to "Room Temperature Control", "Power Floor Heating Zone 1" to "Water Flow Temperature Control Zone 1" and "Power Air Conditioner Zone 2" to "Water Flow Temperature Control Zone 2"
-- Removed "${entity_prefix} from all entries. Got a tip from user "Septillion" on https://tweakers.net that this is not needed (anymore?) in ESPHome (breaking change (potential))
+- Removed "${entity_prefix} from all etries. Got a tip from user "Septillion" on https://tweakers.net that this is not needed (anymore?) in ESPHome (breaking change (potential))
   - If needed, ESPHome will add the "friendly name" to an entity, which is "Heatpump Controller" in the current configuration.
 
 ### Fixed

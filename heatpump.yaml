@@ -46,7 +46,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 5.1.0
+    version: 6.0.1
 
 esp32:
   board: esp32dev

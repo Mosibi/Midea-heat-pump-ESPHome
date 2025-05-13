@@ -605,7 +605,7 @@ sensor:
     register_type: holding
     address: 0x74
     value_type: U_WORD
-    unit_of_measurement: kPA
+    unit_of_measurement: kPa
     device_class: "pressure"
     state_class: "measurement"
   # Register: 117
@@ -617,7 +617,7 @@ sensor:
     register_type: holding
     address: 0x75
     value_type: U_WORD
-    unit_of_measurement: kPA
+    unit_of_measurement: kPa
     device_class: "pressure"
     state_class: "measurement"
   # Register: 118

@@ -5,6 +5,8 @@ The Midea heat pump and clones like [Airwell](https://www.airwell.com/en/), [Art
 <span style="color: red;">**See below for a ready-made ESPHome compatible heatpump controller!!**</span>
 
 
+<a href="https://www.buymeacoffee.com/Mosibi" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
 ## Disclaimer
 
 The information provided for the heat pump is intended for informational purposes only. Its use is entirely at your own risk. We do not take any responsibility for any damage or loss caused by the use of information taken from this project. We strongly recommend that you consult with a professional HVAC technician before making any changes to your heat pump configuration or installation. By using the information from this project, you acknowledge that you understand and accept these terms and conditions.

@@ -46,7 +46,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 6.0.1
+    version: 6.0.2
 
 esp32:
   board: esp32dev
@@ -611,7 +611,7 @@ sensor:
   # Register: 117
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: " Outdoor Unit Low Pressure"
+    name: "Outdoor Unit Low Pressure"
     id: "${devicename}_outdoor_unit_low_pressure"
     icon: mdi:car-brake-low-pressure
     register_type: holding

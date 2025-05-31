@@ -1,0 +1,98 @@
+# This R32 Airwell specific config is for at least the following models
+# Wellea Monobloc (WELLEA MONO SPLIT A R32):
+#  AW-WHPMA04-H91
+#  AW-WHPMA06-H91
+#  AW-WHPMA08-H91
+#  AW-WHPMA10-H91
+#  AW-WHPMA12-H91
+#  AW-WHPMA14-H91
+#  AW-WHPMA16-H91
+#  AW-WHPMA12-H93
+#  AW-WHPMA14-H93
+#  AW-WHPMA16-H93
+#
+# Wellea Split
+#  Outdoor unit
+#    AW-YHPSA04-H91
+#    AW-YHPSA06-H91
+#    AW-YHPSA08-H91
+#    AW-YHPSA10-H91
+#    AW-YHPSA12-H91
+#    AW-YHPSA14-H91
+#    AW-YHPSA16-H91
+#    AW-YHPSA12-H93
+#    AW-YHPSA14-H93
+#    AW-YHPSA16-H93
+#  Indoor unit
+#    AW-WHPSA0406-N91
+#    AW-WHPSA0810-N91
+#    AW-WHPSA1216-N91
+#    AW-WHPSA1216-N93
+#    AW-YHPSA14-H91
+#    AW-YHPSA16-H91
+#    AW-YHPSA12-H93
+#    AW-YHPSA14-H93
+#    AW-YHPSA16-H93
+
+modify:
+  sensor:
+    # Register: 120
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Hydraulic Module Current 1"
+      id: "${devicename}_tbt1"
+      newid: "${devicename}_hydraulic_module_current_1"
+      icon: mdi:alpha-a
+      unit_of_measurement: A
+      device_class: current
+      state_class: measurement
+      register_type: holding
+      address: 0x78
+      value_type: U_WORD
+    # Register: 121
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Hydraulic Module Current 2"
+      id: "${devicename}_tbt2"
+      newid: "${devicename}_hydraulic_module_current_2"
+      icon: mdi:alpha-a
+      unit_of_measurement: A
+      device_class: current
+      state_class: measurement
+      register_type: holding
+      address: 0x79
+      value_type: U_WORD
+  switch:
+    # Register: 210, Bit: 5, default: false, TODO: verify default
+    - platform: template
+      name: "Parameter Setting 1 Supports T1 Sensor"
+      id: "${devicename}_pumpi_silent mode"
+      newid: "${devicename}_parameter_setting_1_supports_t1_sensor"
+      icon: mdi:eye
+      restore_mode: DISABLED
+      entity_category: config
+      optimistic: true
+      lambda: "return (id(unmasked_value_register_210) & 0x20) == 0x20;"
+      on_turn_on:
+        - lambda: |-
+            uint16_t checked_bit = 0x20;
+            uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
+            new_value &= ~checked_bit;                             // Clear and set
+            new_value += checked_bit;
+            if ((new_value) != id(unmasked_value_register_210)) {
+              // ESP_LOGI("unmasked_value_register_210", "Set option to on p_s_1_silent_mode_pump_i 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
+              id(unmasked_value_register_210) = new_value;
+              esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
+              ${devicename}->queue_command(set_payload_command);
+            }
+      on_turn_off:
+        - lambda: |-
+            uint16_t checked_bit = 0x20;
+            uint16_t new_value = id(unmasked_value_register_210);  // The original unmasked value
+            new_value &= ~checked_bit;                             // Clear and set
+            if ((new_value) != id(unmasked_value_register_210)) {
+              // ESP_LOGI("unmasked_value_register_210", "Set option to off p_s_1_silent_mode_pump_i 0x%x -> 0x%x", id(unmasked_value_register_210), new_value);
+              id(unmasked_value_register_210) = new_value;
+              esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 210, new_value);
+              ${devicename}->queue_command(set_payload_command);
+            }

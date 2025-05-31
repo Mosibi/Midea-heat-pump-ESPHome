@@ -10,7 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - From this version, the ESPHome yaml files are stored in the models directory, where the file `R32-generic.yaml` is (almost) the same as the previous `heatpump.yaml`
-  - R32-generic.yaml contains two updated sensor registers, 120 (Tbt1) and 121 (Tbt2), which where previously called "Hydraulic Module Current 1" and ""Hydraulic Module Current 2"
+  - R32-generic.yaml contains three updated sensor registers
+    - 120 (Tbt1) and 121 (Tbt2), which where previously called "Hydraulic Module Current 1" and ""Hydraulic Module Current 2"
+    - 210 bit 5 is renamed to "Parameter Setting 1 PUMPI silent mode" from "Parameter Setting 1 Supports T1 Sensor". Closes #71
   - R32-airwell.yaml is for certain Airwell models (I own one of those myself)
 - A file DEVELOPMENT.md is added which describes the "model" structure
 - The directory `source` contains the input files to generate the model specific file, using the new `model-generator.py` Python script

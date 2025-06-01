@@ -34,7 +34,7 @@
 #    AW-YHPSA14-H93
 #    AW-YHPSA16-H93
 
-modify:
+replace:
   sensor:
     # Register: 120
     - platform: modbus_controller

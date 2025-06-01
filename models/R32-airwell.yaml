@@ -35,6 +35,22 @@ globals:
     type: uint16_t
     restore_value: no
     initial_value: '0'
+  - id: unmasked_value_register_273
+    type: uint16_t
+    restore_value: no
+    initial_value: '0'
+  - id: unmasked_value_register_274
+    type: uint16_t
+    restore_value: no
+    initial_value: '0'
+  - id: unmasked_value_register_277
+    type: uint16_t
+    restore_value: no
+    initial_value: '0'
+  - id: unmasked_value_register_278
+    type: uint16_t
+    restore_value: no
+    initial_value: '0'
   - id: compressor_start_count
     type: int
     restore_value: no
@@ -46,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 6.0.2
+    version: 7.1.0
 
 esp32:
   board: esp32dev
@@ -1184,6 +1200,11 @@ binary_sensor:
     icon: mdi:eye
     lambda: "return (id(unmasked_value_register_5) & 0x20) == 0x20; // Return status bit5"
   - platform: template
+    name: "Function Setting Reserved BIT 9"
+    id: "${devicename}_function_setting_reserved_bit_9"
+    icon: mdi:head-question-outline
+    lambda: "return (id(unmasked_value_register_5) & 0x200) == 0x200; // Return status bit9"
+  - platform: template
     name: "Function Setting Reserved BIT 14"
     id: "${devicename}_function_setting_reserved_bit_14"
     icon: mdi:head-question-outline
@@ -1944,8 +1965,8 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   - platform: template
-    name: "Weather Compensation Zone 1"
-    id: "${devicename}_weather_compensation_zone_1"
+    name: "Weather Compensation Zone 1 Invalid"
+    id: "${devicename}_weather_compensation_zone_1_invalid"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
@@ -1975,8 +1996,8 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   - platform: template
-    name: "Weather Compensation Zone 2"
-    id: "${devicename}_weather_compensation_zone_2"
+    name: "Weather Compensation Zone 2 Invalid"
+    id: "${devicename}_weather_compensation_zone_2_invalid"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED

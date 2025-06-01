@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.1.0] - 2025-06-01
+
+### Added
+
+- A generic configuration for R290 heat pump models is added
+  - BE AWARE: This configuration is untestable by myself. Please test and report the results back via an issue.
+
+### Changed
+
+- Register 5 bit 12 is renamed from "Weather Compensation Zone 1" to "Weather Compensation Zone 1 Invalid"
+- Register 5 bit 13 is renamed from "Weather Compensation Zone 2" to "Weather Compensation Zone 2 Invalid"
+- Python script `model-generator.py` is now able to also `replace` a section
+
 ## [7.0.0] - 2025-05-31
 
 ### Changed

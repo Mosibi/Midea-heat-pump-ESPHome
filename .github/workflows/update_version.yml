@@ -1,5 +1,5 @@
 ---
-name: Update version in heatpump.yaml
+name: Update version in source/heatpump-base.yaml
 
 on:
   pull_request:
@@ -21,15 +21,15 @@ jobs:
           fetch-depth: 0
       - name: Update version
         run: |
-          cat heatpump.yaml |grep -A7 ^esphome
+          cat source/heatpump-base.yaml |grep -A7 ^esphome
           bash .github/scripts/set_version.sh
-          cat heatpump.yaml |grep -A7 ^esphome
+          cat source/heatpump-base.yaml |grep -A7 ^esphome
       - name: Commit files
         if: ${{ env.YAML_UPDATED == 'true' }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -a -m "Updated version in heatpump.yaml"
+          git commit -a -m "Updated version in source/heatpump-base.yaml"
       - name: Push changes
         if: ${{ env.YAML_UPDATED == 'true' }}
         uses: ad-m/github-push-action@master

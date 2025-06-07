@@ -66,7 +66,7 @@ replace:
     # Register: 210, Bit: 5, default: false, TODO: verify default
     - platform: template
       name: "Parameter Setting 1 Supports T1 Sensor"
-      id: "${devicename}_pumpi_silent mode"
+      id: "${devicename}_pumpi_silent_mode"
       newid: "${devicename}_parameter_setting_1_supports_t1_sensor"
       icon: mdi:eye
       restore_mode: DISABLED

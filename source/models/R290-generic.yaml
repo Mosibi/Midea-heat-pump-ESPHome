@@ -244,8 +244,8 @@ add:
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Total cooling power consumed for master unit"
-      id: "${devicename}_total_cooling_power_consumed_for_master_unit"
+      name: "Total DHW energy produced for master unit"
+      id: "${devicename}_total_dhw_energy_produced_for_master_unit"
       icon: mdi:lightning-bolt-outline
       register_type: holding
       unit_of_measurement: "kWh"
@@ -504,7 +504,6 @@ add:
       max_value: 20
       step: 1
       unit_of_measurement: "°C"
-      optimistic: true
       lambda: |-
         // Store the full, unmasked register value in the global variable
         id(unmasked_value_register_273) = x;
@@ -571,7 +570,6 @@ add:
       max_value: 80
       step: 1
       unit_of_measurement: "°C"
-      optimistic: true
       lambda: |-
         // Store the full, unmasked register value in the global variable
         id(unmasked_value_register_277) = x;
@@ -608,7 +606,6 @@ add:
       max_value: 80
       step: 1
       unit_of_measurement: "°C"
-      optimistic: true
       lambda: |-
         // Store the full, unmasked register value in the global variable (can be redundant if Max is read often, but safe)
         id(unmasked_value_register_277) = x;
@@ -644,7 +641,6 @@ add:
       max_value: 10
       step: 1
       unit_of_measurement: "V"
-      optimistic: true
       lambda: |-
         // Store the full, unmasked register value in the global variable
         id(unmasked_value_register_278) = x;
@@ -681,7 +677,6 @@ add:
       max_value: 10
       step: 1
       unit_of_measurement: "V"
-      optimistic: true
       lambda: |-
         // Store the full, unmasked register value in the global variable
         id(unmasked_value_register_278) = x;
@@ -705,7 +700,19 @@ add:
             new_value
           );
         ${devicename}->queue_command(set_payload_command);
-        return {};         
+        return {};
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Valve anti-lock running time"
+      id: "${devicename}_t2_anti_svrun"
+      icon: mdi:timer-cog-outline
+      address: 279
+      value_type: U_WORD
+      unit_of_measurement: "s"
+      entity_category: config
+      min_value: 0
+      max_value: 120
+      step: 1
   switch:
     # Register: 274 -> Bit 0 EnSwitchPDC
     - platform: template
@@ -749,18 +756,6 @@ add:
                 );
               ${devicename}->queue_command(set_payload_command);
             }
-    - platform: modbus_controller
-      modbus_controller_id: "${devicename}"
-      name: "Valve anti-lock running time"
-      id: "${devicename}_t2_anti_svrun"
-      icon: mdi:timer-cog-outline
-      address: 279
-      value_type: U_WORD
-      unit_of_measurement: "s"
-      entity_category: config
-      min_value: 0
-      max_value: 120
-      step: 1
   text_sensor:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"

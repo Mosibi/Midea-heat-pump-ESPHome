@@ -62,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 7.1.0
+    version: 7.1.1
 
 esp32:
   board: esp32dev
@@ -2484,7 +2484,7 @@ switch:
   # Register: 210, Bit: 5, default: false, TODO: verify default
   - platform: template
     name: "Parameter Setting 1 PUMPI silent mode"
-    id: "${devicename}_pumpi_silent mode"
+    id: "${devicename}_pumpi_silent_mode"
     icon: mdi:eye
     restore_mode: DISABLED
     entity_category: config

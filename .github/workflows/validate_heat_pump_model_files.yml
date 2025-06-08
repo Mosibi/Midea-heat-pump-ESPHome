@@ -1,0 +1,30 @@
+name: Validate Heat Pump model files
+on: [push]
+
+jobs:
+  validate-model-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip esphome ruamel.yaml
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+      - name: Backup model files
+        run: cp -rp models models.backup
+      - name: Generate the heat pump model files
+        run: python model-generator.py
+      - name: Check if there is a difference between the freshly generated model files and the backupped one
+        run: diff -r models.backup models ||  exit 101
+      - name: Validate heat pump model files using esphome config
+        run: |
+          for model_file in $(find ${{ github.workspace }}/models -type f -name '*yaml'); do
+            echo "Validating ${model_file}"
+            esphome -q config "${model_file}" || exit 102
+          done
+      - name: Validate heat pump model files by compiling them with ESPHome
+        run: |
+          for model_file in $(find ${{ github.workspace }}/models -type f -name '*yaml'); do
+            echo "Compiling ${model_file}"
+            esphome -q compile "${model_file}" || exit 103
+          done
+      - run: echo "🍏 This job's status is ${{ job.status }}."

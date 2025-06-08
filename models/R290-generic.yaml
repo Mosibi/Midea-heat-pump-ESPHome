@@ -62,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 7.1.1
+    version: 7.1.2
 
 esp32:
   board: esp32dev
@@ -343,15 +343,18 @@ select:
       // Update the global var unmasked_value_register_273
       id(unmasked_value_register_273) = x;
 
-      // Extract bits 0-7 voor Solar Function (the lower byte (8 bits))
+      // Extract bits 0-7 for Solar Function (the lower byte (8 bits))
       uint8_t solar_func_value = x & 0xFF;
 
-      // Return the numeric value so that ESPHome can map it to the text value from 'optionsmap'
-      // When the value is not 0, 1 or 2, we map it to '0', which is 'NoN / No Function'
-      if (solar_func_value == 0 || solar_func_value == 1 || solar_func_value == 2) {
-        return (int)solar_func_value;
-      } else {
-        return 0; // Defaults to "No Function"
+      // Return the string that matches the optionsmap
+      switch (solar_func_value) {
+        case 1:
+          return std::string("Solar + Heat Pump");
+        case 2:
+          return std::string("Only Solar");
+        case 0:
+        default:
+          return std::string("No Function");
       }
     write_lambda: |-
       // 'value' is the numeric value from the selected option (example: 0, 1, or 2)
@@ -3304,11 +3307,11 @@ switch:
           new_value += checked_bit;
           if ((new_value) != id(unmasked_value_register_274)) {
             id(unmasked_value_register_274) = new_value;
-            
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = 
+
+            esphome::modbus_controller::ModbusCommandItem set_payload_command =
               esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
-                ${devicename}, 
-                274, 
+                ${devicename},
+                274,
                 new_value
               );
             ${devicename}->queue_command(set_payload_command);
@@ -3321,7 +3324,7 @@ switch:
           if ((new_value) != id(unmasked_value_register_274)) {
             id(unmasked_value_register_274) = new_value;
 
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = 
+            esphome::modbus_controller::ModbusCommandItem set_payload_command =
               esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
                 ${devicename},
                 274,
@@ -4257,12 +4260,12 @@ number:
       id(unmasked_value_register_273) = x;
 
       // Extract bits 8-15 for DELTATSOL (the higher byte)
-      uint8_t deltatsol_value = (x >> 8) & 0xFF;
+      uint8_t deltatsol_value = ((int)x >> 8) & 0xFF;
       return (int)deltatsol_value;
 
     write_lambda: |-
       uint16_t current_reg_val = id(unmasked_value_register_273); // Get the last known full register value
-      uint8_t new_deltatsol_byte = (uint8_t)value; // 'value' is the new setpoint value (int)
+      uint8_t new_deltatsol_byte = x; // 'x' is the new setpoint value (int)
 
       uint16_t new_value = (current_reg_val & 0x00FF);      // Clear bits 8-15 (DELTATSOL part)
       new_value |= ((uint16_t)new_deltatsol_byte << 8); // Set bits 8-15 with the new value
@@ -4319,12 +4322,12 @@ number:
       id(unmasked_value_register_277) = x;
 
       // Extract the high byte (bits 8-15) for SETHEATER_Max
-      uint8_t max_temp_value = (x >> 8) & 0xFF;
+      uint8_t max_temp_value = ((int)x >> 8) & 0xFF;
 
       return (float)max_temp_value;
     write_lambda: |-
       uint16_t current_reg_val = id(unmasked_value_register_277); // Get the last known full register value
-      uint8_t new_max_temp_byte = (uint8_t)value; // 'value' is the new setpoint (float)
+      uint8_t new_max_temp_byte = (uint8_t)x; // 'x' is the new setpoint (float)
 
       // Preserve the low byte (SETHEATER_Min) and update the high byte (SETHEATER_Max)
       uint16_t new_value = (current_reg_val & 0x00FF) | ((uint16_t)new_max_temp_byte << 8);
@@ -4354,11 +4357,11 @@ number:
       id(unmasked_value_register_277) = x;
 
       // Extract the low byte (bits 0-7) for SETHEATER_Min
-      uint8_t min_temp_value = x & 0xFF;
+      uint8_t min_temp_value = (int)x & 0xFF;
       return (float)min_temp_value;
     write_lambda: |-
       uint16_t current_reg_val = id(unmasked_value_register_277); // Get the last known full register value
-      uint8_t new_min_temp_byte = (uint8_t)value; // 'value' is the new setpoint (float)
+      uint8_t new_min_temp_byte = (uint8_t)x; // 'x' is the new setpoint (float)
 
       // Preserve the high byte (SETHEATER_Max) and update the low byte (SETHEATER_Min)
       uint16_t new_value = (current_reg_val & 0xFF00) | (uint16_t)new_min_temp_byte;
@@ -4388,12 +4391,12 @@ number:
       id(unmasked_value_register_278) = x;
 
       // Extract the high byte (bits 8-15) for SIGHEATER_Max
-      uint8_t max_voltage_value = (x >> 8) & 0xFF;
+      uint8_t max_voltage_value = ((int)x >> 8) & 0xFF;
 
-      return (float)max_voltage_value;    
+      return (float)max_voltage_value;
     write_lambda: |-
       uint16_t current_reg_val = id(unmasked_value_register_278); // Get the last known full register value
-      uint8_t new_max_voltage_byte = (uint8_t)value; // 'value' is the new setpoint (float)
+      uint8_t new_max_voltage_byte = (uint8_t)x; // 'x' is the new setpoint (float)
 
       // Preserve the low byte (SIGHEATER_Min) and update the high byte (SIGHEATER_Max)
       uint16_t new_value = (current_reg_val & 0x00FF) | ((uint16_t)new_max_voltage_byte << 8);
@@ -4406,7 +4409,7 @@ number:
           new_value
         );
       ${devicename}->queue_command(set_payload_command);
-      return {};    
+      return {};
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "SIGHEATER Min Voltage"
@@ -4423,12 +4426,12 @@ number:
       id(unmasked_value_register_278) = x;
 
       // Extract the low byte (bits 0-7) for SIGHEATER_Min
-      uint8_t min_voltage_value = x & 0xFF;
+      uint8_t min_voltage_value = (int)x & 0xFF;
 
       return (float)min_voltage_value;
     write_lambda: |-
       uint16_t current_reg_val = id(unmasked_value_register_278); // Get the last known full register value
-      uint8_t new_min_voltage_byte = (uint8_t)value; // 'value' is the new setpoint (float)
+      uint8_t new_min_voltage_byte = (uint8_t)x; // 'x' is the new setpoint (float)
 
       // Preserve the high byte (SIGHEATER_Max) and update the low byte (SIGHEATER_Min)
       uint16_t new_value = (current_reg_val & 0xFF00) | (uint16_t)new_min_voltage_byte;

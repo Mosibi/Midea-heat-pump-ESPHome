@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.2.0] - 2025-08-18
+
+### Changed
+
+- Register 5 bit 12 is renamed from "Weather Compensation Zone 1 Invalid" to "Weather Compensation Zone 1"
+- Register 5 bit 13 is renamed from "Weather Compensation Zone 2 Invalid" to "Weather Compensation Zone 2"
+
+These 2 registers are listed in a lot of heat pump manuals as "climate curve setting is invalid (off) / valid (on)",
+which seems to be just a bad translation.
+
 ## [7.1.3] - 2025-08-05
 
 ### Fixed

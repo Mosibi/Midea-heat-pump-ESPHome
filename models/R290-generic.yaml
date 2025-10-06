@@ -62,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 7.2.0
+    version: 7.3.0
 
 esp32:
   board: esp32dev
@@ -423,22 +423,6 @@ sensor:
       // Update the global var unmasked_value_register_5
       id(unmasked_value_register_5) = x;
       return x;
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Forced Water Tank Heating"
-    id: "${devicename}_forced_water_tank_heating"
-    icon: mdi:fire-alert
-    register_type: holding
-    address: 0x7
-    value_type: U_WORD
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Forced Tank Backup Heater"
-    id: "${devicename}_forced_tbh"
-    icon: mdi:fire-alert
-    register_type: holding
-    address: 0x8
-    value_type: U_WORD
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Forced Hydraulic Module Rear Electric Heater 1"
@@ -2438,8 +2422,8 @@ switch:
 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Forced Water Tank Heating On/Off"
-    id: "${devicename}_forced_water_tank_heating_on_off"
+    name: "Forced Water Tank Heating"
+    id: "${devicename}_forced_water_tank_heating"
     icon: mdi:fire-alert
     address: 0x7
     register_type: holding
@@ -2459,7 +2443,29 @@ switch:
       ${devicename}->queue_command(set_payload_command);
 
       return {};
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Forced Tank Backup Heater"
+    id: "${devicename}_forced_tbh"
+    icon: mdi:fire-alert
+    address: 0x8
+    register_type: holding
+    entity_category: config
+    write_lambda: |-
+      uint16_t value = 0;
 
+      if (x == 1) {
+        // ESP_LOGI("main", "Set forced tank backup heater ON");
+        value = 1;
+      } else {
+        // ESP_LOGI("main", "Set forced tank backup heater OFF");
+        value = 2;
+      }
+
+      esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 0x8, value);
+      ${devicename}->queue_command(set_payload_command);
+
+      return {};
   - platform: template
     name: "Parameter Setting 1 Heating And Cooling First Or Water First"
     id: "${devicename}_parameter_setting_1_heating_and_cooling_first_or_water_first"

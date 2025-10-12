@@ -1088,7 +1088,8 @@ sensor:
         {"Heating", 1},
         {"Cooling", 2},
         {"DHW", 3},
-        {"Defrosting", 4}
+        {"Defrosting", 4},
+        {"Idle", 5}
       };
 
       auto state_item = status_map.find(id(${devicename}_active_state).state);
@@ -4475,24 +4476,31 @@ text_sensor:
     icon: mdi:power
     entity_category: "diagnostic"
     lambda: |-
-      if (id(${devicename}_load_output_run).state) {
-        // The heat pump is on
-        if (id(${devicename}_status_bit_1_defrosting).state) {
-          return {"Defrosting"};
-        } else if (id(${devicename}_load_output_sv1).state) {
-          return {"DHW"};
-        } else if (id(${devicename}_water_flow_temperature_control_zone_1).state || id(${devicename}_water_flow_temperature_control_zone_2).state) {
-          // The heat pump is on for heating or cooling
-          if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state || id(${devicename}_operational_mode).state == "Heat") {
-            return {"Heating"};
-          } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state || id(${devicename}_operational_mode).state == "Cool") {
-            return {"Cooling"};
+      if (id(${devicename}_operating_mode).state != "OFF") {
+        if (id(${devicename}_load_output_run).state) {
+          // The heat pump is on
+          if (id(${devicename}_status_bit_1_defrosting).state) {
+            return {"Defrosting"};
+          } else if (id(${devicename}_load_output_sv1).state) {
+            return {"DHW"};
+          } else if (id(${devicename}_water_flow_temperature_control_zone_1).state || id(${devicename}_water_flow_temperature_control_zone_2).state) {
+            // The heat pump is on for heating or cooling
+            if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state || id(${devicename}_operational_mode).state == "Heat") {
+              return {"Heating"};
+            } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state || id(${devicename}_operational_mode).state == "Cool") {
+              return {"Cooling"};
+            } else {
+              // Return "Heating" if we cannot determine the correct state, for example when operational_mode is set to Auto
+              return {"Heating"};
+            }
           } else {
-            // Return "Heating" if we cannot determine the correct state, for example when operational_mode is set to Auto
-            return {"Heating"};
+            return {"Unknown"};
           }
         } else {
-          return {"Unknown"};
+          // The heat pumps operating mode is on (not OFF), but is not "Heating", "Cooling", or "DHW".
+          // In this case the heat pump is Idle, which is for example the case when it is preparing for a DHW
+          // run or between "Heating" sessions
+          return {"Idle"};
         }
       } else {
         // The heat pump is off

@@ -3881,18 +3881,9 @@ text_sensor:
             return {"Defrosting"};
           } else if (id(${devicename}_load_output_sv1).state) {
             return {"DHW"};
-          } else if (id(${devicename}_water_flow_temperature_control_zone_1).state || id(${devicename}_water_flow_temperature_control_zone_2).state) {
-            // The heat pump is on for heating or cooling
-            if (id(${devicename}_status_bit_1_heating_mode_set_by_room_thermostat).state || id(${devicename}_operational_mode).state == "Heat") {
-              return {"Heating"};
-            } else if (id(${devicename}_status_bit_1_cooling_mode_set_by_room_thermostat).state || id(${devicename}_operational_mode).state == "Cool") {
-              return {"Cooling"};
-            } else {
-              // Return "Heating" if we cannot determine the correct state, for example when operational_mode is set to Auto
-              return {"Heating"};
-            }
           } else {
-            return {"Unknown"};
+            // Return the state from "Operating Mode", which can be Cooling or Heating
+            return id(${devicename}_operating_mode).state;
           }
         } else {
           // The heat pumps operating mode is on (not OFF), but is not "Heating", "Cooling", or "DHW".

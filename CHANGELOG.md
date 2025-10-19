@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [8.0.0] - 2025-10-19
+
+### Changed
+
+- Binary sensor entities belonging to register 129 are updated so that the bit description are aligned to what most modbus tables. Where needed, the model specific files are updated to reflect their view on the modbus mappings.
+  - bit 0: id changed from `${devicename}_load_output_reserved` to `${devicename}_load_output_electric_heater_ibh2`
+  - bit 3: name changed from `Load Output Water Pump PUMP_I` to `Load Output Internal Circulation Pump PUMP_I`
+  - bit 5: name changed from `Load Output Reserved BIT 5` to `Load Output SV 2`
+  - bit 6: name changed from `Load Output External Water Pump P_o` to `Load Output External Circulation Pump PUMP_O`
+  - bit 7: name changed from `Load Output Water Return Water P_d` to `Load Output Water Return Water Pump PUMP_D`
+  - bit 8: name changed from `Load Output Mixed Water Pump P_c` to `Load Output Mixed Water Pump PUMP_C`
+  - bit 9: name changed from `Load Output SV 2` to `Load Output SV 3`
+  - bit 11: name changed from `Load Output Solar Water Pump` to `Load Output Solar Water Pump PUMP_S`
+
+*Register 129 bit 5 and bit 9 are not changed for R32 Airwell models.*
+
 ## [7.4.1] - 2025-10-19
 
 ### Fixed

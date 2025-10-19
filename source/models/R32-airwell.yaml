@@ -62,6 +62,27 @@ replace:
       register_type: holding
       address: 0x79
       value_type: U_WORD
+  binary_sensor:
+    # Bit: 5
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Load Output Reserved BIT 5"
+      id: "${devicename}_load_output_sv2"
+      newid: "${devicename}_load_output_reserved_bit_5"
+      icon: mdi:head-question-outline
+      register_type: holding
+      address: 0x81
+      bitmask: 0x20
+    # Bit: 9
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Load Output SV 2"
+      id: "${devicename}_load_output_sv3"
+      newid: "${devicename}_load_output_sv2"
+      icon: mdi:eye
+      register_type: holding
+      address: 0x81
+      bitmask: 0x200
   switch:
     # Register: 210, Bit: 5, default: false, TODO: verify default
     - platform: template

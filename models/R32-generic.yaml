@@ -62,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 7.4.1
+    version: 8.0.0
 
 esp32:
   board: esp32dev
@@ -1328,7 +1328,6 @@ binary_sensor:
     register_type: holding
     address: 0x80
     bitmask: 0x8000
-
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Load Output Electric Heater IBH 1"
@@ -1340,7 +1339,7 @@ binary_sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Load Output Electric Heater IBH 2"
-    id: "${devicename}_load_output_reserved"
+    id: "${devicename}_load_output_electric_heater_ibh2"
     icon: mdi:head-question-outline
     register_type: holding
     address: 0x81
@@ -1355,8 +1354,8 @@ binary_sensor:
     bitmask: 0x4
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output Water Pump PUMP_I"
-    id: "${devicename}_load_output_water_pump_pump_i"
+    name: "Load Output Internal Circulation Pump PUMP_I"
+    id: "${devicename}_load_output_internal_circulation_pump_pump_i"
     icon: mdi:pump
     register_type: holding
     address: 0x81
@@ -1371,40 +1370,40 @@ binary_sensor:
     bitmask: 0x10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output Reserved BIT 5"
-    id: "${devicename}_load_output_reserved_bit_5"
+    name: "Load Output SV 2"
+    id: "${devicename}_load_output_sv2"
     icon: mdi:head-question-outline
     register_type: holding
     address: 0x81
     bitmask: 0x20
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output External Water Pump P_o"
-    id: "${devicename}_load_output_external_water_pump_p_o"
+    name: "Load Output External Circulation Pump PUMP_O"
+    id: "${devicename}_load_output_external_circulation pump_pump_o"
     icon: mdi:pump
     register_type: holding
     address: 0x81
     bitmask: 0x40
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output Water Return Water P_d"
-    id: "${devicename}_load_output_water_return_water_p_d"
+    name: "Load Output Water Return Water Pump PUMP_D"
+    id: "${devicename}_load_output_water_return_water_pump_d"
     icon: mdi:pump
     register_type: holding
     address: 0x81
     bitmask: 0x80
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output Mixed Water Pump P_c"
-    id: "${devicename}_load_output_mixed_water_pump_p_c"
+    name: "Load Output Mixed Water Pump PUMP_C"
+    id: "${devicename}_load_output_mixed_water_pump_pump_c"
     icon: mdi:pump
     register_type: holding
     address: 0x81
     bitmask: 0x100
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output SV 2"
-    id: "${devicename}_load_output_sv2"
+    name: "Load Output SV 3"
+    id: "${devicename}_load_output_sv3"
     icon: mdi:eye
     register_type: holding
     address: 0x81
@@ -1419,8 +1418,8 @@ binary_sensor:
     bitmask: 0x400
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output Solar Water Pump"
-    id: "${devicename}_load_output_solar_water_pump"
+    name: "Load Output Solar Water Pump PUMP_S"
+    id: "${devicename}_load_output_solar_water_pump_pump_s"
     icon: mdi:eye
     register_type: holding
     address: 0x81

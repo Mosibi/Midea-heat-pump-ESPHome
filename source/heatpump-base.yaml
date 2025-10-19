@@ -1579,7 +1579,7 @@ binary_sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Load Output External Circulation Pump PUMP_O"
-    id: "${devicename}_load_output_external_circulation pump_pump_o"
+    id: "${devicename}_load_output_external_circulation_pump_pump_o"
     icon: mdi:pump
     register_type: holding
     address: 0x81

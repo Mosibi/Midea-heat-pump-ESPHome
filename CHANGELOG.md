@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - bit 9: name changed from `Load Output SV 2` to `Load Output SV 3`
   - bit 11: name changed from `Load Output Solar Water Pump` to `Load Output Solar Water Pump PUMP_S`
 
-*Register 129 bit and bit 9 are not changed for R32 Airwel models.*
+*Register 129 bit 5 and bit 9 are not changed for R32 Airwell models.*
 
 ## [7.4.1] - 2025-10-19
 

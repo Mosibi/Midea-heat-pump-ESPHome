@@ -1621,7 +1621,7 @@ binary_sensor:
     lambda: |-
       int fan_speed = id(${devicename}_fan_speed).state;
       int compressor_frequency = id(${devicename}_compressor_operating_frequency).state;
-      bool external_water_pump_on = id(${devicename}_load_output_external_water_pump_p_o).state;
+      bool external_water_pump_on = id(${devicename}_load_output_external_circulation_pump_pump_o).state;
 
       // If fan_speed is above 0, compressor_frequency is above 0 or external_water_pump_on is true,
       // then the outside unit of the heat pump system is running

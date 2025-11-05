@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- All models: Fixed register 270 (t_T4 FRESH_C) to return correct cooling temperature value
+- R290 model: Added missing 0.01 scaling filter to cumulative energy registers 152-176 (values were 100x too large)
+- R290 model: Corrected emission type mappings in register 272 for all zones
+- R290 model: Fixed registers 179-186
+
+### Changed
+
+- All models: Renamed "Condensor Temperature T3" to "Condenser Temperature T3"
+- All models: Register 129 BIT10 renamed from "Load Output HEAT 4" to "Crankcase heater"
+
 ## [8.0.0] - 2025-10-19
 
 ### Changed

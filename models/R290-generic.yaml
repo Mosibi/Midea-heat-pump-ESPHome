@@ -865,6 +865,9 @@ sensor:
     state_class: total_increasing
     address: 0x8f
     value_type: U_DWORD
+    filters:
+      - lambda: return x * 0.01;
+    accuracy_decimals: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Output"
@@ -877,6 +880,9 @@ sensor:
     address: 0x91
     value_type: U_DWORD
 
+    filters:
+      - lambda: return x * 0.01;
+    accuracy_decimals: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Cooling Zone 1"
@@ -1102,46 +1108,47 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time heating Capacity"
-    id: "${devicename}_real_time_heating_capacity"
+    id: "${devicename}_realtime_heating_capacity"
     icon: mdi:lightning-bolt
     register_type: holding
     address: 148
     value_type: U_WORD
-    unit_of_measurement: kW
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time renewable heating capacity"
-    id: "${devicename}_real_time_renewable_heating_capacity"
+    id: "${devicename}_realtime_renewable_heating_capacity"
     icon: mdi:lightning-bolt
     register_type: holding
     address: 149
     value_type: U_WORD
-    unit_of_measurement: kW
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time heating power consumption"
-    id: "${devicename}_real_time_heating_power_consumption"
+    id: "${devicename}_realtime_heating_power_consumption"
     icon: mdi:lightning-bolt
     register_type: holding
     address: 150
     value_type: U_WORD
-    unit_of_measurement: kW
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time heating COP"
-    id: "${devicename}_real_time_heating_cop"
+    id: "${devicename}_realtime_heating_cop"
     icon: mdi:copyleft
     register_type: holding
     address: 151
+    value_type: U_WORD
     unit_of_measurement: "COP"
     accuracy_decimals: 2
     filters:
@@ -1325,88 +1332,96 @@ sensor:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time cooling energy produced for master unit"
-    id: "${devicename}_realtime_cooling_energy_produced_for_master_unit"
-    icon: mdi:snowflake
+    name: "Real-time renewable cooling capacity"
+    id: "${devicename}_realtime_renewable_cooling_capacity"
+    icon: mdi:lightning-bolt
     register_type: holding
     address: 179
-    unit_of_measurement: "kWh"
+    value_type: U_WORD
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time cooling renewable energy produced for master unit"
-    id: "${devicename}_realtime_cooling_renewable_energy_produced_for_master_unit"
-    icon: mdi:snowflake
+    name: "Real-time cooling capacity"
+    id: "${devicename}_realtime_cooling_capacity"
+    icon: mdi:lightning-bolt
     register_type: holding
     address: 180
-    unit_of_measurement: "kWh"
+    value_type: U_WORD
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time cooling power consumed for master unit"
-    id: "${devicename}_realtime_cooling_power_consumed_for_master_unit"
-    icon: mdi:flash
+    name: "Real-time cooling power consumption"
+    id: "${devicename}_realtime_cooling_power_consumption"
+    icon: mdi:lightning-bolt
     register_type: holding
     address: 181
+    value_type: U_WORD
     unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time EER in cooling mode for master unit"
-    id: "${devicename}_realtime_eer_cooling_mode_for_master_unit"
-    icon: mdi:alpha-e-circle
+    name: "Real-time cooling EER"
+    id: "${devicename}_realtime_cooling_eer"
+    icon: mdi:copyleft
     register_type: holding
     address: 182
-    unit_of_measurement: "EER"
+    value_type: U_WORD
+    unit_of_measurement: "COP"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time DHW energy produced for master unit"
-    id: "${devicename}_realtime_dhw_energy_produced_for_master_unit"
-    icon: mdi:water-boiler
+    name: "Real-time DHW heating capacity"
+    id: "${devicename}_realtime_dhw_heating_capacity"
+    icon: mdi:lightning-bolt
     register_type: holding
     address: 183
-    unit_of_measurement: "kWh"
-    accuracy_decimals: 2
-    filters:
-      - lambda: return x * 0.01;
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Real-time DHW renewable energy produced for master unit"
-    id: "${devicename}_realtime_dhw_renewable_energy_produced_for_master_unit"
-    icon: mdi:water-boiler
-    register_type: holding
-    address: 184
-    unit_of_measurement: "kWh"
-    accuracy_decimals: 2
-    filters:
-      - lambda: return x * 0.01;
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Real-time DHW power consumed for master unit"
-    id: "${devicename}_realtime_dhw_power_consumed_for_master_unit"
-    icon: mdi:flash
-    register_type: holding
-    address: 185
+    value_type: U_WORD
     unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time COP in DHW mode for master unit"
-    id: "${devicename}_realtime_cop_dhw_mode_for_master_unit"
+    name: "Real-time renewable DHW heating capacity"
+    id: "${devicename}_realtime_renewable_dhw_heating_capacity"
+    icon: mdi:lightning-bolt
+    register_type: holding
+    address: 184
+    value_type: U_WORD
+    unit_of_measurement: "kW"
+    accuracy_decimals: 2
+    filters:
+      - lambda: return x * 0.01;
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Real-time DHW heating power consumption"
+    id: "${devicename}_realtime_dhw_heating_power_consumption"
+    icon: mdi:lightning-bolt
+    register_type: holding
+    address: 185
+    value_type: U_WORD
+    unit_of_measurement: "kW"
+    accuracy_decimals: 2
+    filters:
+      - lambda: return x * 0.01;
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Real-time DHW heating COP"
+    id: "${devicename}_realtime_dhw_heating_cop"
     icon: mdi:copyleft
     register_type: holding
     address: 186
+    value_type: U_WORD
     unit_of_measurement: "COP"
     accuracy_decimals: 2
     filters:

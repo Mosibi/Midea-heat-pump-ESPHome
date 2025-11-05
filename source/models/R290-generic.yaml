@@ -37,6 +37,31 @@ modify:
     # Register: 245, default: 25
     - id: "${devicename}_t1s_h_a_h"
       max_value: 25
+  select:
+    # Register: 272 (bits 0-3), Fix emission type mappings
+    - id: "${devicename}_zone_1_end_heating_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
+    # Register: 272 (bits 4-7), Fix emission type mappings
+    - id: "${devicename}_zone_2_end_heating_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
+    # Register: 272 (bits 8-11), Fix emission type mappings
+    - id: "${devicename}_zone_1_end_cooling_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
+    # Register: 272 (bits 12-15), Fix emission type mappings
+    - id: "${devicename}_zone_2_end_cooling_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
   sensor:
     # Register: 143 and 144
     # For R290 units: actual value*100; for other units: actual value; kWh
@@ -118,6 +143,8 @@ add:
       address: 152
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 154 and 155
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -132,6 +159,8 @@ add:
       address: 154
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 156 and 157
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -146,6 +175,8 @@ add:
       address: 156
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 158 and 159
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -160,6 +191,8 @@ add:
       address: 158
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 160 and 161
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -174,6 +207,8 @@ add:
       address: 160
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 162 and 163
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -188,6 +223,8 @@ add:
       address: 162
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 164
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -214,6 +251,8 @@ add:
       address: 165
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 167 and 168
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -228,6 +267,8 @@ add:
       address: 167
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 169 and 170
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -242,6 +283,8 @@ add:
       address: 169
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 171
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -268,6 +311,8 @@ add:
       address: 172
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 174 and 175
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -282,6 +327,8 @@ add:
       address: 174
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 176 and 177
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -296,6 +343,8 @@ add:
       address: 176
       value_type: U_DWORD
       accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
     # Register: 178
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"

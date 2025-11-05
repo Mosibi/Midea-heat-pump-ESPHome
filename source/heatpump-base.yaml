@@ -479,8 +479,8 @@ sensor:
   # Register: 106
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Condensor Temperature T3"
-    id: "${devicename}_condensor_temperature_t3"
+    name: "Condenser Temperature T3"
+    id: "${devicename}_condenser_temperature_t3"
     icon: mdi:temperature-celsius
     register_type: holding
     address: 0x6a
@@ -1614,8 +1614,8 @@ binary_sensor:
   # Bit: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Load Output HEAT 4"
-    id: "${devicename}_load_output_heat4"
+    name: "Crankcase heater"
+    id: "${devicename}_crankcase_heater"
     icon: mdi:eye
     register_type: holding
     address: 0x81
@@ -4197,7 +4197,7 @@ number:
       // Extracting the low byte (Heating) and storing it as a float
       value_floats[1] = (float)(value & 0x00FF) * 0.5;
 
-      return value_floats[1];
+      return value_floats[0];
     write_lambda: |-
       uint16_t value = id(unmasked_value_register_270); // The original unmasked value
       float input = x * 2.0;                            // Multiply x (the input from the slider) by 2

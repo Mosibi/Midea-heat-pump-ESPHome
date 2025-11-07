@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- All models: Added outlier filtering to prevent impossible sensor values from corrupting graphs ([#113](https://github.com/Mosibi/Midea-heat-pump-ESPHome/issues/113))
 - All models: Fixed register 270 (t_T4 FRESH_C) to return correct cooling temperature value
 - R290 model: Added missing 0.01 scaling filter to cumulative energy registers 152-176 (values were 100x too large)
 - R290 model: Corrected emission type mappings in register 272 for all zones

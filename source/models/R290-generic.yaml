@@ -5,10 +5,6 @@
 
 remove:
   number:
-    # Register 200 (not present in the modbus register list for R290)
-    - id: "${devicename}_home_appliance_type"
-    # Register 200 (not present in the modbus register list for R290)
-    - id: "${devicename}_home_appliance_sub_type"
     # Register 214 (not present in the modbus register list for R290)
     - id: "${devicename}_t_interval_dhw"
     # Register 223 (not present in the modbus register list for R290)
@@ -17,12 +13,24 @@ remove:
     - id: "${devicename}_per_start_ratio"
     # Register 248 (not present in the modbus register list for R290)
     - id: "${devicename}_time_adjust"
-    # Register 254 (not present in the modbus register list for R290)
+    # Register 249 (not present in the modbus register list for R290)
     - id: "${devicename}_dtbt2"
+    # Register 250 (modbus error when reading the register)
+    - id: "${devicename}_ibh1_power"
+    # Register 251 (modbus error when reading the register)
+    - id: "${devicename}_ibh2_power"
+    # Register 252 (modbus error when reading the register)
+    - id: "${devicename}_tbh_power"
+  sensor:
     # Register 253 (not present in the modbus register list for R290)
     - id: "${devicename}_comfort_parameter_3"
     # Register 254 (not present in the modbus register list for R290)
     - id: "${devicename}_comfort_parameter_4"
+  text_sensor:
+    # Register 200 (not present in the modbus register list for R290)
+    - id: "${devicename}_home_appliance_type"
+    # Register 200 (not present in the modbus register list for R290)
+    - id: "${devicename}_home_appliance_sub_type"
 modify:
   number:
     # Register: 215, default: 46

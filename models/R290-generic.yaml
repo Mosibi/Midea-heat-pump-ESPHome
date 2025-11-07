@@ -1124,23 +1124,6 @@ sensor:
       // Update the global var unmasked_value_register_211
       id(unmasked_value_register_211) = x;
       return x;
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Comfort Parameter Reserved 3"
-    id: "${devicename}_comfort_parameter_3"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0xfd
-    value_type: U_WORD
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Comfort Parameter Reserved 4"
-    id: "${devicename}_comfort_parameter_4"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0xfe
-    value_type: U_WORD
-
   - platform: template
     name: "T1S DHW"
     id: "${devicename}_t1s_dhw"
@@ -4063,45 +4046,6 @@ number:
     max_value: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "IBH1 Power"
-    id: "${devicename}_ibh1_power"
-    icon: mdi:alpha-w
-    register_type: holding
-    address: 0xfa
-    value_type: U_WORD
-    unit_of_measurement: W
-    multiply: 0.01
-    entity_category: config
-    min_value: 0
-    max_value: 20000
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "IBH2 Power"
-    id: "${devicename}_ibh2_power"
-    icon: mdi:alpha-w
-    register_type: holding
-    address: 0xfb
-    value_type: U_WORD
-    unit_of_measurement: W
-    multiply: 0.01
-    entity_category: config
-    min_value: 0
-    max_value: 20000
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "TBH Power"
-    id: "${devicename}_tbh_power"
-    icon: mdi:alpha-w
-    register_type: holding
-    address: 0xfc
-    value_type: U_WORD
-    unit_of_measurement: W
-    multiply: 0.01
-    entity_category: config
-    min_value: 0
-    max_value: 20000
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
     name: "Temperature Rise Day Number"
     id: "${devicename}_t_dryup"
     icon: mdi:calendar-week
@@ -4986,46 +4930,6 @@ text_sensor:
       else if (rawdata == 5) output = "DHW Heating";
       // ESP_LOGD("Register 101","Operating mode %s (%d)", output.c_str(), rawdata);
       return output;
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Type"
-    id: "${devicename}_home_appliance_type"
-    icon: mdi:state-machine
-    register_type: holding
-    address: 0xc8
-    response_size: 2
-    raw_encode: HEXBYTES
-    lambda: |-
-      int idx = item->offset;
-      std::string z = "";
-      uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-      // ESP_LOGD("Register 200", "The home appliance type is 0x%x", rawdata);
-      if ((rawdata >> 8) == 7) {
-        z = "Air to water heat pump";
-      } else {
-        z = std::to_string(data[idx]);
-      }
-      return {z};
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Home Appliance Sub Type"
-    id: "${devicename}_home_appliance_sub_type"
-    icon: "mdi:information-box-outline"
-    register_type: holding
-    address: 0xc8
-    response_size: 2
-    raw_encode: HEXBYTES
-    lambda: |-
-      int idx = item->offset;
-      std::string z = "";
-      uint16_t rawdata = (uint16_t(data[idx]) << 8) + uint16_t(data[idx + 1]);
-      // ESP_LOGD("Register 200", "The home appliance sub type is 0x%x", rawdata);
-      if (((rawdata & 0x000F) ) == 2) {
-        z = "R32";
-      } else {
-        z = std::to_string(rawdata & 0x0F) ;
-      }
-      return {z};
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Home Appliance Product Code"

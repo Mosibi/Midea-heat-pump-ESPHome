@@ -377,13 +377,13 @@ add:
     # Register: 179
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time renewable cooling capacity"
-      id: "${devicename}_realtime_renewable_cooling_capacity"
-      icon: mdi:lightning-bolt
+      name: "Real-time cooling energy produced for master unit"
+      id: "${devicename}_realtime_cooling_energy_produced_for_master_unit"
+      icon: mdi:snowflake
       register_type: holding
       address: 179
       value_type: U_WORD
-      unit_of_measurement: "kW"
+      unit_of_measurement: "kWh"
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
@@ -393,21 +393,21 @@ add:
     # Register: 180
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time cooling capacity"
-      id: "${devicename}_realtime_cooling_capacity"
-      icon: mdi:lightning-bolt
+      name: "Real-time cooling renewable energy produced for master unit"
+      id: "${devicename}_realtime_cooling_renewable_energy_produced_for_master_unit"
+      icon: mdi:snowflake
       register_type: holding
       address: 180
       value_type: U_WORD
-      unit_of_measurement: "kW"
+      unit_of_measurement: "kWh"
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
     # Register: 181
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time cooling power consumption"
-      id: "${devicename}_realtime_cooling_power_consumption"
+      name: "Real-time cooling power consumed for master unit"
+      id: "${devicename}_realtime_cooling_power_consumed_for_master_unit"
       icon: mdi:lightning-bolt
       register_type: holding
       address: 181
@@ -417,10 +417,11 @@ add:
       filters:
         - lambda: return x * 0.01;
     # Register: 182
+    # EER: Energy Efficiency Ratio (like COP for heating, but then for cooling)
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time cooling EER"
-      id: "${devicename}_realtime_cooling_eer"
+      name: "Real-time EER in cooling mode for master unit"
+      id: "${devicename}_realtime_eer_cooling_mode_for_master_unit"
       icon: mdi:copyleft
       register_type: holding
       address: 182
@@ -435,21 +436,21 @@ add:
     # Register: 183
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time DHW heating capacity"
-      id: "${devicename}_realtime_dhw_heating_capacity"
+      name: "Real-time DHW energy produced for master unit"
+      id: "${devicename}_realtime_dhw_energy_produced_for_master_unit"
       icon: mdi:lightning-bolt
       register_type: holding
       address: 183
       value_type: U_WORD
-      unit_of_measurement: "kW"
+      unit_of_measurement: "kWh"
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
     # Register: 184
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time renewable DHW heating capacity"
-      id: "${devicename}_realtime_renewable_dhw_heating_capacity"
+      name: "Real-time DHW renewable energy produced for master unit"
+      id: "${devicename}_realtime_dhw_renewable_energy_produced_for_master_unit"
       icon: mdi:lightning-bolt
       register_type: holding
       address: 184
@@ -464,8 +465,8 @@ add:
     # Register: 185
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time DHW heating power consumption"
-      id: "${devicename}_realtime_dhw_heating_power_consumption"
+      name: "Real-time DHW power consumed for master unit"
+      id: "${devicename}_realtime_dhw_power_consumed_for_master_unit"
       icon: mdi:lightning-bolt
       register_type: holding
       address: 185
@@ -480,8 +481,8 @@ add:
     # Register: 186
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
-      name: "Real-time DHW heating COP"
-      id: "${devicename}_realtime_dhw_heating_cop"
+      name: "Real-time COP in DHW mode for master unit"
+      id: "${devicename}_realtime_cop_dhw_mode_for_master_unit"
       icon: mdi:copyleft
       register_type: holding
       address: 186

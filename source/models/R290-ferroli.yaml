@@ -416,6 +416,7 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
+    # EER: Energy Efficiency Ratio (like COP for heating, but then for cooling)
     # Register: 182
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"

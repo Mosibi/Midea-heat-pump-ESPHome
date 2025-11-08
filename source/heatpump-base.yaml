@@ -1242,6 +1242,21 @@ sensor:
       if (t1s_dhw < -200 || t1s_dhw > 200) return {};
       return t1s_dhw;
 
+  # Template sensor to get the water temperature delta (outlet-inlet)
+  - platform: template
+    name: "Water Temperature Delta"
+    id: "${devicename}_water_temperature_delta"
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
+    lambda: |-
+      int inlet = id(${devicename}_water_inlet_temperature).state;
+      int outlet = id(${devicename}_water_outlet_temperature).state;
+      int delta = outlet - inlet;
+      if (delta < -200 || delta > 200) return {};
+      return delta;
+
   - platform: template
     name: "Active State Map"
     id: "${devicename}_active_state_map"

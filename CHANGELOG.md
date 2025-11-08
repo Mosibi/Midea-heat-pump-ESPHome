@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- All models: Added Water Temperature Delta template sensor to calculate the difference between water inlet and outlet temperatures
+
 ### Fixed
 
 - All models: Added outlier filtering to prevent impossible sensor values from corrupting graphs ([#113](https://github.com/Mosibi/Midea-heat-pump-ESPHome/issues/113))

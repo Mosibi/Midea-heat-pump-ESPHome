@@ -1,3 +1,10 @@
+#!/usr/bin/env -S uv run
+# /// script
+# requires-python = ">=3.8"
+# dependencies = [
+#     "ruamel.yaml",
+# ]
+# ///
 import os
 import glob
 import copy

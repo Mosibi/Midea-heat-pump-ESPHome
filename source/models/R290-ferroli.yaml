@@ -1,0 +1,877 @@
+---
+# This is the generic R290 model, which is applicable for
+# the most R290 heat pumps
+# Registers 11 and 12 seem to be a duplicate of register 2. Can anybody confirm that register 2 just works on a R290 system?
+
+remove:
+  number:
+    # Register 214 (not present in the modbus register list for R290)
+    - id: "${devicename}_t_interval_dhw"
+    # Register 223 (not present in the modbus register list for R290)
+    - id: "${devicename}_t_interval_c"
+    # Register 247 (not present in the modbus register list for R290)
+    - id: "${devicename}_per_start_ratio"
+    # Register 248 (not present in the modbus register list for R290)
+    - id: "${devicename}_time_adjust"
+    # Register 249 (not present in the modbus register list for R290)
+    - id: "${devicename}_dtbt2"
+    # Register 250 (modbus error when reading the register)
+    - id: "${devicename}_ibh1_power"
+    # Register 251 (modbus error when reading the register)
+    - id: "${devicename}_ibh2_power"
+    # Register 252 (modbus error when reading the register)
+    - id: "${devicename}_tbh_power"
+  sensor:
+    # Register 253 (not present in the modbus register list for R290)
+    - id: "${devicename}_comfort_parameter_3"
+    # Register 254 (not present in the modbus register list for R290)
+    - id: "${devicename}_comfort_parameter_4"
+  text_sensor:
+    # Register 200 (not present in the modbus register list for R290)
+    - id: "${devicename}_home_appliance_type"
+    # Register 200 (not present in the modbus register list for R290)
+    - id: "${devicename}_home_appliance_sub_type"
+modify:
+  number:
+    # Register: 215, default: 46
+    - id: "${devicename}_t4_dhw_max"
+      max_value: 46
+    # Register: 226, default: 52
+    - id: "${devicename}_t4cmax"
+      max_value: 52
+    # Register: 233, default: -5
+    - id: "${devicename}_t4_ibh_on"
+      max_value: 30
+    # Register: 245, default: 25
+    - id: "${devicename}_t1s_h_a_h"
+      max_value: 25
+  select:
+    # Register: 272 (bits 0-3), Fix emission type mappings
+    - id: "${devicename}_zone_1_end_heating_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
+    # Register: 272 (bits 4-7), Fix emission type mappings
+    - id: "${devicename}_zone_2_end_heating_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
+    # Register: 272 (bits 8-11), Fix emission type mappings
+    - id: "${devicename}_zone_1_end_cooling_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
+    # Register: 272 (bits 12-15), Fix emission type mappings
+    - id: "${devicename}_zone_2_end_cooling_mode_emission_type"
+      optionsmap:
+        "Underfloor Heating": 0
+        "Fan Coil Unit": 1
+        "Radiator": 2
+  sensor:
+    # Register: 143 and 144
+    # For R290 units: actual value*100; for other units: actual value; kWh
+    - id: "${devicename}_electricity_consumption"
+      filters:
+        - lambda: return x * 0.01;
+      accuracy_decimals: 2
+    # Register: 145 and 146
+    # For R290 units: actual value*100; for other units: actual value; kWh
+    - id: "${devicename}_power_output"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 6000000) return {};
+            return x;
+      accuracy_decimals: 2
+add:
+  sensor:
+    # Register: 148
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time heating Capacity"
+      id: "${devicename}_realtime_heating_capacity"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 148
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 149
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time renewable heating capacity"
+      id: "${devicename}_realtime_renewable_heating_capacity"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 149
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+    # Register: 150
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time heating power consumption"
+      id: "${devicename}_realtime_heating_power_consumption"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 150
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 151
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time heating COP"
+      id: "${devicename}_realtime_heating_cop"
+      icon: mdi:copyleft
+      register_type: holding
+      address: 151
+      value_type: U_WORD
+      unit_of_measurement: "COP"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 50) return {};
+            return x;
+    # Register: 152 and 153
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total heating energy produced for system"
+      id: "${devicename}_total_heating_energy_produced_for_system"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 152
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 154 and 155
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total heating renewable energy produced for system"
+      id: "${devicename}_total_renewable_heating_energy_produced_for_system"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 154
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 156 and 157
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total heating power consumed for system"
+      id: "${devicename}_total_heating_power_consumed_for_system"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 156
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 158 and 159
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total heating power produced for master unit"
+      id: "${devicename}_total_heating_power_produced_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 158
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 160 and 161
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total renewable heating power produced for master unit"
+      id: "${devicename}_total_renewable_heating_energy_produced_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 160
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 162 and 163
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total heating power consumed for master unit"
+      id: "${devicename}_total_heating_power_consumed_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 162
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 164
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total COP in heating mode for master unit"
+      id: "${devicename}_total_cop_in_heating_mode_for_master_unit"
+      icon: mdi:copyleft
+      register_type: holding
+      address: 164
+      unit_of_measurement: "COP"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 165 and 166
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total cooling energy produced for master unit"
+      id: "${devicename}_total_cooling_energy_produced_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 165
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 167 and 168
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total cooling renewable energy produced for master unit"
+      id: "${devicename}_total_cooling_renewable_energy_produced_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 167
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 169 and 170
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total cooling power consumed for master unit"
+      id: "${devicename}_total_cooling_power_consumed_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 169
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 171
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total COP in cooling mode for master unit"
+      id: "${devicename}_total_cop_in_cooling_mode_for_master_unit"
+      icon: mdi:copyleft
+      register_type: holding
+      address: 171
+      unit_of_measurement: "COP"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 172 and 173
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total DHW energy produced for master unit"
+      id: "${devicename}_total_dhw_energy_produced_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 172
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 174 and 175
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total DHW renewable energy produced for master unit"
+      id: "${devicename}_total_dhw_renewable_energy_produced_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 174
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 176 and 177
+    # U_DWORD combines this register with the next one
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total DHW power consumed for master unit"
+      id: "${devicename}_total_dhw_power_consumed_for_master_unit"
+      icon: mdi:lightning-bolt-outline
+      register_type: holding
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      address: 176
+      value_type: U_DWORD
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 178
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Total COP in DHW mode for master unit"
+      id: "${devicename}_total_cop_in_dhw_mode_for_master_unit"
+      icon: mdi:copyleft
+      register_type: holding
+      address: 178
+      unit_of_measurement: "COP"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 179
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time renewable cooling capacity"
+      id: "${devicename}_realtime_renewable_cooling_capacity"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 179
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+    # Register: 180
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time cooling capacity"
+      id: "${devicename}_realtime_cooling_capacity"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 180
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 181
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time cooling power consumption"
+      id: "${devicename}_realtime_cooling_power_consumption"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 181
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 182
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time cooling EER"
+      id: "${devicename}_realtime_cooling_eer"
+      icon: mdi:copyleft
+      register_type: holding
+      address: 182
+      value_type: U_WORD
+      unit_of_measurement: "COP"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 50) return {};
+            return x;
+    # Register: 183
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time DHW heating capacity"
+      id: "${devicename}_realtime_dhw_heating_capacity"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 183
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+    # Register: 184
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time renewable DHW heating capacity"
+      id: "${devicename}_realtime_renewable_dhw_heating_capacity"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 184
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+    # Register: 185
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time DHW heating power consumption"
+      id: "${devicename}_realtime_dhw_heating_power_consumption"
+      icon: mdi:lightning-bolt
+      register_type: holding
+      address: 185
+      value_type: U_WORD
+      unit_of_measurement: "kW"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 30) return {};
+            return x;
+    # Register: 186
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Real-time DHW heating COP"
+      id: "${devicename}_realtime_dhw_heating_cop"
+      icon: mdi:copyleft
+      register_type: holding
+      address: 186
+      value_type: U_WORD
+      unit_of_measurement: "COP"
+      accuracy_decimals: 2
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 50) return {};
+            return x;
+    # Register: 273 -> This updates the global var unmasked_value_register_273
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "register_273"
+      id: "${devicename}_register_273"
+      icon: mdi:state-machine
+      internal: true
+      register_type: holding
+      address: 273
+      value_type: U_WORD
+      lambda: |-
+        // Update the global var unmasked_value_register_273
+        id(unmasked_value_register_273) = x;
+        return x;
+    # Register: 274 -> This updates the global var unmasked_value_register_274
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "register_274"
+      id: "${devicename}_register_274"
+      icon: mdi:state-machine
+      internal: true
+      register_type: holding
+      address: 274
+      value_type: U_WORD
+      lambda: |-
+        // Update the global var unmasked_value_register_274
+        id(unmasked_value_register_274) = x;
+        return x;
+    # Register: 277 -> This updates the global var unmasked_value_register_277
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "register_277"
+      id: "${devicename}_register_277"
+      icon: mdi:state-machine
+      internal: true
+      register_type: holding
+      address: 277
+      value_type: U_WORD
+      lambda: |-
+        // Update the global var unmasked_value_register_277
+        id(unmasked_value_register_277) = x;
+        return x;
+    # Register: 278 -> This updates the global var unmasked_value_register_278
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "register_278"
+      id: "${devicename}_register_278"
+      icon: mdi:state-machine
+      internal: true
+      register_type: holding
+      address: 278
+      value_type: U_WORD
+      lambda: |-
+        // Update the global var unmasked_value_register_278
+        id(unmasked_value_register_278) = x;
+        return x;
+  select:
+    # Register: 273 -> Bit 0 - 7: Solar Function
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Solar Function Mode"
+      id: "${devicename}_solar_function_mode"
+      icon: mdi:solar-power-variant
+      address: 273
+      value_type: U_WORD
+      optimistic: true
+      optionsmap:
+        "No Function": 0
+        "Solar + Heat Pump": 1
+        "Only Solar": 2
+      lambda: |-
+        // Update the global var unmasked_value_register_273
+        id(unmasked_value_register_273) = x;
+
+        // Extract bits 0-7 for Solar Function (the lower byte (8 bits))
+        uint8_t solar_func_value = x & 0xFF;
+
+        // Return the string that matches the optionsmap
+        switch (solar_func_value) {
+          case 1:
+            return std::string("Solar + Heat Pump");
+          case 2:
+            return std::string("Only Solar");
+          case 0:
+          default:
+            return std::string("No Function");
+        }
+      write_lambda: |-
+        // 'value' is the numeric value from the selected option (example: 0, 1, or 2)
+        uint16_t current_reg_val = id(unmasked_value_register_273); // Original register value
+        uint8_t new_solar_func_byte = (uint8_t)value;
+
+        uint16_t new_value = (current_reg_val & 0xFF00); // Clear bits 0-7 (Solar Function deel)
+        new_value |= new_solar_func_byte;                // Set bits 0-7 to the new value
+
+        esphome::modbus_controller::ModbusCommandItem set_payload_command =
+          esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+            ${devicename},
+            273,
+            new_value
+          );
+        ${devicename}->queue_command(set_payload_command);
+        return {};
+  number:
+    # Register: 273 -> Bit 8 - 15: DELTATSOL
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "DELTATSOL Solar Temp Difference"
+      id: "${devicename}_deltatsol_temp_diff"
+      icon: mdi:thermometer-lines
+      address: 0x111 # Register 273
+      value_type: U_WORD
+      min_value: 5
+      max_value: 20
+      step: 1
+      unit_of_measurement: "°C"
+      lambda: |-
+        // Store the full, unmasked register value in the global variable
+        id(unmasked_value_register_273) = x;
+
+        // Extract bits 8-15 for DELTATSOL (the higher byte)
+        uint8_t deltatsol_value = ((int)x >> 8) & 0xFF;
+        return (int)deltatsol_value;
+
+      # Lambda to write the new DELTATSOL value
+      write_lambda: |-
+        uint16_t current_reg_val = id(unmasked_value_register_273); // Get the last known full register value
+        uint8_t new_deltatsol_byte = x; // 'x' is the new setpoint value (int)
+
+        uint16_t new_value = (current_reg_val & 0x00FF);      // Clear bits 8-15 (DELTATSOL part)
+        new_value |= ((uint16_t)new_deltatsol_byte << 8); // Set bits 8-15 with the new value
+
+        esphome::modbus_controller::ModbusCommandItem set_payload_command =
+          esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+            ${devicename},
+            273,
+            new_value
+          );
+        ${devicename}->queue_command(set_payload_command);
+        return {};
+    # Register 275, default 0.85
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Gas price"
+      id: "${devicename}_gas_price"
+      icon: mdi:cash
+      register_type: holding
+      address: 275
+      value_type: U_WORD
+      unit_of_measurement: float
+      multiply: 100
+      entity_category: config
+      min_value: 0.0
+      max_value: 5.0
+      step: 0.1
+    # Register 276, default 0.2
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Electricity price"
+      id: "${devicename}_electricity_price"
+      icon: mdi:cash
+      register_type: holding
+      address: 276
+      value_type: U_WORD
+      unit_of_measurement: "kWh"
+      multiply: 100
+      entity_category: config
+      min_value: 0.0
+      max_value: 5.0
+      step: 0.1
+    # Register 277 (high), default 80
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "SETHEATER Max Temperature"
+      id: "${devicename}_setheater_max_temp"
+      icon: mdi:thermometer-chevron-up
+      address: 277
+      value_type: U_WORD #
+      min_value: 0
+      max_value: 80
+      step: 1
+      unit_of_measurement: "°C"
+      lambda: |-
+        // Store the full, unmasked register value in the global variable
+        id(unmasked_value_register_277) = x;
+
+        // Extract the high byte (bits 8-15) for SETHEATER_Max
+        uint8_t max_temp_value = ((int)x >> 8) & 0xFF;
+
+        return (float)max_temp_value;
+      write_lambda: |-
+        uint16_t current_reg_val = id(unmasked_value_register_277); // Get the last known full register value
+        uint8_t new_max_temp_byte = (uint8_t)x; // 'x' is the new setpoint (float)
+
+        // Preserve the low byte (SETHEATER_Min) and update the high byte (SETHEATER_Max)
+        uint16_t new_value = (current_reg_val & 0x00FF) | ((uint16_t)new_max_temp_byte << 8);
+
+        // Create and return the Modbus write command
+        esphome::modbus_controller::ModbusCommandItem set_payload_command =
+          esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+            ${devicename},
+            277,
+            new_value
+          );
+        ${devicename}->queue_command(set_payload_command);
+        return {};
+    # Register 277 (low), default 30
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "SETHEATER Min Temperature"
+      id: "${devicename}_setheater_min_temp"
+      icon: mdi:thermometer-chevron-down
+      address: 277
+      value_type: U_WORD
+      min_value: 0
+      max_value: 80
+      step: 1
+      unit_of_measurement: "°C"
+      lambda: |-
+        // Store the full, unmasked register value in the global variable (can be redundant if Max is read often, but safe)
+        id(unmasked_value_register_277) = x;
+
+        // Extract the low byte (bits 0-7) for SETHEATER_Min
+        uint8_t min_temp_value = (int)x & 0xFF;
+        return (float)min_temp_value;
+      write_lambda: |-
+        uint16_t current_reg_val = id(unmasked_value_register_277); // Get the last known full register value
+        uint8_t new_min_temp_byte = (uint8_t)x; // 'x' is the new setpoint (float)
+
+        // Preserve the high byte (SETHEATER_Max) and update the low byte (SETHEATER_Min)
+        uint16_t new_value = (current_reg_val & 0xFF00) | (uint16_t)new_min_temp_byte;
+
+        // Create and return the Modbus write command
+        esphome::modbus_controller::ModbusCommandItem set_payload_command =
+          esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+            ${devicename},
+            277,
+            new_value
+          );
+        ${devicename}->queue_command(set_payload_command);
+        return {};
+    # Register 278 (high), default 10
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "SIGHEATER Max Voltage"
+      id: "${devicename}_sigheater_max_voltage"
+      icon: mdi:alpha-v-box-outline
+      address: 278
+      value_type: U_WORD
+      min_value: 0
+      max_value: 10
+      step: 1
+      unit_of_measurement: "V"
+      lambda: |-
+        // Store the full, unmasked register value in the global variable
+        id(unmasked_value_register_278) = x;
+
+        // Extract the high byte (bits 8-15) for SIGHEATER_Max
+        uint8_t max_voltage_value = ((int)x >> 8) & 0xFF;
+
+        return (float)max_voltage_value;
+      write_lambda: |-
+        uint16_t current_reg_val = id(unmasked_value_register_278); // Get the last known full register value
+        uint8_t new_max_voltage_byte = (uint8_t)x; // 'x' is the new setpoint (float)
+
+        // Preserve the low byte (SIGHEATER_Min) and update the high byte (SIGHEATER_Max)
+        uint16_t new_value = (current_reg_val & 0x00FF) | ((uint16_t)new_max_voltage_byte << 8);
+
+        // Create and return the Modbus write command
+        esphome::modbus_controller::ModbusCommandItem set_payload_command =
+          esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+            ${devicename},
+            278,
+            new_value
+          );
+        ${devicename}->queue_command(set_payload_command);
+        return {};
+    # Register 278 (low), default 3
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "SIGHEATER Min Voltage"
+      id: "${devicename}_sigheater_min_voltage"
+      icon: mdi:alpha-v-box-outline
+      address: 278
+      value_type: U_WORD
+      min_value: 0
+      max_value: 10
+      step: 1
+      unit_of_measurement: "V"
+      lambda: |-
+        // Store the full, unmasked register value in the global variable
+        id(unmasked_value_register_278) = x;
+
+        // Extract the low byte (bits 0-7) for SIGHEATER_Min
+        uint8_t min_voltage_value = (int)x & 0xFF;
+
+        return (float)min_voltage_value;
+      write_lambda: |-
+        uint16_t current_reg_val = id(unmasked_value_register_278); // Get the last known full register value
+        uint8_t new_min_voltage_byte = (uint8_t)x; // 'x' is the new setpoint (float)
+
+        // Preserve the high byte (SIGHEATER_Max) and update the low byte (SIGHEATER_Min)
+        uint16_t new_value = (current_reg_val & 0xFF00) | (uint16_t)new_min_voltage_byte;
+
+        // Create and return the Modbus write command
+        esphome::modbus_controller::ModbusCommandItem set_payload_command =
+          esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+            ${devicename},
+            278,
+            new_value
+          );
+        ${devicename}->queue_command(set_payload_command);
+        return {};
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Valve anti-lock running time"
+      id: "${devicename}_t2_anti_svrun"
+      icon: mdi:timer-cog-outline
+      address: 279
+      value_type: U_WORD
+      unit_of_measurement: "s"
+      entity_category: config
+      min_value: 0
+      max_value: 120
+      step: 1
+  switch:
+    # Register: 274 -> Bit 0 EnSwitchPDC
+    - platform: template
+      name: "EnSwitchPDC"
+      id: "${devicename}_enswitchpdc"
+      icon: mdi:eye
+      entity_category: config
+      restore_mode: DISABLED
+      optimistic: true
+      lambda: "return (id(unmasked_value_register_274) & 0x1) == 0x1;"
+      on_turn_on:
+        - lambda: |-
+            uint16_t checked_bit = 0x1;
+            uint16_t new_value = id(unmasked_value_register_274);  // The original unmasked value
+            new_value &= ~checked_bit;                             // Clear and set
+            new_value += checked_bit;
+            if ((new_value) != id(unmasked_value_register_274)) {
+              id(unmasked_value_register_274) = new_value;
+
+              esphome::modbus_controller::ModbusCommandItem set_payload_command =
+                esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+                  ${devicename},
+                  274,
+                  new_value
+                );
+              ${devicename}->queue_command(set_payload_command);
+            }
+      on_turn_off:
+        - lambda: |-
+            uint16_t checked_bit = 0x1;
+            uint16_t new_value = id(unmasked_value_register_274);  // The original unmasked value
+            new_value &= ~checked_bit;                             // Clear and set
+            if ((new_value) != id(unmasked_value_register_274)) {
+              id(unmasked_value_register_274) = new_value;
+
+              esphome::modbus_controller::ModbusCommandItem set_payload_command =
+                esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+                  ${devicename},
+                  274,
+                  new_value
+                );
+              ${devicename}->queue_command(set_payload_command);
+            }
+  text_sensor:
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "MachineType"
+      id: "${devicename}_machinetype"
+      register_type: holding
+      address: 187
+      lambda: |-
+        uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+        switch (value) {
+          case 06: return std::string("A-R290");
+          default: return std::string("Unknown");
+        }
+        return x;

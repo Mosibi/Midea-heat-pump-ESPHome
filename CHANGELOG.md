@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - R290 models: Added missing 0.01 scaling filter to cumulative energy registers 152-176 (values were 100x too large)
 - R290 models: Corrected emission type mappings in register 272 for all zones
 - R290 models: Removed registers 200, 250-254 (not present in R290 specification or cause modbus errors)
-- R290-ferroli model: Fixed registers 179-186
+- R290 models: Fixed naming and description of registers 179-186
 
 ### Changed
 

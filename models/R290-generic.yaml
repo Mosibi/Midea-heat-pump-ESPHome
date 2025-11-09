@@ -1431,13 +1431,13 @@ sensor:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time cooling energy produced for master unit"
-    id: "${devicename}_realtime_cooling_energy_produced_for_master_unit"
-    icon: mdi:snowflake
+    name: "Real-time renewable cooling capacity"
+    id: "${devicename}_realtime_renewable_cooling_capacity"
+    icon: mdi:lightning-bolt
     register_type: holding
     address: 179
     value_type: U_WORD
-    unit_of_measurement: "kWh"
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
@@ -1446,20 +1446,20 @@ sensor:
           return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time cooling renewable energy produced for master unit"
-    id: "${devicename}_realtime_cooling_renewable_energy_produced_for_master_unit"
-    icon: mdi:snowflake
+    name: "Real-time cooling capacity"
+    id: "${devicename}_realtime_cooling_capacity"
+    icon: mdi:lightning-bolt
     register_type: holding
     address: 180
     value_type: U_WORD
-    unit_of_measurement: "kWh"
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time cooling power consumed for master unit"
-    id: "${devicename}_realtime_cooling_power_consumed_for_master_unit"
+    name: "Real-time cooling power consumption"
+    id: "${devicename}_realtime_cooling_power_consumption"
     icon: mdi:lightning-bolt
     register_type: holding
     address: 181
@@ -1470,8 +1470,8 @@ sensor:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time EER in cooling mode for master unit"
-    id: "${devicename}_realtime_eer_cooling_mode_for_master_unit"
+    name: "Real-time cooling EER"
+    id: "${devicename}_realtime_cooling_eer"
     icon: mdi:copyleft
     register_type: holding
     address: 182
@@ -1485,20 +1485,20 @@ sensor:
           return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time DHW energy produced for master unit"
-    id: "${devicename}_realtime_dhw_energy_produced_for_master_unit"
+    name: "Real-time DHW heating capacity"
+    id: "${devicename}_realtime_dhw_heating_capacity"
     icon: mdi:lightning-bolt
     register_type: holding
     address: 183
     value_type: U_WORD
-    unit_of_measurement: "kWh"
+    unit_of_measurement: "kW"
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time DHW renewable energy produced for master unit"
-    id: "${devicename}_realtime_dhw_renewable_energy_produced_for_master_unit"
+    name: "Real-time renewable DHW heating capacity"
+    id: "${devicename}_realtime_renewable_dhw_heating_capacity"
     icon: mdi:lightning-bolt
     register_type: holding
     address: 184
@@ -1512,8 +1512,8 @@ sensor:
           return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time DHW power consumed for master unit"
-    id: "${devicename}_realtime_dhw_power_consumed_for_master_unit"
+    name: "Real-time DHW heating power consumption"
+    id: "${devicename}_realtime_dhw_heating_power_consumption"
     icon: mdi:lightning-bolt
     register_type: holding
     address: 185
@@ -1527,8 +1527,8 @@ sensor:
           return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Real-time COP in DHW mode for master unit"
-    id: "${devicename}_realtime_cop_dhw_mode_for_master_unit"
+    name: "Real-time DHW heating COP"
+    id: "${devicename}_realtime_dhw_heating_cop"
     icon: mdi:copyleft
     register_type: holding
     address: 186

@@ -52,24 +52,121 @@ modify:
         "Underfloor Heating": 0
         "Fan Coil Unit": 1
         "Radiator": 2
+      lambda: |-
+        // Update the global var unmasked_value_register_272
+        id(unmasked_value_register_272) = x;
+
+        // ESP_LOGI("Register 272","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
+        // Extracting 4-bit values
+        uint8_t zone2_c_emission = (x >> 12) & 0xF;
+        uint8_t zone1_c_emission = (x >> 8) & 0xF;
+        uint8_t zone2_h_emission = (x >> 4) & 0xF;
+        uint8_t zone1_h_emission = x & 0xF;
+
+        // ESP_LOGI("Register 272","zone1_h_emission is %d"zone2_h_emission);
+        std::string string_result;
+        if (zone1_h_emission == 0) {
+          string_result = "Underfloor Heating";
+        } else if (zone1_h_emission == 1) {
+          string_result = "Fan Coil Unit";
+        } else if (zone1_h_emission == 2) {
+          string_result = "Radiator";
+        } else {
+          string_result = "Unknown: ";
+          string_result += std::to_string(zone1_h_emission);
+        }
+        return string_result;
     # Register: 272 (bits 4-7), Fix emission type mappings
     - id: "${devicename}_zone_2_end_heating_mode_emission_type"
       optionsmap:
         "Underfloor Heating": 0
         "Fan Coil Unit": 1
         "Radiator": 2
+      lambda: |-
+        // Updating the global var unmasked_value_register_272 is already done
+        // in the first part of this register
+        // ESP_LOGD("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
+        // Extracting 4-bit values
+        uint8_t zone2_c_emission = (x >> 12) & 0xF;
+        uint8_t zone1_c_emission = (x >> 8) & 0xF;
+        uint8_t zone2_h_emission = (x >> 4) & 0xF;
+        uint8_t zone1_h_emission = x & 0xF;
+
+        // ESP_LOGD("Register 272","zone2_h_emission is %d", zone2_h_emission);
+        std::string string_result;
+        if (zone2_h_emission == 0) {
+          string_result = "Underfloor Heating";
+        } else if (zone2_h_emission == 1) {
+          string_result = "Fan Coil Unit";
+        } else if (zone2_h_emission == 2) {
+          string_result = "Radiator";
+        } else {
+          string_result = "Unknown: ";
+          string_result += std::to_string(zone2_h_emission);
+        }
+        return string_result;
     # Register: 272 (bits 8-11), Fix emission type mappings
     - id: "${devicename}_zone_1_end_cooling_mode_emission_type"
       optionsmap:
         "Underfloor Heating": 0
         "Fan Coil Unit": 1
         "Radiator": 2
+      lambda: |-
+        // Updating the global var unmasked_value_register_272 is already done
+        // in the first part of this register
+        // ESP_LOGI("","unmasked_value_register_272: %d",id(unmasked_value_register_272));
+
+        // Extracting 4-bit values
+        uint8_t zone2_c_emission = (x >> 12) & 0xF;
+        uint8_t zone1_c_emission = (x >> 8) & 0xF;
+        uint8_t zone2_h_emission = (x >> 4) & 0xF;
+        uint8_t zone1_h_emission = x & 0xF;
+
+        // ESP_LOGD("Register 272","zone1_c_emission is %d", zone1_c_emission);
+        std::string string_result;
+        if (zone1_c_emission == 0) {
+          string_result = "Underfloor Heating";
+        } else if (zone1_c_emission == 1) {
+          string_result = "Fan Coil Unit";
+        } else if (zone1_c_emission == 2) {
+          string_result = "Radiator";
+        } else {
+          string_result = "Unknown: ";
+          string_result += std::to_string(zone1_c_emission);
+        }
+        return string_result;
     # Register: 272 (bits 12-15), Fix emission type mappings
     - id: "${devicename}_zone_2_end_cooling_mode_emission_type"
       optionsmap:
         "Underfloor Heating": 0
         "Fan Coil Unit": 1
         "Radiator": 2
+      lambda: |-
+        // Updating the global var unmasked_value_register_272 is already done
+        // in the first part of this register
+        // ESP_LOGI("Register 272","unmasked_value_register_272: 0x%x", id(unmasked_value_register_272);
+
+        // Extracting 4-bit values
+        uint8_t zone2_c_emission = (x >> 12) & 0xF;
+        uint8_t zone1_c_emission = (x >> 8) & 0xF;
+        uint8_t zone2_h_emission = (x >> 4) & 0xF;
+        uint8_t zone1_h_emission = x & 0xF;
+
+        // ESP_LOGI("Register 272","zone2_c_emission is %d", zone2_c_emission);
+        std::string string_result;
+        if (zone2_c_emission == 0) {
+          string_result = "Underfloor Heating";
+        } else if (zone2_c_emission == 1) {
+          string_result = "Fan Coil Unit";
+        } else if (zone2_c_emission == 2) {
+          string_result = "Radiator";
+        } else {
+          string_result = "Unknown: ";
+          string_result += std::to_string(zone2_c_emission);
+        }
+        return string_result;
   sensor:
     # Register: 143 and 144
     # For R290 units: actual value*100; for other units: actual value; kWh

@@ -168,11 +168,11 @@ select:
       // ESP_LOGI("Register 272","zone1_h_emission is %d"zone2_h_emission);
       std::string string_result;
       if (zone1_h_emission == 0) {
-        string_result = "Fan Coil Unit";
-      } else if (zone1_h_emission == 1) {
-        string_result = "Radiator";
-      } else if (zone1_h_emission == 2) {
         string_result = "Underfloor Heating";
+      } else if (zone1_h_emission == 1) {
+        string_result = "Fan Coil Unit";
+      } else if (zone1_h_emission == 2) {
+        string_result = "Radiator";
       } else {
         string_result = "Unknown: ";
         string_result += std::to_string(zone1_h_emission);
@@ -214,11 +214,11 @@ select:
       // ESP_LOGD("Register 272","zone2_h_emission is %d", zone2_h_emission);
       std::string string_result;
       if (zone2_h_emission == 0) {
-        string_result = "Fan Coil Unit";
-      } else if (zone2_h_emission == 1) {
-        string_result = "Radiator";
-      } else if (zone2_h_emission == 2) {
         string_result = "Underfloor Heating";
+      } else if (zone2_h_emission == 1) {
+        string_result = "Fan Coil Unit";
+      } else if (zone2_h_emission == 2) {
+        string_result = "Radiator";
       } else {
         string_result = "Unknown: ";
         string_result += std::to_string(zone2_h_emission);
@@ -260,11 +260,11 @@ select:
       // ESP_LOGD("Register 272","zone1_c_emission is %d", zone1_c_emission);
       std::string string_result;
       if (zone1_c_emission == 0) {
-        string_result = "Fan Coil Unit";
-      } else if (zone1_c_emission == 1) {
-        string_result = "Radiator";
-      } else if (zone1_c_emission == 2) {
         string_result = "Underfloor Heating";
+      } else if (zone1_c_emission == 1) {
+        string_result = "Fan Coil Unit";
+      } else if (zone1_c_emission == 2) {
+        string_result = "Radiator";
       } else {
         string_result = "Unknown: ";
         string_result += std::to_string(zone1_c_emission);
@@ -306,11 +306,11 @@ select:
       // ESP_LOGI("Register 272","zone2_c_emission is %d", zone2_c_emission);
       std::string string_result;
       if (zone2_c_emission == 0) {
-        string_result = "Fan Coil Unit";
-      } else if (zone2_c_emission == 1) {
-        string_result = "Radiator";
-      } else if (zone2_c_emission == 2) {
         string_result = "Underfloor Heating";
+      } else if (zone2_c_emission == 1) {
+        string_result = "Fan Coil Unit";
+      } else if (zone2_c_emission == 2) {
+        string_result = "Radiator";
       } else {
         string_result = "Unknown: ";
         string_result += std::to_string(zone2_c_emission);

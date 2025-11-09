@@ -4731,7 +4731,7 @@ number:
     id: "${devicename}_zone2_t1setc1"
     icon: mdi:chart-bell-curve
     address: 280
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 5
@@ -4743,7 +4743,7 @@ number:
     id: "${devicename}_zone2_t1setc2"
     icon: mdi:chart-bell-curve
     address: 281
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 5
@@ -4755,7 +4755,7 @@ number:
     id: "${devicename}_zone2_t4c1"
     icon: mdi:chart-bell-curve
     address: 282
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: -5
@@ -4767,7 +4767,7 @@ number:
     id: "${devicename}_zone2_t4c2"
     icon: mdi:chart-bell-curve
     address: 283
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: -5
@@ -4779,7 +4779,7 @@ number:
     id: "${devicename}_zone2_t1seth1"
     icon: mdi:chart-bell-curve
     address: 284
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 25
@@ -4791,7 +4791,7 @@ number:
     id: "${devicename}_zone2_t1seth2"
     icon: mdi:chart-bell-curve
     address: 285
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: 25
@@ -4803,7 +4803,7 @@ number:
     id: "${devicename}_zone2_t4h1"
     icon: mdi:chart-bell-curve
     address: 286
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: -25
@@ -4815,7 +4815,7 @@ number:
     id: "${devicename}_zone2_t4h2"
     icon: mdi:chart-bell-curve
     address: 287
-    value_type: U_WORD
+    value_type: S_WORD
     unit_of_measurement: "°C"
     entity_category: config
     min_value: -25

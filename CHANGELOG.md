@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- R290-ferroli model: Created Ferroli-specific R290 configuration
 - All models: Added Water Temperature Delta template sensor to calculate the difference between water inlet and outlet temperatures
+- R290 models: Added missing registers 190-199 and 280-288
 
 ### Fixed
 
@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - R290 models: Corrected emission type mappings in register 272 for all zones
 - R290 models: Removed registers 200, 250-254 (not present in R290 specification or cause modbus errors)
 - R290 models: Fixed naming and description of registers 179-186
+- R290 models: Fixed max values for register 265-268
 
 ### Changed
 

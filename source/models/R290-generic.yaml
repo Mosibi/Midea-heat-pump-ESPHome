@@ -45,6 +45,18 @@ modify:
     # Register: 245, default: 25
     - id: "${devicename}_t1s_h_a_h"
       max_value: 25
+    # Register: 265, default: 35
+    - id: "${devicename}_t1seth1"
+      max_value: 80
+    # Register: 266, default: 28
+    - id: "${devicename}_t1seth2"
+      max_value: 80
+    # Register: 267, default: -5
+    - id: "${devicename}_t4h1"
+      max_value: 35
+    # Register: 268, default: 7
+    - id: "${devicename}_t4h2"
+      max_value: 35
   select:
     # Register: 272 (bits 0-3), Fix emission type mappings
     - id: "${devicename}_zone_1_end_heating_mode_emission_type"
@@ -591,6 +603,106 @@ add:
         - lambda: |-
             if (x > 50) return {};
             return x;
+    # Register: 191
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "TL Outdoor Refrigerant Pipe Temperature"
+      id: "${devicename}_tl_outdoor_refrigerant_pipe_temperature"
+      icon: mdi:thermometer
+      register_type: holding
+      address: 191
+      value_type: S_WORD
+      unit_of_measurement: "°C"
+      device_class: temperature
+      accuracy_decimals: 0
+    # Register: 192
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Pump Internal PWM"
+      id: "${devicename}_pump_i_pwm"
+      icon: mdi:pump
+      register_type: holding
+      address: 192
+      value_type: U_WORD
+      unit_of_measurement: "%"
+      accuracy_decimals: 1
+      filters:
+        - lambda: return x * 0.1;
+    # Register: 193
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "T9i Second PHE Inlet Temperature"
+      id: "${devicename}_t9i_second_phe_inlet_temperature"
+      icon: mdi:thermometer
+      register_type: holding
+      address: 193
+      value_type: S_WORD
+      unit_of_measurement: "°C"
+      device_class: temperature
+      accuracy_decimals: 1
+      filters:
+        - lambda: |-
+            if (x == 0x7fff) return {};
+            return x * 0.1;
+    # Register: 194
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "T9o Second PHE Outlet Temperature"
+      id: "${devicename}_t9o_second_phe_outlet_temperature"
+      icon: mdi:thermometer
+      register_type: holding
+      address: 194
+      value_type: S_WORD
+      unit_of_measurement: "°C"
+      device_class: temperature
+      accuracy_decimals: 1
+      filters:
+        - lambda: |-
+            if (x == 0x7fff) return {};
+            return x * 0.1;
+    # Register: 195
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "EXV2 Expansion Valve Openness"
+      id: "${devicename}_exv2_openness"
+      icon: mdi:valve
+      register_type: holding
+      address: 195
+      value_type: U_WORD
+      unit_of_measurement: "P"
+      accuracy_decimals: 0
+    # Register: 196
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "EXV3 Expansion Valve Openness"
+      id: "${devicename}_exv3_openness"
+      icon: mdi:valve
+      register_type: holding
+      address: 196
+      value_type: U_WORD
+      unit_of_measurement: "P"
+      accuracy_decimals: 0
+    # Register: 197
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Fan Speed Actual"
+      id: "${devicename}_fan_speed_actual"
+      icon: mdi:fan
+      register_type: holding
+      address: 197
+      value_type: U_WORD
+      unit_of_measurement: "r/min"
+      accuracy_decimals: 0
+    # Register: 199
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Heat Pump Operation Mode"
+      id: "${devicename}_heat_pump_operation_mode"
+      icon: mdi:heat-pump
+      register_type: holding
+      address: 199
+      value_type: U_WORD
+      accuracy_decimals: 0
     # Register: 273 -> This updates the global var unmasked_value_register_273
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -916,6 +1028,123 @@ add:
       min_value: 0
       max_value: 120
       step: 1
+    # Register 280
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T1SetC1 Custom Curve Cooling"
+      id: "${devicename}_zone2_t1setc1"
+      icon: mdi:chart-bell-curve
+      address: 280
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: 5
+      max_value: 25
+      step: 1
+    # Register 281
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T1SetC2 Custom Curve Cooling"
+      id: "${devicename}_zone2_t1setc2"
+      icon: mdi:chart-bell-curve
+      address: 281
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: 5
+      max_value: 25
+      step: 1
+    # Register 282
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T4C1 Custom Curve Cooling"
+      id: "${devicename}_zone2_t4c1"
+      icon: mdi:chart-bell-curve
+      address: 282
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: -5
+      max_value: 46
+      step: 1
+    # Register 283
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T4C2 Custom Curve Cooling"
+      id: "${devicename}_zone2_t4c2"
+      icon: mdi:chart-bell-curve
+      address: 283
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: -5
+      max_value: 46
+      step: 1
+    # Register 284
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T1SetH1 Custom Curve Heating"
+      id: "${devicename}_zone2_t1seth1"
+      icon: mdi:chart-bell-curve
+      address: 284
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: 25
+      max_value: 80
+      step: 1
+    # Register 285
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T1SetH2 Custom Curve Heating"
+      id: "${devicename}_zone2_t1seth2"
+      icon: mdi:chart-bell-curve
+      address: 285
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: 25
+      max_value: 80
+      step: 1
+    # Register 286
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T4H1 Custom Curve Heating"
+      id: "${devicename}_zone2_t4h1"
+      icon: mdi:chart-bell-curve
+      address: 286
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: -25
+      max_value: 35
+      step: 1
+    # Register 287
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Zone 2 T4H2 Custom Curve Heating"
+      id: "${devicename}_zone2_t4h2"
+      icon: mdi:chart-bell-curve
+      address: 287
+      value_type: U_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: -25
+      max_value: 35
+      step: 1
+    # Register 288
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Ta Adjustment Temperature"
+      id: "${devicename}_ta_adj"
+      icon: mdi:thermometer-lines
+      address: 288
+      value_type: S_WORD
+      unit_of_measurement: "°C"
+      entity_category: config
+      min_value: -5
+      max_value: 5
+      step: 1
   switch:
     # Register: 274 -> Bit 0 EnSwitchPDC
     - platform: template
@@ -959,6 +1188,88 @@ add:
                 );
               ${devicename}->queue_command(set_payload_command);
             }
+  binary_sensor:
+    # Register 198: Status bit 3
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status TBH Enabled"
+      id: "${devicename}_status_tbh_enabled"
+      register_type: holding
+      address: 198
+      bitmask: 0x8000  # BIT15
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status AHS Enabled"
+      id: "${devicename}_status_ahs_enabled"
+      register_type: holding
+      address: 198
+      bitmask: 0x4000  # BIT14
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status T1B Enabled"
+      id: "${devicename}_status_t1b_enabled"
+      register_type: holding
+      address: 198
+      bitmask: 0x1000  # BIT12
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status AHS Mode"
+      id: "${devicename}_status_ahs_mode"
+      register_type: holding
+      address: 198
+      bitmask: 0x0800  # BIT11
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status IBH Enabled"
+      id: "${devicename}_status_ibh_enabled"
+      register_type: holding
+      address: 198
+      bitmask: 0x0400  # BIT10
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status T1 Enabled"
+      id: "${devicename}_status_t1_enabled"
+      register_type: holding
+      address: 198
+      bitmask: 0x0200  # BIT9
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status Energy Metering Enabled"
+      id: "${devicename}_status_energy_metering_enabled"
+      register_type: holding
+      address: 198
+      bitmask: 0x0100  # BIT8
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status DHW Operation"
+      id: "${devicename}_status_dhw_operation"
+      register_type: holding
+      address: 198
+      bitmask: 0x0020  # BIT5
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status Heating Operation"
+      id: "${devicename}_status_heating_operation"
+      register_type: holding
+      address: 198
+      bitmask: 0x0010  # BIT4
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status Cooling Operation"
+      id: "${devicename}_status_cooling_operation"
+      register_type: holding
+      address: 198
+      bitmask: 0x0008  # BIT3
+      entity_category: diagnostic
   text_sensor:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -970,6 +1281,30 @@ add:
         uint16_t value = modbus_controller::word_from_hex_str(x, 0);
         switch (value) {
           case 06: return std::string("A-R290");
+          default: return std::string("Unknown");
+        }
+        return x;
+    # Register: 190
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Hydraulic Module Sub-Model"
+      id: "${devicename}_hydraulic_module_submodel"
+      register_type: holding
+      address: 190
+      lambda: |-
+        uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+        switch (value) {
+          case 0: return std::string("R32-P");
+          case 1: return std::string("Aqua");
+          case 2: return std::string("C-R32-P");
+          case 3: return std::string("R290-A");
+          case 4: return std::string("R290-N");
+          case 5: return std::string("C-R290-A");
+          case 6: return std::string("C-R290-N");
+          case 7: return std::string("R32-A");
+          case 8: return std::string("C-R32-A");
+          case 9: return std::string("R290-M");
+          case 10: return std::string("R32-H");
           default: return std::string("Unknown");
         }
         return x;

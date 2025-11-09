@@ -7,6 +7,14 @@ First of all, thanks for checking this file, it means that your are interested i
 
 The model yaml files are created using a Python script that reads the file `source/heatpump-base.yaml` and a model file from the directory `sources/models/`. The changes listed in the model file are applied against `source/heatpump-base.yaml` and written to the `models/` directory with the same name as the original model file. So a file called `source/modes/myfile.yaml` will result in `models/myfile.yaml`
 
+While the model generation is done automatically in pull requests, you can run it locally for debugging and testing:
+
+```bash
+uv run model-generator.py
+```
+
+This works best with [uv](https://docs.astral.sh/uv/getting-started/installation/) which will automatically handle all dependencies. Alternatively, you can run `python model-generator.py` if you have Python >=3.8 with `ruamel.yaml` installed. Running the generator locally is useful when you want to verify your changes to `source/heatpump-base.yaml` or `source/models/*.yaml` files before committing.
+
 A model file can be used to `modify`, `remove`, `replace` and `add` a register. The syntax of a model file is as follow:
 
 ```yaml

@@ -426,6 +426,10 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 150) return {};
+          return x;
   # Register: 101 -> Is present in this config as a 'text_sensor'
   # Register: 102
   - platform: modbus_controller
@@ -437,6 +441,10 @@ sensor:
     address: 0x66
     unit_of_measurement: "r/min"
     value_type: U_WORD
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 3000) return {};
+          return x;
   # Register: 103
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -716,6 +724,10 @@ sensor:
     register_type: holding
     address: 0x78
     value_type: U_WORD
+    filters:
+      - lambda: |-
+          if (x < -200 || x > 200) return {};
+          return x;
   # Register: 121
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -728,6 +740,10 @@ sensor:
     register_type: holding
     address: 0x79
     value_type: U_WORD
+    filters:
+      - lambda: |-
+          if (x < -200 || x > 200) return {};
+          return x;
   # Register: 122
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -818,6 +834,10 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 150) return {};
+          return x;
   # Register: 133
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -901,6 +921,9 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
+      - lambda: |-
+          if (x < 0 || x > 10) return {};
+          return x;
   # Register: 139
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -911,6 +934,10 @@ sensor:
     address: 0x8b
     value_type: U_WORD
     unit_of_measurement: "kW"
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 50) return {};
+          return x;
   # Register: 140
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

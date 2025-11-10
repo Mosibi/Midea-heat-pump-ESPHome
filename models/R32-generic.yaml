@@ -407,6 +407,10 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 150) return {};
+          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Fan Speed"
@@ -416,6 +420,10 @@ sensor:
     address: 0x66
     unit_of_measurement: "r/min"
     value_type: U_WORD
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 3000) return {};
+          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "PMV Openness"
@@ -676,6 +684,10 @@ sensor:
     register_type: holding
     address: 0x78
     value_type: U_WORD
+    filters:
+      - lambda: |-
+          if (x < -200 || x > 200) return {};
+          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Tbt2"
@@ -687,6 +699,10 @@ sensor:
     register_type: holding
     address: 0x79
     value_type: U_WORD
+    filters:
+      - lambda: |-
+          if (x < -200 || x > 200) return {};
+          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Compressor Operation Time"
@@ -768,6 +784,10 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 150) return {};
+          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "DC Bus Current"
@@ -845,6 +865,9 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
+      - lambda: |-
+          if (x < 0 || x > 10) return {};
+          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Limit Scheme Of Outdoor Unit Current"
@@ -854,6 +877,10 @@ sensor:
     address: 0x8b
     value_type: U_WORD
     unit_of_measurement: "kW"
+    filters:
+      - lambda: |-
+          if (x < 0 || x > 50) return {};
+          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Ability Of Hydraulic Module"

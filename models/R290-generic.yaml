@@ -1625,15 +1625,6 @@ sensor:
     accuracy_decimals: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Heat Pump Operation Mode"
-    id: "${devicename}_heat_pump_operation_mode"
-    icon: mdi:heat-pump
-    register_type: holding
-    address: 199
-    value_type: U_WORD
-    accuracy_decimals: 0
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
     name: "register_273"
     id: "${devicename}_register_273"
     icon: mdi:state-machine
@@ -5246,6 +5237,23 @@ text_sensor:
       }
       return {z};
 
+  - platform: modbus_controller
+    modbus_controller_id: "${devicename}"
+    name: "Heat Pump Operation Mode"
+    id: "${devicename}_heat_pump_operation_mode"
+    icon: mdi:heat-pump
+    register_type: holding
+    address: 199
+    lambda: |-
+      uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+      switch (value) {
+        case 0: return std::string("Off");
+        case 2: return std::string("Cooling");
+        case 3: return std::string("Heating");
+        case 5: return std::string("DHW");
+        default: return std::string("Invalid");
+      }
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "MachineType"

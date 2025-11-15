@@ -3466,10 +3466,9 @@ number:
     min_value: 20
     max_value: 65
     mode: slider
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 100) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 100) return {};
+      return x;
 
   # Register: 6 (Zone 1, Low)
   - platform: modbus_controller
@@ -3563,10 +3562,9 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 200) return {};
+      return x;
   # Register: 212, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3581,10 +3579,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 30
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   # Register: 213, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3599,10 +3596,9 @@ number:
     entity_category: config
     min_value: 5
     max_value: 40
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   # Register: 214, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3768,10 +3764,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 30) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 30) return {};
+      return x;
   # Register: 226, default: 43
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3841,10 +3836,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 20) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 20) return {};
+      return x;
   # Register: 231, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3887,10 +3881,9 @@ number:
     entity_category: config
     min_value: -15
     max_value: 10
-    filters:
-      - lambda: |-
-          if (x < -50 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < -50 || x > 50) return {};
+      return x;
   # Register: 234, default: 5, TODO: verify min/max value
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3905,10 +3898,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 7
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 20) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 20) return {};
+      return x;
   # Register: 235, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3922,10 +3914,9 @@ number:
     entity_category: config
     min_value: 15
     max_value: 120
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 200) return {};
+      return x;
   # Register: 237, default: 10, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3967,10 +3958,9 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 200) return {};
+      return x;
   # Register: 241, default: 120
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4011,10 +4001,9 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   # Register: 244, default: 17
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4029,10 +4018,9 @@ number:
     entity_category: config
     min_value: 10
     max_value: 17
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   # Register: 245, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4047,10 +4035,9 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   # Register: 246, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4065,10 +4052,9 @@ number:
     entity_category: config
     min_value: 20
     max_value: 25
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   # Register: 247, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

@@ -3157,10 +3157,9 @@ number:
     min_value: 20
     max_value: 65
     mode: slider
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 100) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 100) return {};
+      return x;
 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3251,10 +3250,9 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 200) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "dT5_On"
@@ -3268,10 +3266,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 30
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "dT1S5"
@@ -3285,10 +3282,9 @@ number:
     entity_category: config
     min_value: 5
     max_value: 40
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T Interval DHW"
@@ -3441,10 +3437,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 30) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 30) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4cmax"
@@ -3509,10 +3504,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 20) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 20) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4hmax"
@@ -3552,10 +3546,9 @@ number:
     entity_category: config
     min_value: -15
     max_value: 10
-    filters:
-      - lambda: |-
-          if (x < -50 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < -50 || x > 50) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
@@ -3569,10 +3562,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 7
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 20) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 20) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
@@ -3585,10 +3577,9 @@ number:
     entity_category: config
     min_value: 15
     max_value: 120
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 200) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Ambient Temperature Trigger For AHS"
@@ -3627,10 +3618,9 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 200) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Heating Max Duration"
@@ -3668,10 +3658,9 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4autohmax"
@@ -3685,10 +3674,9 @@ number:
     entity_category: config
     min_value: 10
     max_value: 17
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Heating Or Cooling Temperature When Holiday Mode Is Active"
@@ -3702,10 +3690,9 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Domestic Hot Water Temperature When Holiday Mode is Active"
@@ -3719,10 +3706,9 @@ number:
     entity_category: config
     min_value: 20
     max_value: 25
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
+    lambda: |-
+      if (x < 0 || x > 50) return {};
+      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "PER START Ratio"

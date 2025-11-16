@@ -440,6 +440,7 @@ sensor:
     address: 0xa
     value_type: U_WORD
     unit_of_measurement: hr
+
     filters:
       - lambda: |-
           if (x < 0 || x > 24) return {};
@@ -460,6 +461,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 150) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Fan Speed"
@@ -473,6 +475,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 3000) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "PMV Openness"
@@ -501,6 +504,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Outlet Temperature"
@@ -516,6 +520,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Condenser Temperature T3"
@@ -531,6 +536,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Ambient Temperature"
@@ -546,6 +552,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Discharge Temperature"
@@ -561,6 +568,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Return Air Temperature"
@@ -587,6 +595,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "System Total Water Outlet Temperature T1B"
@@ -602,6 +611,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Refrigerant Liquid Side Temperature T2"
@@ -617,6 +627,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Refrigerant Gas Side Temperature T2B"
@@ -632,6 +643,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Room Temperature Ta"
@@ -647,6 +659,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Tank Temperature T5"
@@ -662,6 +675,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit High Pressure"
@@ -677,6 +691,7 @@ sensor:
       - lambda: |-
           if (x < -10000 || x > 10000) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Low Pressure"
@@ -692,6 +707,7 @@ sensor:
       - lambda: |-
           if (x < -10000 || x > 10000) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Current"
@@ -707,6 +723,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Voltage"
@@ -722,6 +739,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 10000) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Tbt1"
@@ -737,6 +755,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Tbt2"
@@ -752,6 +771,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Compressor Operation Time"
@@ -774,6 +794,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Current Fault"
@@ -841,6 +862,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 150) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "DC Bus Current"
@@ -856,6 +878,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "DC Bus Voltage"
@@ -872,6 +895,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 10000) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "TF module temperature"
@@ -887,6 +911,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Climate Curve T1S Calculated Value 1"
@@ -902,6 +927,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Climate Curve T1S Calculated Value 2"
@@ -917,6 +943,7 @@ sensor:
       - lambda: |-
           if (x < -200 || x > 200) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Flow"
@@ -932,6 +959,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 10) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Limit Scheme Of Outdoor Unit Current"
@@ -945,6 +973,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Ability Of Hydraulic Module"
@@ -960,6 +989,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Tsolar"
@@ -975,6 +1005,7 @@ sensor:
       - lambda: |-
           if (x < -255 || x > 255) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Electricity Consumption"
@@ -1006,6 +1037,7 @@ sensor:
       - lambda: |-
           if (x > 6000000) return {};
           return x;
+
     accuracy_decimals: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1023,6 +1055,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Cooling Zone 2"
@@ -1039,6 +1072,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Cooling Zone 1"
@@ -1079,6 +1113,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Heating Zone 2"
@@ -1095,6 +1130,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Heating Zone 1"
@@ -1160,6 +1196,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of Water Heating"
@@ -1175,6 +1212,7 @@ sensor:
       - lambda: |-
           if (x < -100 || x > 100) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Parameter Settings 1"
@@ -1278,6 +1316,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time heating power consumption"
@@ -1305,6 +1344,7 @@ sensor:
       - lambda: |-
           if (x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Total heating energy produced for system"
@@ -1521,6 +1561,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time cooling capacity"
@@ -1560,6 +1601,7 @@ sensor:
       - lambda: |-
           if (x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time DHW heating capacity"
@@ -1587,6 +1629,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time DHW heating power consumption"
@@ -1602,6 +1645,7 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 30) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time DHW heating COP"
@@ -1617,6 +1661,7 @@ sensor:
       - lambda: |-
           if (x > 50) return {};
           return x;
+
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "TL Outdoor Refrigerant Pipe Temperature"
@@ -3864,10 +3909,10 @@ number:
     min_value: 20
     max_value: 65
     mode: slider
+
     lambda: |-
       if (x < 0 || x > 100) return {};
       return x;
-
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Weather Compensation Curve Zone 1"

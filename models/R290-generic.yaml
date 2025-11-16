@@ -440,10 +440,6 @@ sensor:
     address: 0xa
     value_type: U_WORD
     unit_of_measurement: hr
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 24) return {};
-          return x;
 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -456,10 +452,6 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 150) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Fan Speed"
@@ -469,10 +461,6 @@ sensor:
     address: 0x66
     unit_of_measurement: "r/min"
     value_type: U_WORD
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 3000) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "PMV Openness"
@@ -497,10 +485,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Outlet Temperature"
@@ -512,10 +496,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Condenser Temperature T3"
@@ -527,10 +507,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Ambient Temperature"
@@ -542,10 +518,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     value_type: S_WORD
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Discharge Temperature"
@@ -557,10 +529,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Return Air Temperature"
@@ -583,10 +551,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "System Total Water Outlet Temperature T1B"
@@ -598,10 +562,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Refrigerant Liquid Side Temperature T2"
@@ -613,10 +573,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Refrigerant Gas Side Temperature T2B"
@@ -628,10 +584,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Room Temperature Ta"
@@ -643,10 +595,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Tank Temperature T5"
@@ -658,10 +606,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     value_type: S_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit High Pressure"
@@ -673,10 +617,6 @@ sensor:
     unit_of_measurement: kPa
     device_class: "pressure"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -10000 || x > 10000) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Low Pressure"
@@ -688,10 +628,6 @@ sensor:
     unit_of_measurement: kPa
     device_class: "pressure"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -10000 || x > 10000) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Current"
@@ -703,10 +639,6 @@ sensor:
     unit_of_measurement: A
     device_class: "current"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Outdoor Unit Voltage"
@@ -718,10 +650,6 @@ sensor:
     unit_of_measurement: V
     device_class: "voltage"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 10000) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Tbt1"
@@ -733,10 +661,6 @@ sensor:
     register_type: holding
     address: 0x78
     value_type: U_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Tbt2"
@@ -748,10 +672,6 @@ sensor:
     register_type: holding
     address: 0x79
     value_type: U_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Compressor Operation Time"
@@ -770,10 +690,6 @@ sensor:
     address: 0x7b
     value_type: U_WORD
     unit_of_measurement: "kWh"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Current Fault"
@@ -837,10 +753,6 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 150) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "DC Bus Current"
@@ -852,10 +764,6 @@ sensor:
     unit_of_measurement: A
     device_class: "current"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "DC Bus Voltage"
@@ -869,9 +777,6 @@ sensor:
     state_class: "measurement"
     filters:
       - multiply: 10
-      - lambda: |-
-          if (x < 0 || x > 10000) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "TF module temperature"
@@ -883,10 +788,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     value_type: S_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Climate Curve T1S Calculated Value 1"
@@ -898,10 +799,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Climate Curve T1S Calculated Value 2"
@@ -913,10 +810,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Flow"
@@ -929,9 +822,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 10) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Limit Scheme Of Outdoor Unit Current"
@@ -941,10 +831,6 @@ sensor:
     address: 0x8b
     value_type: U_WORD
     unit_of_measurement: "kW"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Ability Of Hydraulic Module"
@@ -957,9 +843,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Tsolar"
@@ -971,10 +854,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -255 || x > 255) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Electricity Consumption"
@@ -1003,9 +882,6 @@ sensor:
 
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x > 6000000) return {};
-          return x;
     accuracy_decimals: 2
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1019,10 +895,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0x00FF
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Cooling Zone 2"
@@ -1035,10 +907,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0xFF00
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Cooling Zone 1"
@@ -1075,10 +943,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0x00FF
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Upper Limit Of T1S Heating Zone 2"
@@ -1091,10 +955,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0xFF00
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of T1S Heating Zone 1"
@@ -1156,10 +1016,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Lower Limit Of Water Heating"
@@ -1171,10 +1027,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Parameter Settings 1"
@@ -1212,7 +1064,6 @@ sensor:
       int dt1s5 = id(${devicename}_dt1s5).state;
       int t5 = id(${devicename}_water_tank_temperature_t5).state;
       int t1s_dhw = t5 + dt1s5;
-      if (t1s_dhw < -200 || t1s_dhw > 200) return {};
       return t1s_dhw;
 
   - platform: template
@@ -1226,7 +1077,6 @@ sensor:
       int inlet = id(${devicename}_water_inlet_temperature).state;
       int outlet = id(${devicename}_water_outlet_temperature).state;
       int delta = outlet - inlet;
-      if (delta < -200 || delta > 200) return {};
       return delta;
 
   - platform: template
@@ -1275,9 +1125,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time heating power consumption"
@@ -1302,9 +1149,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Total heating energy produced for system"
@@ -1518,9 +1362,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time cooling capacity"
@@ -1557,9 +1398,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time DHW heating capacity"
@@ -1584,9 +1422,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time DHW heating power consumption"
@@ -1599,9 +1434,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 30) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Real-time DHW heating COP"
@@ -1614,9 +1446,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x > 50) return {};
-          return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "TL Outdoor Refrigerant Pipe Temperature"
@@ -3844,9 +3673,7 @@ number:
     step: 0.5
     mode: slider
     lambda: |-
-      float result = x * 0.5;
-      if (result < -100 || result > 100) return {};
-      return result;
+      return x * 0.5;
     write_lambda: |-
       return x * 2.0;
 
@@ -3864,9 +3691,6 @@ number:
     min_value: 20
     max_value: 65
     mode: slider
-    lambda: |-
-      if (x < 0 || x > 100) return {};
-      return x;
 
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3894,7 +3718,6 @@ number:
       // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
       // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
 
-      if (value_bytes[1] < 0 || value_bytes[1] > 10) return {};
       return value_bytes[1];
     write_lambda: |-
       uint16_t value = id(unmasked_curve_selection); // The original unmasked value
@@ -3932,7 +3755,6 @@ number:
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
 
-      if (value_bytes[0] < 0 || value_bytes[0] > 10) return {};
       return value_bytes[0];
     write_lambda: |-
       uint16_t value = id(unmasked_curve_selection); // The original unmasked value
@@ -3957,9 +3779,6 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    lambda: |-
-      if (x < 0 || x > 200) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "dT5_On"
@@ -3973,9 +3792,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 30
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "dT1S5"
@@ -3989,9 +3805,6 @@ number:
     entity_category: config
     min_value: 5
     max_value: 40
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4 DHW max"
@@ -4120,9 +3933,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    lambda: |-
-      if (x < 0 || x > 30) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4cmax"
@@ -4187,9 +3997,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    lambda: |-
-      if (x < 0 || x > 20) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4hmax"
@@ -4229,9 +4036,6 @@ number:
     entity_category: config
     min_value: -15
     max_value: 30
-    lambda: |-
-      if (x < -50 || x > 50) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Return Difference For Enabling The Hydraulic Module Auxiliary IBH"
@@ -4245,9 +4049,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 7
-    lambda: |-
-      if (x < 0 || x > 20) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Delay Time Of Enabling The Hydraulic Module Auxiliary Electric Heating IBH"
@@ -4260,9 +4061,6 @@ number:
     entity_category: config
     min_value: 15
     max_value: 120
-    lambda: |-
-      if (x < 0 || x > 200) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Ambient Temperature Trigger For AHS"
@@ -4301,9 +4099,6 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    lambda: |-
-      if (x < 0 || x > 200) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Water Heating Max Duration"
@@ -4341,9 +4136,6 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "T4autohmax"
@@ -4357,9 +4149,6 @@ number:
     entity_category: config
     min_value: 10
     max_value: 17
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Heating Or Cooling Temperature When Holiday Mode Is Active"
@@ -4373,9 +4162,6 @@ number:
     entity_category: config
     min_value: 20
     max_value: 25
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Domestic Hot Water Temperature When Holiday Mode is Active"
@@ -4389,9 +4175,6 @@ number:
     entity_category: config
     min_value: 20
     max_value: 25
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Temperature Rise Day Number"

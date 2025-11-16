@@ -1198,6 +1198,14 @@ add:
       entity_category: diagnostic
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
+      name: "Status Reserved BIT 13"
+      id: "${devicename}_status_reserved_bit_13"
+      register_type: holding
+      address: 198
+      bitmask: 0x2000  # BIT13
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
       name: "Status T1B Enabled"
       id: "${devicename}_status_t1b_enabled"
       register_type: holding
@@ -1238,6 +1246,22 @@ add:
       entity_category: diagnostic
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
+      name: "Status Reserved BIT 7"
+      id: "${devicename}_status_reserved_bit_7"
+      register_type: holding
+      address: 198
+      bitmask: 0x0080  # BIT7
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status Reserved BIT 6"
+      id: "${devicename}_status_reserved_bit_6"
+      register_type: holding
+      address: 198
+      bitmask: 0x0040  # BIT6
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
       name: "Status DHW Operation"
       id: "${devicename}_status_dhw_operation"
       register_type: holding
@@ -1259,6 +1283,30 @@ add:
       register_type: holding
       address: 198
       bitmask: 0x0008  # BIT3
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status Reserved BIT 2"
+      id: "${devicename}_status_reserved_bit_2"
+      register_type: holding
+      address: 198
+      bitmask: 0x0004  # BIT2
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status Reserved BIT 1"
+      id: "${devicename}_status_reserved_bit_1"
+      register_type: holding
+      address: 198
+      bitmask: 0x0002  # BIT1
+      entity_category: diagnostic
+    - platform: modbus_controller
+      modbus_controller_id: "${devicename}"
+      name: "Status Reserved BIT 0"
+      id: "${devicename}_status_reserved_bit_0"
+      register_type: holding
+      address: 198
+      bitmask: 0x0001  # BIT0
       entity_category: diagnostic
   text_sensor:
     # Register: 199

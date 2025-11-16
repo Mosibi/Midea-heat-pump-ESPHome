@@ -1615,8 +1615,8 @@ sensor:
     accuracy_decimals: 0
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Fan Speed Actual"
-    id: "${devicename}_fan_speed_actual"
+    name: "Fan2 Speed"
+    id: "${devicename}_fan2_speed"
     icon: mdi:fan
     register_type: holding
     address: 0xC5

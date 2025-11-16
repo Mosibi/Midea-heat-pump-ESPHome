@@ -619,7 +619,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Pump Internal PWM"
-      id: "${devicename}_pump_i_pwm"
+      id: "${devicename}_pump_internal_pwm"
       icon: mdi:pump
       register_type: holding
       address: 192
@@ -664,7 +664,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "EXV2 Expansion Valve Openness"
-      id: "${devicename}_exv2_openness"
+      id: "${devicename}_exv2_expansion_valve_openness"
       icon: mdi:valve
       register_type: holding
       address: 195
@@ -675,7 +675,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "EXV3 Expansion Valve Openness"
-      id: "${devicename}_exv3_openness"
+      id: "${devicename}_exv3_expansion_valve_openness"
       icon: mdi:valve
       register_type: holding
       address: 196
@@ -1022,7 +1022,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T1SetC1 Custom Curve Cooling"
-      id: "${devicename}_zone2_t1setc1"
+      id: "${devicename}_zone_2_t1setc1_custom_curve_cooling"
       icon: mdi:chart-bell-curve
       address: 280
       value_type: S_WORD
@@ -1035,7 +1035,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T1SetC2 Custom Curve Cooling"
-      id: "${devicename}_zone2_t1setc2"
+      id: "${devicename}_zone_2_t1setc2_custom_curve_cooling"
       icon: mdi:chart-bell-curve
       address: 281
       value_type: S_WORD
@@ -1048,7 +1048,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T4C1 Custom Curve Cooling"
-      id: "${devicename}_zone2_t4c1"
+      id: "${devicename}_zone_2_t4c1_custom_curve_cooling"
       icon: mdi:chart-bell-curve
       address: 282
       value_type: S_WORD
@@ -1061,7 +1061,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T4C2 Custom Curve Cooling"
-      id: "${devicename}_zone2_t4c2"
+      id: "${devicename}_zone_2_t4c2_custom_curve_cooling"
       icon: mdi:chart-bell-curve
       address: 283
       value_type: S_WORD
@@ -1074,7 +1074,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T1SetH1 Custom Curve Heating"
-      id: "${devicename}_zone2_t1seth1"
+      id: "${devicename}_zone_2_t1seth1_custom_curve_heating"
       icon: mdi:chart-bell-curve
       address: 284
       value_type: S_WORD
@@ -1087,7 +1087,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T1SetH2 Custom Curve Heating"
-      id: "${devicename}_zone2_t1seth2"
+      id: "${devicename}_zone_2_t1seth2_custom_curve_heating"
       icon: mdi:chart-bell-curve
       address: 285
       value_type: S_WORD
@@ -1100,7 +1100,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T4H1 Custom Curve Heating"
-      id: "${devicename}_zone2_t4h1"
+      id: "${devicename}_zone_2_t4h1_custom_curve_heating"
       icon: mdi:chart-bell-curve
       address: 286
       value_type: S_WORD
@@ -1113,7 +1113,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Zone 2 T4H2 Custom Curve Heating"
-      id: "${devicename}_zone2_t4h2"
+      id: "${devicename}_zone_2_t4h2_custom_curve_heating"
       icon: mdi:chart-bell-curve
       address: 287
       value_type: S_WORD
@@ -1126,7 +1126,7 @@ add:
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
       name: "Ta Adjustment Temperature"
-      id: "${devicename}_ta_adj"
+      id: "${devicename}_ta_adjustment_temperature"
       icon: mdi:thermometer-lines
       address: 288
       value_type: S_WORD

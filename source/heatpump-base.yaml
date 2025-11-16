@@ -413,10 +413,6 @@ sensor:
     address: 0xa
     value_type: U_WORD
     unit_of_measurement: hr
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 24) return {};
-          return x;
 
   # Register: 100
   - platform: modbus_controller
@@ -430,10 +426,6 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 150) return {};
-          return x;
   # Register: 101 -> Is present in this config as a 'text_sensor'
   # Register: 102
   - platform: modbus_controller
@@ -445,10 +437,6 @@ sensor:
     address: 0x66
     unit_of_measurement: "r/min"
     value_type: U_WORD
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 3000) return {};
-          return x;
   # Register: 103
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -476,10 +464,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 105
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -492,10 +476,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 106
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -508,10 +488,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 107
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -524,10 +500,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     value_type: S_WORD
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 108
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -540,10 +512,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 109
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -568,10 +536,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 111
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -584,10 +548,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 112
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -600,10 +560,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 113
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -616,10 +572,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 114
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -632,10 +584,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 115
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -648,10 +596,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     value_type: S_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 116
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -664,10 +608,6 @@ sensor:
     unit_of_measurement: kPa
     device_class: "pressure"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -10000 || x > 10000) return {};
-          return x;
   # Register: 117
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -680,10 +620,6 @@ sensor:
     unit_of_measurement: kPa
     device_class: "pressure"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -10000 || x > 10000) return {};
-          return x;
   # Register: 118
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -696,10 +632,6 @@ sensor:
     unit_of_measurement: A
     device_class: "current"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
   # Register: 119
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -712,10 +644,6 @@ sensor:
     unit_of_measurement: V
     device_class: "voltage"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 10000) return {};
-          return x;
   # Register: 120
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -728,10 +656,6 @@ sensor:
     register_type: holding
     address: 0x78
     value_type: U_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 121
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -744,10 +668,6 @@ sensor:
     register_type: holding
     address: 0x79
     value_type: U_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 122
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -768,10 +688,6 @@ sensor:
     address: 0x7b
     value_type: U_WORD
     unit_of_measurement: "kWh"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   # Register: 124
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -842,10 +758,6 @@ sensor:
     unit_of_measurement: Hz
     device_class: "frequency"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 150) return {};
-          return x;
   # Register: 133
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -858,10 +770,6 @@ sensor:
     unit_of_measurement: A
     device_class: "current"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 200) return {};
-          return x;
   # Register: 134
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -876,9 +784,6 @@ sensor:
     state_class: "measurement"
     filters:
       - multiply: 10
-      - lambda: |-
-          if (x < 0 || x > 10000) return {};
-          return x;
   # Register: 135
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -891,10 +796,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     value_type: S_WORD
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 136
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -907,10 +808,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 137
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -923,10 +820,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -200 || x > 200) return {};
-          return x;
   # Register: 138
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -940,9 +833,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 10) return {};
-          return x;
   # Register: 139
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -953,10 +843,6 @@ sensor:
     address: 0x8b
     value_type: U_WORD
     unit_of_measurement: "kW"
-    filters:
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   # Register: 140
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -970,9 +856,6 @@ sensor:
     accuracy_decimals: 2
     filters:
       - lambda: return x * 0.01;
-      - lambda: |-
-          if (x < 0 || x > 50) return {};
-          return x;
   # Register: 141
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -985,10 +868,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -255 || x > 255) return {};
-          return x;
   # Register: 143 and 144
   # U_DWORD combines this register with the next one
   - platform: modbus_controller
@@ -1032,10 +911,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0x00FF
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 201 (High), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1049,10 +924,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0xFF00
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 202 (Low), default: 5, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1092,10 +963,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0x00FF
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 203 (High), default: 55, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1109,10 +976,6 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     bitmask: 0xFF00
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 204 (Low), default: 25, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1179,10 +1042,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 208
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1195,10 +1054,6 @@ sensor:
     unit_of_measurement: "°C"
     device_class: "temperature"
     state_class: "measurement"
-    filters:
-      - lambda: |-
-          if (x < -100 || x > 100) return {};
-          return x;
   # Register: 209 -> Is present in this config as a 'number'
   # Register: 210 -> Config is present as select, but now we need get value from heatpump and save it as global var
   - platform: modbus_controller
@@ -1316,7 +1171,6 @@ sensor:
       int dt1s5 = id(${devicename}_dt1s5).state;
       int t5 = id(${devicename}_water_tank_temperature_t5).state;
       int t1s_dhw = t5 + dt1s5;
-      if (t1s_dhw < -200 || t1s_dhw > 200) return {};
       return t1s_dhw;
 
   # Template sensor to get the water temperature delta (outlet-inlet)
@@ -1331,7 +1185,6 @@ sensor:
       int inlet = id(${devicename}_water_inlet_temperature).state;
       int outlet = id(${devicename}_water_outlet_temperature).state;
       int delta = outlet - inlet;
-      if (delta < -200 || delta > 200) return {};
       return delta;
 
   - platform: template
@@ -3445,9 +3298,7 @@ number:
     step: 0.5
     mode: slider
     lambda: |-
-      float result = x * 0.5;
-      if (result < -100 || result > 100) return {};
-      return result;
+      return x * 0.5;
     write_lambda: |-
       return x * 2.0;
 
@@ -3466,9 +3317,6 @@ number:
     min_value: 20
     max_value: 65
     mode: slider
-    lambda: |-
-      if (x < 0 || x > 100) return {};
-      return x;
 
   # Register: 6 (Zone 1, Low)
   - platform: modbus_controller
@@ -3497,7 +3345,6 @@ number:
       // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
       // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
 
-      if (value_bytes[1] < 0 || value_bytes[1] > 10) return {};
       return value_bytes[1];
     write_lambda: |-
       uint16_t value = id(unmasked_curve_selection); // The original unmasked value
@@ -3536,7 +3383,6 @@ number:
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
 
-      if (value_bytes[0] < 0 || value_bytes[0] > 10) return {};
       return value_bytes[0];
     write_lambda: |-
       uint16_t value = id(unmasked_curve_selection); // The original unmasked value
@@ -3562,9 +3408,6 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    lambda: |-
-      if (x < 0 || x > 200) return {};
-      return x;
   # Register: 212, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3579,9 +3422,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 30
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   # Register: 213, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3596,9 +3436,6 @@ number:
     entity_category: config
     min_value: 5
     max_value: 40
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   # Register: 214, default: 5
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3764,9 +3601,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    lambda: |-
-      if (x < 0 || x > 30) return {};
-      return x;
   # Register: 226, default: 43
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3836,9 +3670,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 10
-    lambda: |-
-      if (x < 0 || x > 20) return {};
-      return x;
   # Register: 231, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3881,9 +3712,6 @@ number:
     entity_category: config
     min_value: -15
     max_value: 10
-    lambda: |-
-      if (x < -50 || x > 50) return {};
-      return x;
   # Register: 234, default: 5, TODO: verify min/max value
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3898,9 +3726,6 @@ number:
     entity_category: config
     min_value: 1
     max_value: 7
-    lambda: |-
-      if (x < 0 || x > 20) return {};
-      return x;
   # Register: 235, default: 30
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3914,9 +3739,6 @@ number:
     entity_category: config
     min_value: 15
     max_value: 120
-    lambda: |-
-      if (x < 0 || x > 200) return {};
-      return x;
   # Register: 237, default: 10, TODO: verify default
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3958,9 +3780,6 @@ number:
     entity_category: config
     min_value: 5
     max_value: 120
-    lambda: |-
-      if (x < 0 || x > 200) return {};
-      return x;
   # Register: 241, default: 120
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4001,9 +3820,6 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   # Register: 244, default: 17
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4018,9 +3834,6 @@ number:
     entity_category: config
     min_value: 10
     max_value: 17
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   # Register: 245, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4035,9 +3848,6 @@ number:
     entity_category: config
     min_value: 20
     max_value: 29
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   # Register: 246, default: 25
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4052,9 +3862,6 @@ number:
     entity_category: config
     min_value: 20
     max_value: 25
-    lambda: |-
-      if (x < 0 || x > 50) return {};
-      return x;
   # Register: 247, default: 10
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

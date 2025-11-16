@@ -1,5 +1,415 @@
 ---
 # Ferroli specific R290 model
 # Inherits from R290-generic and adds/overrides Ferroli specific settings
+# These filters were added in commits c191583, e415a78, f2f8e49, fd9390c
 
 inherits: R290-generic.yaml
+
+modify:
+  sensor:
+    - id: "${devicename}_water_inlet_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_water_outlet_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_condenser_temperature_t3"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_outdoor_ambient_temperature"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_discharge_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_total_water_outlet_temperature_t1"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_system_total_water_outlet_temperature_t1b"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_refrigerant_liquid_side_temperature_t2"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_refrigerant_gas_side_temperature_t2b"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_room_temperature_ta"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_water_tank_temperature_t5"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_outdoor_unit_high_pressure"
+      filters:
+        - lambda: |-
+            if (x < -10000 || x > 10000) return {};
+            return x;
+
+    - id: "${devicename}_outdoor_unit_low_pressure"
+      filters:
+        - lambda: |-
+            if (x < -10000 || x > 10000) return {};
+            return x;
+
+    - id: "${devicename}_outdoor_unit_current"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_outdoor_unit_voltage"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 10000) return {};
+            return x;
+
+    - id: "${devicename}_compressor_operating_frequency"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 150) return {};
+            return x;
+
+    - id: "${devicename}_fan_speed"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 3000) return {};
+            return x;
+
+    - id: "${devicename}_tbt1"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_tbt2"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_t_sg_max"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 24) return {};
+            return x;
+
+    - id: "${devicename}_unit_capacity"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+
+    - id: "${devicename}_compressor_target_frequency"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 150) return {};
+            return x;
+
+    - id: "${devicename}_dc_bus_current"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_dc_bus_voltage"
+      filters:
+        - multiply: 10
+        - lambda: |-
+            if (x < 0 || x > 10000) return {};
+            return x;
+
+    - id: "${devicename}_tf_module_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_climate_curve_t1s_calculated_value_1"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_climate_curve_t1s_calculated_value_2"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+
+    - id: "${devicename}_water_flow"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 10) return {};
+            return x;
+
+    - id: "${devicename}_limit_scheme_of_outdoor_unit_current"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+
+    - id: "${devicename}_ability_of_hydraulic_module"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+
+    - id: "${devicename}_tsolar"
+      filters:
+        - lambda: |-
+            if (x < -255 || x > 255) return {};
+            return x;
+
+    - id: "${devicename}_power_output"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 6000000) return {};
+            return x;
+
+    - id: "${devicename}_realtime_renewable_heating_capacity"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+
+    - id: "${devicename}_realtime_heating_cop"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 50) return {};
+            return x;
+
+    - id: "${devicename}_realtime_renewable_cooling_capacity"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+
+    - id: "${devicename}_realtime_cooling_eer"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 50) return {};
+            return x;
+
+    - id: "${devicename}_realtime_renewable_dhw_heating_capacity"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+
+    - id: "${devicename}_realtime_dhw_heating_power_consumption"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x < 0 || x > 30) return {};
+            return x;
+
+    - id: "${devicename}_realtime_dhw_heating_cop"
+      filters:
+        - lambda: return x * 0.01;
+        - lambda: |-
+            if (x > 50) return {};
+            return x;
+
+    - id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_1"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_2"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_1"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_2"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_temperature_upper_limit_of_water_heating"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_temperature_lower_limit_of_water_heating"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+
+    - id: "${devicename}_t1s_dhw"
+      lambda: |-
+        int dt1s5 = id(${devicename}_dt1s5).state;
+        int t5 = id(${devicename}_water_tank_temperature_t5).state;
+        int t1s_dhw = t5 + dt1s5;
+        if (t1s_dhw < -200 || t1s_dhw > 200) return {};
+        return t1s_dhw;
+
+    - id: "${devicename}_water_temperature_delta"
+      lambda: |-
+        int inlet = id(${devicename}_water_inlet_temperature).state;
+        int outlet = id(${devicename}_water_outlet_temperature).state;
+        int delta = outlet - inlet;
+        if (delta < -200 || delta > 200) return {};
+        return delta;
+
+
+  number:
+    - id: "${devicename}_air_temperature_ts"
+      lambda: |-
+        float result = x * 0.5;
+        if (result < -100 || result > 100) return {};
+        return result;
+
+    - id: "${devicename}_set_dhw_tank_temperature_t5s"
+      lambda: |-
+        if (x < 0 || x > 100) return {};
+        return x;
+
+    - id: "${devicename}_weather_compensation_curve_zone_1"
+      lambda: |-
+        // Update the global var unmasked_curve_selection
+        id(unmasked_curve_selection) = x;
+
+        // ESP_LOGI("","unmasked_curve_selection: %d",id(unmasked_curve_selection));
+
+        uint8_t value_bytes[2];
+        uint16_t value = x;
+        value_bytes[0] = value >> 8;     // high byte (zone 2)
+        value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+
+        // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
+        // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
+
+        if (value_bytes[1] < 0 || value_bytes[1] > 10) return {};
+        return value_bytes[1];
+
+    - id: "${devicename}_weather_compensation_curve_zone_2"
+      lambda: |-
+        // The global var unmasked_curve_selection is already
+        // updated in the previous, where the low byte variant is executed
+        // id(unmasked_curve_selection) = x;
+
+        uint8_t value_bytes[2];
+        uint16_t value = x;
+        value_bytes[0] = value >> 8;     // high byte (zone 2)
+        value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+
+        if (value_bytes[0] < 0 || value_bytes[0] > 10) return {};
+        return value_bytes[0];
+
+    - id: "${devicename}_dhw_pump_return_running_time"
+      lambda: |-
+        if (x < 0 || x > 200) return {};
+        return x;
+
+    - id: "${devicename}_dt5_on"
+      lambda: |-
+        if (x < 0 || x > 50) return {};
+        return x;
+
+    - id: "${devicename}_dt1s5"
+      lambda: |-
+        if (x < 0 || x > 50) return {};
+        return x;
+
+    - id: "${devicename}_dtsc"
+      lambda: |-
+        if (x < 0 || x > 30) return {};
+        return x;
+
+    - id: "${devicename}_dtsh"
+      lambda: |-
+        if (x < 0 || x > 20) return {};
+        return x;
+
+    - id: "${devicename}_t4_ibh_on"
+      lambda: |-
+        if (x < -50 || x > 50) return {};
+        return x;
+
+    - id: "${devicename}_dt1_ibh_on"
+      lambda: |-
+        if (x < 0 || x > 20) return {};
+        return x;
+
+    - id: "${devicename}_t_ibh_delay"
+      lambda: |-
+        if (x < 0 || x > 200) return {};
+        return x;
+
+    - id: "${devicename}_t_ahs_delay"
+      lambda: |-
+        if (x < 0 || x > 200) return {};
+        return x;
+
+    - id: "${devicename}_t4autocmin"
+      lambda: |-
+        if (x < 0 || x > 50) return {};
+        return x;
+
+    - id: "${devicename}_t4autohmax"
+      lambda: |-
+        if (x < 0 || x > 50) return {};
+        return x;
+
+    - id: "${devicename}_t1s_h_a_h"
+      lambda: |-
+        if (x < 0 || x > 50) return {};
+        return x;
+
+    - id: "${devicename}_t5s_h_a_dhw"
+      lambda: |-
+        if (x < 0 || x > 50) return {};
+        return x;

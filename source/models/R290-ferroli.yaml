@@ -1,0 +1,5 @@
+---
+# Ferroli specific R290 model
+# Inherits from R290-generic and adds/overrides Ferroli specific settings
+
+inherits: R290-generic.yaml

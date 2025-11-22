@@ -5440,7 +5440,6 @@ text_sensor:
     response_size: 2
     raw_encode: HEXBYTES
     address: 0xc8
-    force_new_range: true  # Registers 200-208 require separate batch per Modbus spec
     lambda: |-
       int idx = item->offset;
       std::string z = "";
@@ -5453,6 +5452,7 @@ text_sensor:
       }
       return {z};
 
+    force_new_range: true
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Heat Pump Operation Mode"

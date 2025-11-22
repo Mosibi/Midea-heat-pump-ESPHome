@@ -6,6 +6,13 @@
 inherits: R290-generic.yaml
 
 modify:
+  text_sensor:
+    # Register: 200 require separate batch per Modbus spec, otherwise the following error occurs:
+    # Modbus error function code: 0x3 exception: 2 
+    # Modbus error - last command: function code=0x3  register address = 0xBE  registers count=24 payload size=0
+    - id: "${devicename}_home_appliance_product_code"
+      force_new_range: true
+
   sensor:
     - id: "${devicename}_water_inlet_temperature"
       filters:

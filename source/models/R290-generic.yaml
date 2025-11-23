@@ -191,9 +191,6 @@ modify:
     - id: "${devicename}_power_output"
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x > 6000000) return {};
-            return x;
       accuracy_decimals: 2
 add:
   sensor:
@@ -223,9 +220,6 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x < 0 || x > 50) return {};
-            return x;
     # Register: 150
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -252,9 +246,6 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x > 50) return {};
-            return x;
     # Register: 152 and 153
     # U_DWORD combines this register with the next one
     - platform: modbus_controller
@@ -496,9 +487,6 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x < 0 || x > 50) return {};
-            return x;
     # Register: 180
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -539,9 +527,6 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x > 50) return {};
-            return x;
     # Register: 183
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -568,9 +553,6 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x < 0 || x > 50) return {};
-            return x;
     # Register: 185
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -584,9 +566,6 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x < 0 || x > 30) return {};
-            return x;
     # Register: 186
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"
@@ -600,9 +579,6 @@ add:
       accuracy_decimals: 2
       filters:
         - lambda: return x * 0.01;
-        - lambda: |-
-            if (x > 50) return {};
-            return x;
     # Register: 191
     - platform: modbus_controller
       modbus_controller_id: "${devicename}"

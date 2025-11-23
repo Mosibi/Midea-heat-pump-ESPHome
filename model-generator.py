@@ -139,12 +139,45 @@ def apply_overrides(base_data, overrides={}):
                 addr = new_item.get("id")
                 if addr in existing_addresses:
                     print(
-                        f"Warning: id {id} already exists in '{component_type}', skipping."
+                        f"Warning: id {addr} already exists in '{component_type}', skipping."
                     )
                 else:
                     base[component_type].append(new_item)
 
     return base
+
+
+def resolve_inheritance_chain(model_file, override_dir):
+    """
+    Resolve the inheritance chain for a model file.
+    Returns a list of override dictionaries in order from most general to most specific.
+    """
+    # Load current model
+    overrides = load_yaml(model_file)
+
+    # Check if this model has a parent
+    if "parent" in overrides:
+        parent_name = overrides["parent"]
+        parent_file = os.path.join(override_dir, parent_name)
+
+        # Validate parent file exists
+        if not os.path.exists(parent_file):
+            raise FileNotFoundError(
+                f"Parent model '{parent_name}' not found in {override_dir}"
+            )
+
+        # Recursively resolve parent chain
+        parent_chain = resolve_inheritance_chain(parent_file, override_dir)
+
+        # Remove 'parent' key from current overrides as it's not an operation
+        overrides_copy = copy.deepcopy(overrides)
+        overrides_copy.pop("parent", None)
+
+        # Return chain: [...grandparents, parent, child]
+        return parent_chain + [overrides_copy]
+    else:
+        # No parent, return just this model's overrides
+        return [overrides]
 
 
 def main():
@@ -160,8 +193,15 @@ def main():
 
     for override_file in override_files:
         model_name = os.path.splitext(os.path.basename(override_file))[0]
-        overrides = load_yaml(override_file)
-        merged_data = apply_overrides(base_data, overrides)
+
+        # Resolve inheritance chain
+        inheritance_chain = resolve_inheritance_chain(override_file, override_dir)
+
+        # Apply overrides in order from parent to child
+        merged_data = base_data
+        for overrides in inheritance_chain:
+            merged_data = apply_overrides(merged_data, overrides)
+
         output_file = os.path.join(output_dir, f"{model_name}.yaml")
         save_yaml(merged_data, output_file)
         print(f"Created: {output_file}")

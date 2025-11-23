@@ -1,9 +1,9 @@
 ---
 # Ferroli specific R290 model
-# Inherits from R290-generic and adds/overrides Ferroli specific settings
+# Parent: R290-generic - adds/overrides Ferroli specific settings
 # These filters were added in commits c191583, e415a78, f2f8e49, fd9390c
 
-inherits: R290-generic.yaml
+parent: R290-generic.yaml
 
 modify:
   text_sensor:

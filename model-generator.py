@@ -155,28 +155,28 @@ def resolve_inheritance_chain(model_file, override_dir):
     # Load current model
     overrides = load_yaml(model_file)
 
-    # Check if this model inherits from another
-    if "inherits" in overrides:
-        parent_name = overrides["inherits"]
+    # Check if this model has a parent
+    if "parent" in overrides:
+        parent_name = overrides["parent"]
         parent_file = os.path.join(override_dir, parent_name)
 
         # Validate parent file exists
         if not os.path.exists(parent_file):
             raise FileNotFoundError(
-                f"Inherited model '{parent_name}' not found in {override_dir}"
+                f"Parent model '{parent_name}' not found in {override_dir}"
             )
 
         # Recursively resolve parent chain
         parent_chain = resolve_inheritance_chain(parent_file, override_dir)
 
-        # Remove 'inherits' key from current overrides as it's not an operation
+        # Remove 'parent' key from current overrides as it's not an operation
         overrides_copy = copy.deepcopy(overrides)
-        overrides_copy.pop("inherits", None)
+        overrides_copy.pop("parent", None)
 
         # Return chain: [...grandparents, parent, child]
         return parent_chain + [overrides_copy]
     else:
-        # No inheritance, return just this model's overrides
+        # No parent, return just this model's overrides
         return [overrides]
 
 
@@ -195,11 +195,11 @@ def main():
         model_name = os.path.splitext(os.path.basename(override_file))[0]
 
         # Resolve inheritance chain
-        override_chain = resolve_inheritance_chain(override_file, override_dir)
+        inheritance_chain = resolve_inheritance_chain(override_file, override_dir)
 
         # Apply overrides in order from parent to child
         merged_data = base_data
-        for overrides in override_chain:
+        for overrides in inheritance_chain:
             merged_data = apply_overrides(merged_data, overrides)
 
         output_file = os.path.join(output_dir, f"{model_name}.yaml")

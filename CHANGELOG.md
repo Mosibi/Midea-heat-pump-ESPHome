@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - All models: Added Water Temperature Delta template sensor to calculate the difference between water inlet and outlet temperatures
 - R290 models: Added missing registers 190-199 and 280-288
-- Build system: Added multi-level inheritance support to model-generator.py - model files can now inherit from other models using `inherits:` key, enabling easier creation of brand-specific variants (e.g., R290-ferroli.yaml can inherit from R290-generic.yaml)
+- Build system: Added multi-level inheritance support to model-generator.py - model files can now inherit from other models using `parent:` key, enabling easier creation of brand-specific variants (e.g., R290-ferroli.yaml can inherit from R290-generic.yaml)
 
 ### Fixed
 

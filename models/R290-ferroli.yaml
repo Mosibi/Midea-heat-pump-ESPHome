@@ -3891,7 +3891,7 @@ number:
     mode: slider
     lambda: |-
       float result = x * 0.5;
-      if (result < -100 || result > 100) return {};
+      if (result < -100 || result > 100) return NAN;
       return result;
     write_lambda: |-
       return x * 2.0;
@@ -3912,7 +3912,7 @@ number:
     mode: slider
 
     lambda: |-
-      if (x < 0 || x > 100) return {};
+      if (x < 0 || x > 100) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -3940,7 +3940,7 @@ number:
       // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
       // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
 
-      if (value_bytes[1] < 0 || value_bytes[1] > 10) return {};
+      if (value_bytes[1] < 0 || value_bytes[1] > 10) return NAN;
       return value_bytes[1];
     write_lambda: |-
       uint16_t value = id(unmasked_curve_selection); // The original unmasked value
@@ -3978,7 +3978,7 @@ number:
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
 
-      if (value_bytes[0] < 0 || value_bytes[0] > 10) return {};
+      if (value_bytes[0] < 0 || value_bytes[0] > 10) return NAN;
       return value_bytes[0];
     write_lambda: |-
       uint16_t value = id(unmasked_curve_selection); // The original unmasked value
@@ -4004,7 +4004,7 @@ number:
     min_value: 5
     max_value: 120
     lambda: |-
-      if (x < 0 || x > 200) return {};
+      if (x < 0 || x > 200) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4020,7 +4020,7 @@ number:
     min_value: 1
     max_value: 30
     lambda: |-
-      if (x < 0 || x > 50) return {};
+      if (x < 0 || x > 50) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4036,7 +4036,7 @@ number:
     min_value: 5
     max_value: 40
     lambda: |-
-      if (x < 0 || x > 50) return {};
+      if (x < 0 || x > 50) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4167,7 +4167,7 @@ number:
     min_value: 1
     max_value: 10
     lambda: |-
-      if (x < 0 || x > 30) return {};
+      if (x < 0 || x > 30) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4234,7 +4234,7 @@ number:
     min_value: 1
     max_value: 10
     lambda: |-
-      if (x < 0 || x > 20) return {};
+      if (x < 0 || x > 20) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4276,7 +4276,7 @@ number:
     min_value: -15
     max_value: 30
     lambda: |-
-      if (x < -50 || x > 50) return {};
+      if (x < -50 || x > 50) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4292,7 +4292,7 @@ number:
     min_value: 1
     max_value: 7
     lambda: |-
-      if (x < 0 || x > 20) return {};
+      if (x < 0 || x > 20) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4307,7 +4307,7 @@ number:
     min_value: 15
     max_value: 120
     lambda: |-
-      if (x < 0 || x > 200) return {};
+      if (x < 0 || x > 200) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4348,7 +4348,7 @@ number:
     min_value: 5
     max_value: 120
     lambda: |-
-      if (x < 0 || x > 200) return {};
+      if (x < 0 || x > 200) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4388,7 +4388,7 @@ number:
     min_value: 20
     max_value: 29
     lambda: |-
-      if (x < 0 || x > 50) return {};
+      if (x < 0 || x > 50) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4404,7 +4404,7 @@ number:
     min_value: 10
     max_value: 17
     lambda: |-
-      if (x < 0 || x > 50) return {};
+      if (x < 0 || x > 50) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4420,7 +4420,7 @@ number:
     min_value: 20
     max_value: 25
     lambda: |-
-      if (x < 0 || x > 50) return {};
+      if (x < 0 || x > 50) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -4436,7 +4436,7 @@ number:
     min_value: 20
     max_value: 25
     lambda: |-
-      if (x < 0 || x > 50) return {};
+      if (x < 0 || x > 50) return NAN;
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

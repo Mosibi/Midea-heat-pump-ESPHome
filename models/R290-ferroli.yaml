@@ -3826,6 +3826,7 @@ number:
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
       // ESP_LOGI("Register 2Low","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
+      if (value_bytes[1] < 5 || value_bytes[1] > 60) return NAN;
       return value_bytes[1];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value
@@ -3861,6 +3862,7 @@ number:
       value_bytes[0] = value >> 8;     // high byte (zone 2)
       value_bytes[1] = value & 0x00FF; // low byte (zone 1)
       // ESP_LOGD("Register 2High","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
+      if (value_bytes[0] < 5 || value_bytes[0] > 60) return NAN;
       return value_bytes[0];
     write_lambda: |-
       uint16_t value = id(unmasked_value_water_temperature_t1s); // The original unmasked value

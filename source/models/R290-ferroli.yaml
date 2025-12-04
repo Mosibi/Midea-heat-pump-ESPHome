@@ -313,6 +313,32 @@ modify:
 
 
   number:
+    - id: "${devicename}_set_water_temperature_t1s_zone_1"
+      lambda: |-
+        // Update the global var unmasked_value_water_temperature_t1s
+        id(unmasked_value_water_temperature_t1s) = x;
+
+        // ESP_LOGI("","unmasked_value_water_temperature_t1s: %d",id(unmasked_value_water_temperature_t1s));
+        uint8_t value_bytes[2];
+        uint16_t value = x;
+        value_bytes[0] = value >> 8;     // high byte (zone 2)
+        value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+        // ESP_LOGI("Register 2Low","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
+        if (value_bytes[1] < 5 || value_bytes[1] > 60) return NAN;
+        return value_bytes[1];
+
+    - id: "${devicename}_set_water_temperature_t1s_zone_2"
+      lambda: |-
+        // The global var unmasked_value_water_temperature_t1s is already
+        // updated in the previous, where the low byte variant is executed
+        uint8_t value_bytes[2];
+        uint16_t value = x;
+        value_bytes[0] = value >> 8;     // high byte (zone 2)
+        value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+        // ESP_LOGD("Register 2High","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
+        if (value_bytes[0] < 5 || value_bytes[0] > 60) return NAN;
+        return value_bytes[0];
+
     - id: "${devicename}_air_temperature_ts"
       lambda: |-
         float result = x * 0.5;

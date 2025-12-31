@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.1.0] - 2025-12-31
+
+### Added
+
+- All models: Added "Oil return" to "Active State"
+  - Lubrication oil is present in compressor and in the refrigeration circuit. When "Oil return" is active, the heat pump returns the oil back from the refrigeration circuit to the compressor. This is a normal process to ensure the compressor stays lubricated. In a normal running system this can happen a few times per day.
+
 ## [9.0.0] - 2025-11-23
 
 ### Added

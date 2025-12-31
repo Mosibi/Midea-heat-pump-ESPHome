@@ -62,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 9.0.0
+    version: 9.1.0
 
 esp32:
   board: esp32dev
@@ -1199,7 +1199,8 @@ sensor:
         {"Cooling", 2},
         {"DHW", 3},
         {"Defrosting", 4},
-        {"Idle", 5}
+        {"Idle", 5},
+        {"Oil return", 6}
       };
 
       auto state_item = status_map.find(id(${devicename}_active_state).state);
@@ -4262,6 +4263,8 @@ text_sensor:
           // The heat pump is on
           if (id(${devicename}_status_bit_1_defrosting).state) {
             return {"Defrosting"};
+          } else if (id(${devicename}_status_bit_1_oil_return).state) {
+            return {"Oil return"};
           } else if (id(${devicename}_load_output_sv1).state) {
             return {"DHW"};
           } else {

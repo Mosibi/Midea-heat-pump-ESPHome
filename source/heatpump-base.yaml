@@ -358,7 +358,9 @@ sensor:
       // Verify that electricity_consumption is <> 0 to avoid division by 0 error
       if (id(${devicename}_electricity_consumption).state != 0) {
         return id(${devicename}_power_output).state / id(${devicename}_electricity_consumption).state;
-      } else return {};
+      } else {
+        return NAN;
+      }
   # Register: 0 -> Config is present as select, but now we need get value from heatpump and save it as global var
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

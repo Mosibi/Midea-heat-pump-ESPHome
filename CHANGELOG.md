@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Ferroli models: Fixed outlier filtering for `number` sensors
+- All modes: Fixed outlier filtering for `Coefficient of Performance`
+- Ferroli R290 models: Fixed outlier filtering for `number` sensors
 
 ## [9.1.0] - 2025-12-31
 

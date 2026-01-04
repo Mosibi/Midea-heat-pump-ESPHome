@@ -351,7 +351,9 @@ sensor:
       // Verify that electricity_consumption is <> 0 to avoid division by 0 error
       if (id(${devicename}_electricity_consumption).state != 0) {
         return id(${devicename}_power_output).state / id(${devicename}_electricity_consumption).state;
-      } else return {};
+      } else {
+        return NAN;
+      }
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Register 0 switches"

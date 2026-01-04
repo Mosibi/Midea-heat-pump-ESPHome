@@ -313,15 +313,41 @@ modify:
 
 
   number:
+    - id: "${devicename}_set_water_temperature_t1s_zone_1"
+      lambda: |-
+        // Update the global var unmasked_value_water_temperature_t1s
+        id(unmasked_value_water_temperature_t1s) = x;
+
+        // ESP_LOGI("","unmasked_value_water_temperature_t1s: %d",id(unmasked_value_water_temperature_t1s));
+        uint8_t value_bytes[2];
+        uint16_t value = x;
+        value_bytes[0] = value >> 8;     // high byte (zone 2)
+        value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+        // ESP_LOGI("Register 2Low","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
+        if (value_bytes[1] < 5 || value_bytes[1] > 60) return NAN;
+        return value_bytes[1];
+
+    - id: "${devicename}_set_water_temperature_t1s_zone_2"
+      lambda: |-
+        // The global var unmasked_value_water_temperature_t1s is already
+        // updated in the previous, where the low byte variant is executed
+        uint8_t value_bytes[2];
+        uint16_t value = x;
+        value_bytes[0] = value >> 8;     // high byte (zone 2)
+        value_bytes[1] = value & 0x00FF; // low byte (zone 1)
+        // ESP_LOGD("Register 2High","Zone 1 is %d    Zone 2 is %d", value_bytes[1], value_bytes[0]);
+        if (value_bytes[0] < 5 || value_bytes[0] > 60) return NAN;
+        return value_bytes[0];
+
     - id: "${devicename}_air_temperature_ts"
       lambda: |-
         float result = x * 0.5;
-        if (result < -100 || result > 100) return {};
+        if (result < -100 || result > 100) return NAN;
         return result;
 
     - id: "${devicename}_set_dhw_tank_temperature_t5s"
       lambda: |-
-        if (x < 0 || x > 100) return {};
+        if (x < 0 || x > 100) return NAN;
         return x;
 
     - id: "${devicename}_weather_compensation_curve_zone_1"
@@ -339,7 +365,7 @@ modify:
         // ESP_LOGI("","Zone 1 is %d", value_bytes[1]);
         // ESP_LOGI("","Zone 2 is %d", value_bytes[0]);
 
-        if (value_bytes[1] < 0 || value_bytes[1] > 10) return {};
+        if (value_bytes[1] < 0 || value_bytes[1] > 10) return NAN;
         return value_bytes[1];
 
     - id: "${devicename}_weather_compensation_curve_zone_2"
@@ -353,70 +379,70 @@ modify:
         value_bytes[0] = value >> 8;     // high byte (zone 2)
         value_bytes[1] = value & 0x00FF; // low byte (zone 1)
 
-        if (value_bytes[0] < 0 || value_bytes[0] > 10) return {};
+        if (value_bytes[0] < 0 || value_bytes[0] > 10) return NAN;
         return value_bytes[0];
 
     - id: "${devicename}_dhw_pump_return_running_time"
       lambda: |-
-        if (x < 0 || x > 200) return {};
+        if (x < 0 || x > 200) return NAN;
         return x;
 
     - id: "${devicename}_dt5_on"
       lambda: |-
-        if (x < 0 || x > 50) return {};
+        if (x < 0 || x > 50) return NAN;
         return x;
 
     - id: "${devicename}_dt1s5"
       lambda: |-
-        if (x < 0 || x > 50) return {};
+        if (x < 0 || x > 50) return NAN;
         return x;
 
     - id: "${devicename}_dtsc"
       lambda: |-
-        if (x < 0 || x > 30) return {};
+        if (x < 0 || x > 30) return NAN;
         return x;
 
     - id: "${devicename}_dtsh"
       lambda: |-
-        if (x < 0 || x > 20) return {};
+        if (x < 0 || x > 20) return NAN;
         return x;
 
     - id: "${devicename}_t4_ibh_on"
       lambda: |-
-        if (x < -50 || x > 50) return {};
+        if (x < -50 || x > 50) return NAN;
         return x;
 
     - id: "${devicename}_dt1_ibh_on"
       lambda: |-
-        if (x < 0 || x > 20) return {};
+        if (x < 0 || x > 20) return NAN;
         return x;
 
     - id: "${devicename}_t_ibh_delay"
       lambda: |-
-        if (x < 0 || x > 200) return {};
+        if (x < 0 || x > 200) return NAN;
         return x;
 
     - id: "${devicename}_t_ahs_delay"
       lambda: |-
-        if (x < 0 || x > 200) return {};
+        if (x < 0 || x > 200) return NAN;
         return x;
 
     - id: "${devicename}_t4autocmin"
       lambda: |-
-        if (x < 0 || x > 50) return {};
+        if (x < 0 || x > 50) return NAN;
         return x;
 
     - id: "${devicename}_t4autohmax"
       lambda: |-
-        if (x < 0 || x > 50) return {};
+        if (x < 0 || x > 50) return NAN;
         return x;
 
     - id: "${devicename}_t1s_h_a_h"
       lambda: |-
-        if (x < 0 || x > 50) return {};
+        if (x < 0 || x > 50) return NAN;
         return x;
 
     - id: "${devicename}_t5s_h_a_dhw"
       lambda: |-
-        if (x < 0 || x > 50) return {};
+        if (x < 0 || x > 50) return NAN;
         return x;

@@ -62,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 9.1.0
+    version: 10.0.0
 
 esp32:
   board: esp32dev
@@ -123,6 +123,37 @@ select:
       "Heat": 3
       "Cool": 2
       "Auto": 1
+  - platform: template
+    name: "Silent Mode Level"
+    id: "${devicename}_silent_mode_level"
+    icon: mdi:volume-medium
+    entity_category: config
+    options:
+      - "Level 1"
+      - "Level 2"
+    lambda: |-
+      if ((id(unmasked_value_register_5) & 0x80) == 0x80) {
+        return {"Level 2"};
+      } else {
+        return {"Level 1"};
+      }
+    set_action:
+      - lambda: |-
+          uint16_t checked_bit = 0x80;
+          uint16_t new_value = id(unmasked_value_register_5);  // originele unmasked waarde
+          if (x == "Level 2") {
+            new_value |= checked_bit;
+          } else {
+            new_value &= ~checked_bit;
+          }
+          if (new_value != id(unmasked_value_register_5)) {
+            // ESP_LOGD("unmasked_value_register_5", "Set silent_mode_level 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
+            id(unmasked_value_register_5) = new_value;
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
+            ${devicename}->queue_command(set_payload_command);
+          }
+          // Update the UI immediate insteafd of waiting for the next poll
+          id(${devicename}_silent_mode_level).publish_state(x);
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Power Input Limitation Type"
@@ -1710,8 +1741,8 @@ binary_sensor:
     icon: mdi:head-question-outline
     lambda: "return (id(unmasked_value_register_5) & 0x08) == 0x08; // Return status bit3"
   - platform: template
-    name: "Function Setting Holiday Away"
-    id: "${devicename}_function_setting_holiday_away"
+    name: "Holiday Away"
+    id: "${devicename}_holiday_away"
     icon: mdi:eye
     lambda: "return (id(unmasked_value_register_5) & 0x20) == 0x20; // Return status bit5"
   - platform: template
@@ -1764,7 +1795,7 @@ binary_sensor:
     bitmask: 0x8
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Status BIT 1 Remote On/Off"
+    name: "Status BIT 1 Remote On-Off"
     id: "${devicename}_status_bit_1_remote_on_off"
     icon: mdi:eye
     register_type: holding
@@ -2421,8 +2452,8 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   - platform: template
-    name: "Function Setting Disinfect"
-    id: "${devicename}_function_setting_disinfect"
+    name: "Disinfect"
+    id: "${devicename}_disinfect"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
@@ -2452,9 +2483,9 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   - platform: template
-    name: "Function Setting Silent Mode"
-    id: "${devicename}_function_setting_silent_mode"
-    icon: mdi:eye
+    name: "Silent Mode"
+    id: "${devicename}_silent_mode"
+    icon: mdi:volume-low
     entity_category: config
     restore_mode: DISABLED
     optimistic: true
@@ -2483,39 +2514,8 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   - platform: template
-    name: "Function Setting Silent Mode Level"
-    id: "${devicename}_function_setting_silent_mode_level"
-    icon: mdi:eye
-    entity_category: config
-    restore_mode: DISABLED
-    optimistic: true
-    lambda: "return (id(unmasked_value_register_5) & 0x80) == 0x80;"
-    on_turn_on:
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;                           // Clear and set
-          new_value += checked_bit;
-          if ((new_value) != id(unmasked_value_register_5)) {
-            // ESP_LOGD("unmasked_value_register_5", "Set option to on f_s_silent_mode_level 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-    on_turn_off:
-      - lambda: |-
-          uint16_t checked_bit = 0x80;
-          uint16_t new_value = id(unmasked_value_register_5);  // The original unmasked value
-          new_value &= ~checked_bit;                           // Clear and set
-          if ((new_value) != id(unmasked_value_register_5)) {
-            // ESP_LOGD("unmasked_value_register_5", "Set option to off f_s_silent_mode_level 0x%x -> 0x%x", id(unmasked_value_register_5), new_value);
-            id(unmasked_value_register_5) = new_value;
-            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(${devicename}, 5, new_value);
-            ${devicename}->queue_command(set_payload_command);
-          }
-  - platform: template
-    name: "Function Setting Holiday Home"
-    id: "${devicename}_function_setting_holiday_home"
+    name: "Holiday Home"
+    id: "${devicename}_holiday_home"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
@@ -2545,8 +2545,8 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   - platform: template
-    name: "Function Setting ECO Mode"
-    id: "${devicename}_function_setting_eco_mode"
+    name: "ECO Mode"
+    id: "${devicename}_eco_mode"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED
@@ -2576,8 +2576,8 @@ switch:
             ${devicename}->queue_command(set_payload_command);
           }
   - platform: template
-    name: "Function Setting DHW Pumps Running Constant Temperature Water Recycling"
-    id: "${devicename}_function_setting_dhw_pumps_running_constant_temperature_water_recycling"
+    name: "DHW Pumps Running Constant Temperature Water Recycling"
+    id: "${devicename}_dhw_pumps_running_constant_temperature_water_recycling"
     icon: mdi:eye
     entity_category: config
     restore_mode: DISABLED

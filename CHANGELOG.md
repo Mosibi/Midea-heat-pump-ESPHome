@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [10.0.0] - 2026-08-30
+
+### Changed
+
+- Renamed entities with a known function from "Function Setting $something" to "$something":
+  - `Function Setting Holiday Away` -> `Holiday Away`
+  - `Function Setting Silent Mode` -> `Silent Mode`
+  - `Function Setting Silent Mode Level` -> `Silent Mode Level`
+  - `Function Setting Disinfect` -> `Disinfect`
+  - `Function Setting Holiday Home` -> `Holiday Home`
+  - `Function Setting ECO Mode` -> `ECO Mode`
+  - `Function Setting DHW Pumps Running Constant Temperature Water Recycling` -> `DHW Pumps Running Constant Temperature Water Recycling`
+- A slash in an entity name is not allowed: `Status BIT 1 Remote On/Off` is renamed to `Status BIT 1 Remote On-Off`
+- `Silent Mode Level` has changed from a boolean (on/off) to a select to make the current level more clear
 
 ### Fixed
 

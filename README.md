@@ -33,6 +33,26 @@ In the `models` directory you will find multiple yaml files for specific models 
 
 *If you are not able to find a good fit in the models directory for your heat pump, then try the `R32-generic.yaml`, that will probably work.*
 
+## Switching heating and DHW on and off
+
+These notes were verified on a 14 kW R32 unit (Modbus RTU, slave 1, 9600 8N1). Other models may differ.
+
+**On/off from automations: use register `0x0`**
+
+The switches `Room Temperature Control`, `Water Flow Temperature Control Zone 1`, `Power DHW T5S` and `Water Flow Temperature Control Zone 2` are bits 0 to 3 of register `0x0`: bit 0 is the room thermostat, bit 1 is heating zone 1, bit 2 is DHW (T5S) and bit 3 is heating zone 2. Switching off this way behaves like the user switching it off on the panel and the function stays visible there.
+
+**Do not use the `Parameter Setting 1 Enable ...` switches for this**
+
+`Parameter Setting 1 Enable Heating` and `Parameter Setting 1 Enable Water Heating` (register `210`, bits 7 and 15) are installer options. Clearing them disables the function completely and it disappears from the panel.
+
+**Setpoints**
+
+Register `0x2` holds the zone 1 setpoint in the low byte and zone 2 in the high byte, `0x3` the air temperature (0.5 °C steps) and `0x4` the DHW setpoint. Writing them is reflected on the panel within seconds.
+
+**Heating versus DHW**
+
+`Operating Mode` (register `0x65`) reports 3 for heating, 5 for DHW and 2 for cooling. Load output SV1 (`Load Output SV 1`) was on during the whole DHW cycle. On the tested unit the `Operating Mode` text stayed "Heating" during DHW, so SV1 was the reliable indicator there, which is also what `Active State` uses.
+
 ## ESPHome Midea Heatpump Controller
 
 Together with my son [Sven](https://svenar.nl) who is an electronics student, we created an ESPHome compatible heatpump controller for the Midea heatpump (and clones). This controller can be purchased from https://shop.svenar.nl

@@ -62,7 +62,7 @@ esphome:
   friendly_name: "${description}"
   project:
     name: "${devicename}.${description}"
-    version: 10.0.0
+    version: 10.1.0
 
 esp32:
   board: esp32dev
@@ -681,8 +681,8 @@ sensor:
   # Register: 120
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Tbt1"
-    id: "${devicename}_tbt1"
+    name: "Buffer tank temperature top"
+    id: "${devicename}_buffer_tank_temperature_top_tbt1"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     device_class: "temperature"
@@ -693,8 +693,8 @@ sensor:
   # Register: 121
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "Tbt2"
-    id: "${devicename}_tbt2"
+    name: "Buffer tank temperature bottom"
+    id: "${devicename}_buffer_tank_temperature_bottom_tbt2"
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     device_class: "temperature"
@@ -721,7 +721,7 @@ sensor:
     register_type: holding
     address: 0x7b
     value_type: U_WORD
-    unit_of_measurement: "kWh"
+    unit_of_measurement: "kW"
   # Register: 124
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
@@ -1156,24 +1156,8 @@ sensor:
   # Register: 250 -> Is present in this config as a 'number'
   # Register: 251 -> Is present in this config as a 'number'
   # Register: 252 -> Is present in this config as a 'number'
-  # Register: 253
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Comfort Parameter Reserved 3"
-    id: "${devicename}_comfort_parameter_3"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0xfd
-    value_type: U_WORD
-  # Register: 254
-  - platform: modbus_controller
-    modbus_controller_id: "${devicename}"
-    name: "Comfort Parameter Reserved 4"
-    id: "${devicename}_comfort_parameter_4"
-    icon: mdi:head-question-outline
-    register_type: holding
-    address: 0xfe
-    value_type: U_WORD
+  # Register: 253: Removed from the base. Not used by any at the moment and some see modbus errors when this is present
+  # Register: 254: Removed from the base. Not used by any at the moment and some see modbus errors when this is present
   # Register: 255 -> Is present in this config as a 'number'
   # Register: 256 -> Is present in this config as a 'number'
   # Register: 257 -> Is present in this config as a 'number'
@@ -4241,7 +4225,7 @@ number:
     register_type: holding
     address: 0x10f
     value_type: U_WORD
-    unit_of_measurement: min
+    unit_of_measurement: hr
     multiply: 2.0
     entity_category: config
     min_value: 2.0
@@ -4375,17 +4359,17 @@ text_sensor:
           - 1 -> Water flow fault(E8 displayed 3 times)
           - 2 -> Phase loss or neutral wire and live wire are connected reversely(only for three phase unit)
           - 3 -> Communication fault between controller and hydraulic module
-          - 4 -> Final outlet water temp. sensor(T1) fault
-          - 5 -> Water tank temp. sensor(T5) fault
+          - 4 -> Final outlet water temperature sensor(T1) fault
+          - 5 -> Water tank temperature sensor(T5) fault
           - 6 -> The condenser outlet refrigerant temperature sensor(T3) fault
           - 7 -> The ambient temperature sensor(T4) fault
-          - 8 -> Buffer tank up temp. sensor(Tbt1) fault
+          - 8 -> Buffer tank up temperature sensor(Tbt1) fault
           - 9 -> Water flow failure
-          - 10 -> Suction temp. sensor (Th) fault
-          - 11 -> Discharge temp. sensor (Tp) fault
-          - 12 -> Solar temp. sensor(Tsolar) fault
-          - 13 -> Buffer tank low temp. sensor(Tbt2) fault
-          - 14 -> Inlet water temp. sensor(Tw_in) malfunction
+          - 10 -> Suction temperature sensor (Th) fault
+          - 11 -> Discharge temperature sensor (Tp) fault
+          - 12 -> Solar temperature sensor(Tsolar) fault
+          - 13 -> Buffer tank low temperature sensor(Tbt2) fault
+          - 14 -> Inlet water temperature sensor(Tw_in) malfunction
           - 15 -> Hydraulic module EEprom failure
           - 20 -> Low pressure switch protection
           - 21 -> High pressure switch protection
@@ -4394,19 +4378,19 @@ text_sensor:
           - 25 -> |Tw_out - Tw_in| value too big protection
           - 26 -> Inverter module protection
           - 31 -> Anti-freeze mode
-          - 33 -> High temperature protection of refrigerant outlet temp. of condenser
+          - 33 -> High temperature protection of refrigerant outlet temperature of condenser
           - 38 -> Tw_out - Tw_in unusual protection
           - 39 -> Communication fault between main board PCB B and main control board of hydraulic module
           - 40 -> Communication fault between inverter module PCB A and main control board PCB B
-          - 41 -> Refrigerant liquid temp. sensor(T2) fault
-          - 42 -> Refrigerant gas temp. sensor(T2B) fault
+          - 41 -> Refrigerant liquid temperature sensor(T2) fault
+          - 42 -> Refrigerant gas temperature sensor(T2B) fault
           - 43 -> Three times P6(L0/L1) protection
           - 44 -> Room temo. sensor (Ta) fault
           - 45 -> DC fan motor fault
           - 46 -> Voltage protection
           - 47 -> Pressure sensor fault
-          - 48 -> Outlet water for zone 2 temp. sensor(Tw2) fault
-          - 49 -> Outlet water temp. sensor(Tw_out) fault
+          - 48 -> Outlet water for zone 2 temperature sensor(Tw2) fault
+          - 49 -> Outlet water temperature sensor(Tw_out) fault
           - 50 -> 3 times PP protection and Tw_out<7℃
           - 52 -> Communication fault between hydraulic module parallel
           - 53 -> Communication error between main board and thermostat transfer board

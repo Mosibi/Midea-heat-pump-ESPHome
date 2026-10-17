@@ -116,13 +116,13 @@ modify:
             if (x < 0 || x > 3000) return {};
             return x;
 
-    - id: "${devicename}_tbt1"
+    - id: "${devicename}_buffer_tank_temperature_top_tbt1"
       filters:
         - lambda: |-
             if (x < -200 || x > 200) return {};
             return x;
 
-    - id: "${devicename}_tbt2"
+    - id: "${devicename}_buffer_tank_temperature_bottom_tbt2"
       filters:
         - lambda: |-
             if (x < -200 || x > 200) return {};

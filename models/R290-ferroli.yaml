@@ -1038,7 +1038,8 @@ sensor:
     state_class: "measurement"
     filters:
       - lambda: |-
-          if (x < -255 || x > 255) return {};
+          // 255 means no solar panel sensor is connected
+          if (x < -255 || x >= 255) return {};
           return x;
 
   - platform: modbus_controller

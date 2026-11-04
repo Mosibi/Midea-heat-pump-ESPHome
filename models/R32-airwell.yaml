@@ -752,6 +752,9 @@ sensor:
     unit_of_measurement: A
     device_class: "current"
     state_class: "measurement"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "DC Bus Voltage"

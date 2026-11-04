@@ -907,7 +907,9 @@ sensor:
     unit_of_measurement: A
     device_class: "current"
     state_class: "measurement"
+    accuracy_decimals: 1
     filters:
+      - multiply: 0.1
       - lambda: |-
           if (x < 0 || x > 200) return {};
           return x;

@@ -148,6 +148,7 @@ modify:
 
     - id: "${devicename}_dc_bus_current"
       filters:
+        - multiply: 0.1
         - lambda: |-
             if (x < 0 || x > 200) return {};
             return x;

@@ -187,6 +187,34 @@ modify:
       filters:
         - lambda: return x * 0.01;
       accuracy_decimals: 2
+  text_sensor:
+    # Register 129, bit 13 (RUN) is reserved on R290 units and always reads 0,
+    # so use the compressor frequency to know if the heat pump is running
+    - id: "${devicename}_active_state"
+      lambda: |-
+        if (id(${devicename}_operating_mode).state != "OFF") {
+          if (id(compressor_running).state) {
+            // The heat pump is on
+            if (id(${devicename}_status_bit_1_defrosting).state) {
+              return {"Defrosting"};
+            } else if (id(${devicename}_status_bit_1_oil_return).state) {
+              return {"Oil return"};
+            } else if (id(${devicename}_load_output_sv1).state) {
+              return {"DHW"};
+            } else {
+              // Return the state from "Operating Mode", which can be Cooling or Heating
+              return id(${devicename}_operating_mode).state;
+            }
+          } else {
+            // The heat pumps operating mode is on (not OFF), but the compressor is not running.
+            // In this case the heat pump is Idle, which is for example the case when it is preparing for a DHW
+            // run or between "Heating" sessions
+            return {"Idle"};
+          }
+        } else {
+          // The heat pump is off
+          return {"Inactive"};
+        }
 add:
   sensor:
     # Register: 148

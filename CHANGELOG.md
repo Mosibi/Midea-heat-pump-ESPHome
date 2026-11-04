@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - R290 models failed to compile with current ESPHome (`modbus_controller::word_from_hex_str` no longer exists). `Heat Pump Operation Mode`, `MachineType` and `Hydraulic Module Sub-Model` now report correct values.
 - `DC Bus Current` showed 10 times the real current. The register holds the current * 10.
+- R290 models: `Active State` showed `Idle` while the heat pump was running, because register 129 bit 13 (RUN) is reserved on R290. It now uses the compressor frequency.
 
 ## [10.1.0] - 2026-10-17
 

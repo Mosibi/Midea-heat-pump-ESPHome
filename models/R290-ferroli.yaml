@@ -5061,7 +5061,7 @@ text_sensor:
     entity_category: "diagnostic"
     lambda: |-
       if (id(${devicename}_operating_mode).state != "OFF") {
-        if (id(${devicename}_load_output_run).state) {
+        if (id(compressor_running).state) {
           // The heat pump is on
           if (id(${devicename}_status_bit_1_defrosting).state) {
             return {"Defrosting"};
@@ -5074,7 +5074,7 @@ text_sensor:
             return id(${devicename}_operating_mode).state;
           }
         } else {
-          // The heat pumps operating mode is on (not OFF), but is not "Heating", "Cooling", or "DHW".
+          // The heat pumps operating mode is on (not OFF), but the compressor is not running.
           // In this case the heat pump is Idle, which is for example the case when it is preparing for a DHW
           // run or between "Heating" sessions
           return {"Idle"};

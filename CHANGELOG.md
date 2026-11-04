@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - R290 models: `Active State` showed `Idle` while the heat pump was running, because register 129 bit 13 (RUN) is reserved on R290. It now uses the compressor frequency.
 - R290 Ferroli model: `Tsolar` showed 255 °C when no solar panel sensor is connected.
 
+### Changed
+
+- R290 models: `MachineType` is renamed to `Modbus Protocol Version`. Register 187 holds the Modbus protocol version (for example `29` = V2.9), not the machine type, so it always showed `Unknown`.
+
 ## [10.1.0] - 2026-10-17
 
 ### Changed

@@ -5218,17 +5218,15 @@ text_sensor:
       return x;
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
-    name: "MachineType"
-    id: "${devicename}_machinetype"
+    name: "Modbus Protocol Version"
+    id: "${devicename}_modbus_protocol_version"
+    icon: mdi:information
+    entity_category: "diagnostic"
     register_type: holding
     address: 0xBB
     lambda: |-
       uint16_t value = modbus::helpers::get_data<uint16_t>(data.data(), item->offset);
-      switch (value) {
-        case 06: return std::string("A-R290");
-        default: return std::string("Unknown");
-      }
-      return x;
+      return "V" + std::to_string(value / 10) + "." + std::to_string(value % 10);
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Hydraulic Module Sub-Model"

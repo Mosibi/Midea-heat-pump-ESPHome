@@ -1289,7 +1289,7 @@ add:
       register_type: holding
       address: 0xC7
       lambda: |-
-        uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+        uint16_t value = modbus::helpers::get_data<uint16_t>(data.data(), item->offset);
         switch (value) {
           case 0: return std::string("Off");
           case 2: return std::string("Cooling");
@@ -1305,7 +1305,7 @@ add:
       register_type: holding
       address: 0xBB
       lambda: |-
-        uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+        uint16_t value = modbus::helpers::get_data<uint16_t>(data.data(), item->offset);
         switch (value) {
           case 06: return std::string("A-R290");
           default: return std::string("Unknown");
@@ -1319,7 +1319,7 @@ add:
       register_type: holding
       address: 0xBE
       lambda: |-
-        uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+        uint16_t value = modbus::helpers::get_data<uint16_t>(data.data(), item->offset);
         switch (value) {
           case 0: return std::string("R32-P");
           case 1: return std::string("Aqua");

@@ -187,6 +187,12 @@ modify:
       filters:
         - lambda: return x * 0.01;
       accuracy_decimals: 2
+    # Register: 133
+    # For R290 units: actual value*10, A
+    - id: "${devicename}_dc_bus_current"
+      accuracy_decimals: 1
+      filters:
+        - multiply: 0.1
   text_sensor:
     # Register 129, bit 13 (RUN) is reserved on R290 units and always reads 0,
     # so use the compressor frequency to know if the heat pump is running

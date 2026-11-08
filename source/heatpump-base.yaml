@@ -804,10 +804,6 @@ sensor:
     unit_of_measurement: A
     device_class: "current"
     state_class: "measurement"
-    accuracy_decimals: 1
-    filters:
-      # The register holds the current * 10
-      - multiply: 0.1
   # Register: 134
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

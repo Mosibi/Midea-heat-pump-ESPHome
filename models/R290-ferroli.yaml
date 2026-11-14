@@ -982,7 +982,6 @@ sensor:
       - lambda: |-
           if (x < 0 || x > 50) return {};
           return x;
-
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"
     name: "Ability Of Hydraulic Module"

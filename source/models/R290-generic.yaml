@@ -325,6 +325,12 @@ modify:
         - lambda: |-
             if (x < -200 || x > 200) return {};
             return x;
+    # Register: 139
+    - id: "${devicename}_limit_scheme_of_outdoor_unit_current"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
     # Register: 141
     - id: "${devicename}_tsolar"
       filters:

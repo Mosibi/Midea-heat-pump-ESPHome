@@ -35,12 +35,6 @@ modify:
             if (x < 0 || x > 10) return {};
             return x;
 
-    - id: "${devicename}_limit_scheme_of_outdoor_unit_current"
-      filters:
-        - lambda: |-
-            if (x < 0 || x > 50) return {};
-            return x;
-
     - id: "${devicename}_ability_of_hydraulic_module"
       filters:
         - lambda: return x * 0.01;

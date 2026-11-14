@@ -5,15 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [10.1.1] - 2026-11-14
 
 ### Fixed
 
+- `Built-in Circulating Pump Delay` showed hours, but the setting is in minutes (0.5 to 20, default 2). The minimum is now 0.5 instead of 2.
 - R290 models failed to compile with current ESPHome (`modbus_controller::word_from_hex_str` no longer exists). `Heat Pump Operation Mode`, `MachineType` and `Hydraulic Module Sub-Model` now report correct values.
 - R290 models: `DC Bus Current` showed 10 times the real current. The register holds the current * 10.
 - R290 models: `Active State` showed `Idle` while the heat pump was running, because register 129 bit 13 (RUN) is reserved on R290. It now uses the compressor frequency.
-- R290 Ferroli model: `Tsolar` showed 255 °C when no solar panel sensor is connected.
-- `Built-in Circulating Pump Delay` showed hours, but the setting is in minutes (0.5 to 20, default 2). The minimum is now 0.5 instead of 2.
+- R290 models: Moved impossible sensor value filtering from the Ferroli specific configuration to the R290 generic configuration
+  - `Tsolar` showed 255 °C when no solar panel sensor is connected.
 
 ### Changed
 

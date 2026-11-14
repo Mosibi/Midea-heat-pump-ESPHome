@@ -175,6 +175,205 @@ modify:
         }
         return string_result;
   sensor:
+    # Register: 10
+    - id: "${devicename}_t_sg_max"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 24) return {};
+            return x;
+      # Register: 100
+    - id: "${devicename}_compressor_operating_frequency"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 150) return {};
+            return x;
+    # Register: 102
+    - id: "${devicename}_fan_speed"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 3000) return {};
+            return x;
+    # Register: 104
+    - id: "${devicename}_water_inlet_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 105
+    - id: "${devicename}_water_outlet_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 106
+    - id: "${devicename}_condenser_temperature_t3"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 107
+    - id: "${devicename}_outdoor_ambient_temperature"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+    # Register: 108
+    - id: "${devicename}_discharge_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 110
+    - id: "${devicename}_total_water_outlet_temperature_t1"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 111
+    - id: "${devicename}_system_total_water_outlet_temperature_t1b"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 112
+    - id: "${devicename}_refrigerant_liquid_side_temperature_t2"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 113
+    - id: "${devicename}_refrigerant_gas_side_temperature_t2b"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 114
+    - id: "${devicename}_room_temperature_ta"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+    # Register: 115
+    - id: "${devicename}_water_tank_temperature_t5"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 116
+    - id: "${devicename}_outdoor_unit_high_pressure"
+      filters:
+        - lambda: |-
+            if (x < -10000 || x > 10000) return {};
+            return x;
+    # Register: 117
+    - id: "${devicename}_outdoor_unit_low_pressure"
+      filters:
+        - lambda: |-
+            if (x < -10000 || x > 10000) return {};
+            return x;
+    # Register: 118
+    - id: "${devicename}_outdoor_unit_current"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 200) return {};
+            return x;
+    # Register: 119
+    - id: "${devicename}_outdoor_unit_voltage"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 10000) return {};
+            return x;
+    # Register: 120
+    - id: "${devicename}_buffer_tank_temperature_top_tbt1"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 121
+    - id: "${devicename}_buffer_tank_temperature_bottom_tbt2"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 123
+    - id: "${devicename}_unit_capacity"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+    # Register: 132
+    - id: "${devicename}_compressor_target_frequency"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 150) return {};
+            return x;
+    # Register: 135
+    - id: "${devicename}_tf_module_temperature"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 136
+    - id: "${devicename}_climate_curve_t1s_calculated_value_1"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 137
+    - id: "${devicename}_climate_curve_t1s_calculated_value_2"
+      filters:
+        - lambda: |-
+            if (x < -200 || x > 200) return {};
+            return x;
+    # Register: 139
+    - id: "${devicename}_limit_scheme_of_outdoor_unit_current"
+      filters:
+        - lambda: |-
+            if (x < 0 || x > 50) return {};
+            return x;
+    # Register: 141
+    - id: "${devicename}_tsolar"
+      filters:
+        - lambda: |-
+            // 255 means no solar panel sensor is connected
+            if (x < -255 || x >= 255) return {};
+            return x;
+    # Register: 201 (Low)
+    - id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_1"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+    # Register: 201 (High)
+    - id: "${devicename}_temperature_upper_limit_of_t1s_cooling_zone_2"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+    # Register: 203 (Low)
+    - id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_1"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+    # Register: 203 (High)
+    - id: "${devicename}_temperature_upper_limit_of_t1s_heating_zone_2"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+    # Register: 207
+    - id: "${devicename}_temperature_upper_limit_of_water_heating"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
+    # Register: 208
+    - id: "${devicename}_temperature_lower_limit_of_water_heating"
+      filters:
+        - lambda: |-
+            if (x < -100 || x > 100) return {};
+            return x;
     # Register: 143 and 144
     # For R290 units: actual value*100; for other units: actual value; kWh
     - id: "${devicename}_electricity_consumption"

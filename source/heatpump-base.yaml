@@ -447,7 +447,6 @@ sensor:
     address: 0xa
     value_type: U_WORD
     unit_of_measurement: hr
-
   # Register: 100
   - platform: modbus_controller
     modbus_controller_id: "${devicename}"

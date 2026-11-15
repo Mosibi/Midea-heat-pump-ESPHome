@@ -27,11 +27,15 @@ When the panel of the display is removed, the back of the display is visible, wh
 
 When all is connected, place the back panel of the display back and put back the front panel of the indoor unit.
 
-## Configuration
+## ESPHome configurations
 
 In the `models` directory you will find multiple yaml files for specific models and more generic ones. Place the content of the model file which is the best fit for your heat pump in your ESPHome device and change the `uart` and `modbus_controller` settings to your needs. The `substitutions` section can be used to change the entities name as they apear in Home Assistant. In the [homeassistant](homeassistant) directory I placed and example dashboard and some example automations.
 
 *If you are not able to find a good fit in the models directory for your heat pump, then try the `R32-generic.yaml`, that will probably work.*
+
+## Heat pump internals
+
+Read the [INTERNALS.md](INTERNALS.md) file to get more information about how the heat pump behaves internally and how this ESPHome configuration maps to it.
 
 ## ESPHome Midea Heatpump Controller
 
